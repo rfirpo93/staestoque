@@ -143,8 +143,8 @@ const Calculomanual = () => {
         const vendaMediaAnual = vendaMediaDiaria * 365;
         const imposto = (pmpf * percentualImposto) / 100;
         const frete = parseFloat(freteUnidade);
-        const custoTotal = parseFloat(custo) + frete + imposto + (margem * pmpf / 100);
-        const comissao = (custoTotal * comissaoPercentual) / 100;
+        const totalCusto = parseFloat(custo) + frete + imposto + (margem * pmpf / 100);
+        const comissao = ((parseFloat(custo) + imposto + frete) * comissaoPercentual) / 100;
 
         setResult({
             vendaMediaDiaria,
@@ -155,7 +155,7 @@ const Calculomanual = () => {
             imposto,
             frete,
             comissao,
-            custoTotal: custoTotal + comissao
+            custoTotal: totalCusto + comissao
         });
 
         setOpen(true);
