@@ -1,0 +1,28 @@
+# Node modules
+node_modules
+
+# Logs
+logs
+*.log
+
+# Dependency directories
+jspm_packages/
+bower_components/
+
+# Production
+dist/
+build/
+
+# Miscellaneous
+.DS_Store
+.env
+.vscode/
+.vs/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Visual Studio
+.vs/
+*.vs/
