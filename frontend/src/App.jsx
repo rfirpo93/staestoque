@@ -25,6 +25,9 @@ const MainContainer = styled(Container)`
   justify-content: center;
   align-items: center;
   background: linear-gradient(145deg, #e0e0e0, #ffffff);
+  width: 100vw; // Preencher horizontalmente
+  padding: 0; // Remover padding padrão do Container
+  margin: 0; // Remover margin padrão do Container
 `;
 
 // Container de login estilizado
@@ -62,7 +65,7 @@ const App = () => {
     return (
         <ThemeProvider theme={theme}>
             <Router>
-                <MainContainer maxWidth="sm">
+                <MainContainer maxWidth={false}> // Ajustar maxWidth
                     <LoginContainer
                         component={motion.div}
                         initial={{ opacity: 0, scale: 0.8 }}
