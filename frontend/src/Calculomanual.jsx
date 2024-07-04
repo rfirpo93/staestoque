@@ -1,9 +1,8 @@
 ﻿import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Container, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@mui/material';
+import { Box, Button, TextField, Typography, Container, InputAdornment } from '@mui/material';
 import { motion } from 'framer-motion';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import InfoIcon from '@mui/icons-material/Info';
 import styled from '@emotion/styled';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -47,14 +46,6 @@ const RowContainer = styled(Box)`
   gap: 1rem;
 `;
 
-const ResultContainer = styled(DialogContent)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  text-align: center;
-`;
-
 const Calculomanual = () => {
     const [form, setForm] = useState({
         dataInicial: '',
@@ -67,15 +58,6 @@ const Calculomanual = () => {
         freteUnidade: '',
         comissaoPercentual: ''
     });
-
-    const [result, setResult] = useState({
-        vendaMediaDiaria: 0,
-        vendaMediaMensal: 0,
-        vendaMediaTrimestral: 0,
-        vendaMediaAnual: 0
-    });
-
-    const [open, setOpen] = useState(false);
 
     const handleChange = (e) => {
         setForm({
@@ -100,27 +82,8 @@ const Calculomanual = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const { dataInicial, dataFinal, vendaTotal } = form;
-        const startDate = new Date(dataInicial);
-        const endDate = new Date(dataFinal);
-        const days = ((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1; // Corrige o cálculo dos dias
-        const vendaMediaDiaria = vendaTotal / days;
-        const vendaMediaMensal = vendaMediaDiaria * 30;
-        const vendaMediaTrimestral = vendaMediaDiaria * 90;
-        const vendaMediaAnual = vendaMediaDiaria * 365;
-
-        setResult({
-            vendaMediaDiaria,
-            vendaMediaMensal,
-            vendaMediaTrimestral,
-            vendaMediaAnual
-        });
-
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
+        // Lógica de cálculo aqui
+        console.log('Cálculo realizado', form);
     };
 
     return (
@@ -315,50 +278,6 @@ const Calculomanual = () => {
                         </RowContainer>
                     </Box>
                 </FormContainer>
-
-                <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>
-                        <Box display="flex" alignItems="center">
-                            <InfoIcon sx={{ mr: 1 }} />
-                            Resultados do Cálculo
-                        </Box>
-                    </DialogTitle>
-                    <ResultContainer>
-                        <motion.div
-                            initial={{ opacity: 0, y: 50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            <Typography variant="h6">Venda Média Diária: {result.vendaMediaDiaria.toFixed(2)}</Typography>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, y: 50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
-                        >
-                            <Typography variant="h6">Venda Média Mensal: {result.vendaMediaMensal.toFixed(2)}</Typography>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, y: 50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.7 }}
-                        >
-                            <Typography variant="h6">Venda Média Trimestral: {result.vendaMediaTrimestral.toFixed(2)}</Typography>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, y: 50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8 }}
-                        >
-                            <Typography variant="h6">Venda Média Anual: {result.vendaMediaAnual.toFixed(2)}</Typography>
-                        </motion.div>
-                    </ResultContainer>
-                    <DialogActions>
-                        <Button onClick={handleClose} color="primary">
-                            Fechar
-                        </Button>
-                    </DialogActions>
-                </Dialog>
             </MainContainer>
         </ThemeProvider>
     );
