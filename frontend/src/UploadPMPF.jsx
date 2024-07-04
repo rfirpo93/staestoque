@@ -20,6 +20,14 @@ const StyledTableRow = styled(TableRow)`
   }
 `;
 
+const normalizeHeader = (header) => {
+    return header
+        .normalize('NFD') // Normalize to decompose accented characters
+        .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+        .toLowerCase() // Convert to lowercase
+        .trim(); // Trim any extra whitespace
+};
+
 const UploadPMPF = () => {
     const [rows, setRows] = useState([]);
     const [filters, setFilters] = useState({ ean: '', descricao: '', pmpf: '' });
@@ -33,13 +41,18 @@ const UploadPMPF = () => {
                 const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
-                const json = XLSX.utils.sheet_to_json(worksheet);
-                const formattedRows = json.map(row => ({
-                    ean: row['Código EAN'] ? row['Código EAN'].toString() : '',
-                    descricao: row['Descrição'] ? row['Descrição'].toString() : '',
-                    pmpf: row['PMPF'] ? row['PMPF'].toString() : ''
-                }));
-                setRows(formattedRows);
+                const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                const headers = json[0].map(normalizeHeader);
+                const dataRows = json.slice(1).map(row => {
+                    let rowData = {};
+                    row.forEach((cell, index) => {
+                        rowData[headers[index]] = cell ? cell.toString() : '';
+                    });
+                    return rowData;
+                });
+
+                setRows(dataRows);
             })
             .catch(error => console.error('Error fetching data:', error));
     }, []);
@@ -53,7 +66,7 @@ const UploadPMPF = () => {
     };
 
     const filteredRows = rows.filter(row =>
-        row.ean.toLowerCase().includes(filters.ean.toLowerCase()) &&
+        row.codigoean.toLowerCase().includes(filters.ean.toLowerCase()) &&
         row.descricao.toLowerCase().includes(filters.descricao.toLowerCase()) &&
         row.pmpf.toLowerCase().includes(filters.pmpf.toLowerCase())
     );
@@ -134,7 +147,7 @@ const UploadPMPF = () => {
                         <TableBody>
                             {filteredRows.map((row, index) => (
                                 <StyledTableRow key={index}>
-                                    <TableCell align="center">{row.ean}</TableCell>
+                                    <TableCell align="center">{row.codigoean}</TableCell>
                                     <TableCell align="center">{row.descricao}</TableCell>
                                     <TableCell align="center">{row.pmpf}</TableCell>
                                 </StyledTableRow>
