@@ -55,6 +55,7 @@ const ResultContainer = styled(DialogContent)`
   justify-content: center;
   gap: 2rem;
   text-align: center;
+  width: 100%; // Aumenta a largura para preencher toda a tela horizontalmente
 `;
 
 const ResultBox = styled(Box)`
@@ -149,9 +150,9 @@ const Calculomanual = () => {
         const imposto = (pmpf * percentualImposto) / 100;
         const frete = parseFloat(freteUnidade);
         const custoTotal = parseFloat(custo) + frete + imposto + ((parseFloat(custo) + imposto + frete) * comissaoPercentual) / 100;
-        const precoVenda = parseFloat(custo) + frete + imposto + (parseFloat(custo) * (margem / 100));
+        const precoVenda = parseFloat(custo) + frete + imposto + ((parseFloat(custo) + frete + imposto) * (margem / 100));
         const liquidoUnidade = precoVenda - custoTotal;
-        const margemLiquida = (liquidoUnidade / custoTotal) * 100;
+        const margemLiquida = (liquidoUnidade / precoVenda) * 100;
 
         setResult({
             vendaMediaDiaria,
