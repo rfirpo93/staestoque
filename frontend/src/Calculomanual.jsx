@@ -87,7 +87,8 @@ const Calculomanual = () => {
         estoqueAtual: '',
         vencimento: '',
         freteUnidade: '',
-        comissaoPercentual: ''
+        comissaoPercentual: '',
+        metaData: ''
     });
 
     const [result, setResult] = useState({
@@ -99,7 +100,10 @@ const Calculomanual = () => {
         imposto: 0,
         frete: 0,
         comissao: 0,
-        custoTotal: 0
+        custoTotal: 0,
+        precoVenda: 0,
+        liquidoUnidade: 0,
+        margemLiquida: 0
     });
 
     const [open, setOpen] = useState(false);
@@ -123,7 +127,8 @@ const Calculomanual = () => {
             estoqueAtual: '',
             vencimento: '',
             freteUnidade: '',
-            comissaoPercentual: ''
+            comissaoPercentual: '',
+            metaData: ''
         });
     };
 
@@ -143,8 +148,10 @@ const Calculomanual = () => {
         const vendaMediaAnual = vendaMediaDiaria * 365;
         const imposto = (pmpf * percentualImposto) / 100;
         const frete = parseFloat(freteUnidade);
-        const totalCusto = parseFloat(custo) + frete + imposto + (margem * pmpf / 100);
-        const comissao = ((parseFloat(custo) + imposto + frete) * comissaoPercentual) / 100;
+        const custoTotal = parseFloat(custo) + frete + imposto + ((parseFloat(custo) + imposto + frete) * comissaoPercentual) / 100;
+        const precoVenda = parseFloat(custo) + frete + imposto + (margem * pmpf / 100);
+        const liquidoUnidade = precoVenda - custoTotal;
+        const margemLiquida = (liquidoUnidade / custoTotal) * 100;
 
         setResult({
             vendaMediaDiaria,
@@ -154,8 +161,11 @@ const Calculomanual = () => {
             custo: parseFloat(custo),
             imposto,
             frete,
-            comissao,
-            custoTotal: totalCusto + comissao
+            comissao: (parseFloat(custo) + imposto + frete) * comissaoPercentual / 100,
+            custoTotal,
+            precoVenda,
+            liquidoUnidade,
+            margemLiquida
         });
 
         setOpen(true);
@@ -375,6 +385,27 @@ const Calculomanual = () => {
                                 value={form.vendaTotal}
                                 onChange={handleChange}
                             />
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="metaData"
+                                label="Meta (Vender até Data)"
+                                name="metaData"
+                                type="date"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <CalendarTodayIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                value={form.metaData}
+                                onChange={handleChange}
+                            />
                         </RowContainer>
                         <RowContainer>
                             <Button
@@ -452,6 +483,27 @@ const Calculomanual = () => {
                             <ResultField>
                                 <AttachMoneyIcon />
                                 <Typography>Custo Total: R$ {formatNumber(result.custoTotal)}</Typography>
+                            </ResultField>
+                        </ResultBox>
+                        <ResultBox component={motion.div} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} sx={{ borderColor: 'green', color: 'green' }}>
+                            <Typography variant="h6" gutterBottom>
+                                Preço de Venda e Margem Líquida
+                            </Typography>
+                            <ResultField>
+                                <AttachMoneyIcon />
+                                <Typography>Margem Bruta: {formatNumber(form.margem)}%</Typography>
+                            </ResultField>
+                            <ResultField>
+                                <AttachMoneyIcon />
+                                <Typography>Preço de Venda: R$ {formatNumber(result.precoVenda)}</Typography>
+                            </ResultField>
+                            <ResultField>
+                                <AttachMoneyIcon />
+                                <Typography>R$ Líquido por Unidade: R$ {formatNumber(result.liquidoUnidade)}</Typography>
+                            </ResultField>
+                            <ResultField>
+                                <AttachMoneyIcon />
+                                <Typography>Margem Líquida: {formatNumber(result.margemLiquida)}%</Typography>
                             </ResultField>
                         </ResultBox>
                     </ResultContainer>
