@@ -3,6 +3,7 @@ import { Container, Box, Button, Typography, Menu, MenuItem, IconButton } from '
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import MenuIcon from '@mui/icons-material/Menu';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 // Container principal estilizado
 const MainContainer = styled(Box)`
@@ -20,18 +21,31 @@ const MenuButton = styled(Button)`
   position: absolute;
   top: 10px;
   left: 10px;
-  transform: scale(2); // Aumenta o tamanho do botão
+  transform: scale(1.5); // Aumenta o tamanho do botão
+`;
+
+const UploadButton = styled(Button)`
+  position: absolute;
+  top: 10px;
+  left: 150px;
+  transform: scale(1.5); // Aumenta o tamanho do botão
 `;
 
 const Inicio = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [uploadAnchorEl, setUploadAnchorEl] = React.useState(null);
 
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
+    const handleUploadClick = (event) => {
+        setUploadAnchorEl(event.currentTarget);
+    };
+
     const handleMenuClose = () => {
         setAnchorEl(null);
+        setUploadAnchorEl(null);
     };
 
     return (
@@ -44,6 +58,14 @@ const Inicio = () => {
             >
                 Menu
             </MenuButton>
+            <UploadButton
+                variant="contained"
+                color="secondary"
+                startIcon={<CloudUploadIcon />}
+                onClick={handleUploadClick}
+            >
+                Upload de Dados
+            </UploadButton>
             <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
@@ -61,6 +83,25 @@ const Inicio = () => {
             >
                 <MenuItem component={Link} to="/calculo" onClick={handleMenuClose}>
                     Cálculo Manual de Vencimento x Venda x Margem
+                </MenuItem>
+            </Menu>
+            <Menu
+                id="upload-menu"
+                anchorEl={uploadAnchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={Boolean(uploadAnchorEl)}
+                onClose={handleMenuClose}
+            >
+                <MenuItem component={Link} to="/upload-pmpf" onClick={handleMenuClose}>
+                    Subir lista PMPF
                 </MenuItem>
             </Menu>
             <Box textAlign="center">
