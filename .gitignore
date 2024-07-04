@@ -1,5 +1,5 @@
 # Node modules
-node_modules
+node_modules/
 
 # Logs
 logs
@@ -26,3 +26,6 @@ build/
 # Visual Studio
 .vs/
 *.vs/
+
+# Excel temporary files
+backend/~$listapmpf.xlsx

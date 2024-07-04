@@ -1,13 +1,23 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import * as XLSX from 'xlsx';
 
 const UploadPMPF = () => {
     const [rows, setRows] = useState([]);
 
     useEffect(() => {
-        fetch('/data')
-            .then(response => response.json())
-            .then(data => setRows(data))
+        // URL do arquivo Excel hospedado no GitHub
+        const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/listapmpf.xlsx';
+
+        fetch(url)
+            .then(response => response.arrayBuffer())
+            .then(data => {
+                const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const json = XLSX.utils.sheet_to_json(worksheet);
+                setRows(json);
+            })
             .catch(error => console.error('Error fetching data:', error));
     }, []);
 
