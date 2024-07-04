@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, IconButton, InputAdornment } from '@mui/material';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
@@ -34,7 +34,12 @@ const UploadPMPF = () => {
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
                 const json = XLSX.utils.sheet_to_json(worksheet);
-                setRows(json);
+                const formattedRows = json.map(row => ({
+                    ean: row['Código EAN'] ? row['Código EAN'].toString() : '',
+                    descricao: row['Descrição'] ? row['Descrição'].toString() : '',
+                    pmpf: row['PMPF'] ? row['PMPF'].toString() : ''
+                }));
+                setRows(formattedRows);
             })
             .catch(error => console.error('Error fetching data:', error));
     }, []);
@@ -48,9 +53,9 @@ const UploadPMPF = () => {
     };
 
     const filteredRows = rows.filter(row =>
-        row['Código EAN'].toString().toLowerCase().includes(filters.ean.toLowerCase()) &&
-        row['Descrição'].toLowerCase().includes(filters.descricao.toLowerCase()) &&
-        row['PMPF'].toString().toLowerCase().includes(filters.pmpf.toLowerCase())
+        row.ean.toLowerCase().includes(filters.ean.toLowerCase()) &&
+        row.descricao.toLowerCase().includes(filters.descricao.toLowerCase()) &&
+        row.pmpf.toLowerCase().includes(filters.pmpf.toLowerCase())
     );
 
     return (
@@ -129,9 +134,9 @@ const UploadPMPF = () => {
                         <TableBody>
                             {filteredRows.map((row, index) => (
                                 <StyledTableRow key={index}>
-                                    <TableCell align="center">{row['Código EAN']}</TableCell>
-                                    <TableCell align="center">{row['Descrição']}</TableCell>
-                                    <TableCell align="center">{row['PMPF']}</TableCell>
+                                    <TableCell align="center">{row.ean}</TableCell>
+                                    <TableCell align="center">{row.descricao}</TableCell>
+                                    <TableCell align="center">{row.pmpf}</TableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>
