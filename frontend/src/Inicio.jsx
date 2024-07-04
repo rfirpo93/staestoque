@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Box, Button, Typography, Menu, MenuItem, IconButton } from '@mui/material';
+import { Container, Box, Button, Typography, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -27,7 +27,7 @@ const MenuButton = styled(Button)`
 const UploadButton = styled(Button)`
   position: absolute;
   top: 10px;
-  left: 150px;
+  left: 200px;
   transform: scale(1.5); // Aumenta o tamanho do botão
 `;
 
