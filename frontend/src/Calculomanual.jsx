@@ -1,8 +1,9 @@
 ﻿import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Container, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Box, Button, TextField, Typography, Container, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import { motion } from 'framer-motion';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import InfoIcon from '@mui/icons-material/Info';
 import styled from '@emotion/styled';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -44,6 +45,14 @@ const RowContainer = styled(Box)`
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+`;
+
+const ResultContainer = styled(DialogContent)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
 `;
 
 const Calculomanual = () => {
@@ -94,7 +103,7 @@ const Calculomanual = () => {
         const { dataInicial, dataFinal, vendaTotal } = form;
         const startDate = new Date(dataInicial);
         const endDate = new Date(dataFinal);
-        const days = (endDate - startDate) / (1000 * 60 * 60 * 24);
+        const days = ((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1; // Corrige o cálculo dos dias
         const vendaMediaDiaria = vendaTotal / days;
         const vendaMediaMensal = vendaMediaDiaria * 30;
         const vendaMediaTrimestral = vendaMediaDiaria * 90;
@@ -308,13 +317,42 @@ const Calculomanual = () => {
                 </FormContainer>
 
                 <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>Resultados do Cálculo</DialogTitle>
-                    <DialogContent>
-                        <Typography>Venda Média Diária: {result.vendaMediaDiaria.toFixed(2)}</Typography>
-                        <Typography>Venda Média Mensal: {result.vendaMediaMensal.toFixed(2)}</Typography>
-                        <Typography>Venda Média Trimestral: {result.vendaMediaTrimestral.toFixed(2)}</Typography>
-                        <Typography>Venda Média Anual: {result.vendaMediaAnual.toFixed(2)}</Typography>
-                    </DialogContent>
+                    <DialogTitle>
+                        <Box display="flex" alignItems="center">
+                            <InfoIcon sx={{ mr: 1 }} />
+                            Resultados do Cálculo
+                        </Box>
+                    </DialogTitle>
+                    <ResultContainer>
+                        <motion.div
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            <Typography variant="h6">Venda Média Diária: {result.vendaMediaDiaria.toFixed(2)}</Typography>
+                        </motion.div>
+                        <motion.div
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6 }}
+                        >
+                            <Typography variant="h6">Venda Média Mensal: {result.vendaMediaMensal.toFixed(2)}</Typography>
+                        </motion.div>
+                        <motion.div
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.7 }}
+                        >
+                            <Typography variant="h6">Venda Média Trimestral: {result.vendaMediaTrimestral.toFixed(2)}</Typography>
+                        </motion.div>
+                        <motion.div
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8 }}
+                        >
+                            <Typography variant="h6">Venda Média Anual: {result.vendaMediaAnual.toFixed(2)}</Typography>
+                        </motion.div>
+                    </ResultContainer>
                     <DialogActions>
                         <Button onClick={handleClose} color="primary">
                             Fechar
