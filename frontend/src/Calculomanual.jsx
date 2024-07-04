@@ -19,7 +19,7 @@ const theme = createTheme({
 });
 
 // Container principal estilizado
-const MainContainer = styled(Container)`
+const MainContainer = styled(Box)`
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -40,13 +40,23 @@ const FormContainer = styled(Box)`
   text-align: center;
 `;
 
+const RowContainer = styled(Box)`
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+`;
+
 const Calculomanual = () => {
     const [form, setForm] = useState({
         dataInicial: '',
         dataFinal: '',
         vendaTotal: '',
         custo: '',
-        margem: ''
+        margem: '',
+        estoqueAtual: '',
+        vencimento: '',
+        freteUnidade: '',
+        comissaoPercentual: ''
     });
 
     const handleChange = (e) => {
@@ -62,7 +72,11 @@ const Calculomanual = () => {
             dataFinal: '',
             vendaTotal: '',
             custo: '',
-            margem: ''
+            margem: '',
+            estoqueAtual: '',
+            vencimento: '',
+            freteUnidade: '',
+            comissaoPercentual: ''
         });
     };
 
@@ -85,63 +99,85 @@ const Calculomanual = () => {
                         Preencha com as informações do Cardex
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="dataInicial"
-                            label="Data Inicial Cardex"
-                            name="dataInicial"
-                            type="date"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <CalendarTodayIcon />
-                                    </InputAdornment>
-                                ),
-                            }}
-                            value={form.dataInicial}
-                            onChange={handleChange}
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="dataFinal"
-                            label="Data Final Cardex"
-                            name="dataFinal"
-                            type="date"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <CalendarTodayIcon />
-                                    </InputAdornment>
-                                ),
-                            }}
-                            value={form.dataFinal}
-                            onChange={handleChange}
-                        />
+                        <RowContainer>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="dataInicial"
+                                label="Data Inicial Cardex"
+                                name="dataInicial"
+                                type="date"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <CalendarTodayIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                value={form.dataInicial}
+                                onChange={handleChange}
+                            />
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="dataFinal"
+                                label="Data Final Cardex"
+                                name="dataFinal"
+                                type="date"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <CalendarTodayIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                value={form.dataFinal}
+                                onChange={handleChange}
+                            />
+                        </RowContainer>
+                        <RowContainer>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="estoqueAtual"
+                                label="Estoque Atual"
+                                name="estoqueAtual"
+                                type="number"
+                                value={form.estoqueAtual}
+                                onChange={handleChange}
+                            />
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="vencimento"
+                                label="Vencimento"
+                                name="vencimento"
+                                type="date"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                value={form.vencimento}
+                                onChange={handleChange}
+                            />
+                        </RowContainer>
                         <TextField
                             margin="normal"
                             required
                             fullWidth
                             id="vendaTotal"
-                            label="Venda Total Cardex"
+                            label="Venda Total Cardex (Unidades)"
                             name="vendaTotal"
                             type="number"
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <AttachMoneyIcon />
-                                    </InputAdornment>
-                                ),
-                            }}
                             value={form.vendaTotal}
                             onChange={handleChange}
                         />
@@ -163,43 +199,83 @@ const Calculomanual = () => {
                             value={form.custo}
                             onChange={handleChange}
                         />
+                        <RowContainer>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="freteUnidade"
+                                label="Custo de Frete por Unidade"
+                                name="freteUnidade"
+                                type="number"
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <AttachMoneyIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                value={form.freteUnidade}
+                                onChange={handleChange}
+                            />
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="comissaoPercentual"
+                                label="Percentual de Comissão"
+                                name="comissaoPercentual"
+                                type="number"
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            %
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                value={form.comissaoPercentual}
+                                onChange={handleChange}
+                            />
+                        </RowContainer>
                         <TextField
                             margin="normal"
                             required
                             fullWidth
                             id="margem"
-                            label="Margem Desejada"
+                            label="Margem Desejada (%)"
                             name="margem"
                             type="number"
                             InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <AttachMoneyIcon />
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        %
                                     </InputAdornment>
                                 ),
                             }}
                             value={form.margem}
                             onChange={handleChange}
                         />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Calcular
-                        </Button>
-                        <Button
-                            type="button"
-                            fullWidth
-                            variant="outlined"
-                            color="secondary"
-                            sx={{ mb: 2 }}
-                            onClick={handleClear}
-                        >
-                            Limpar Formulário
-                        </Button>
+                        <RowContainer>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                sx={{ mt: 3, mb: 2 }}
+                            >
+                                Calcular
+                            </Button>
+                            <Button
+                                type="button"
+                                fullWidth
+                                variant="outlined"
+                                color="secondary"
+                                sx={{ mt: 3, mb: 2 }}
+                                onClick={handleClear}
+                            >
+                                Limpar Formulário
+                            </Button>
+                        </RowContainer>
                     </Box>
                 </FormContainer>
             </MainContainer>
