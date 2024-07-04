@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Box, Button, TextField, Typography, Container, Avatar, Alert } from '@mui/material';
 import { motion } from 'framer-motion';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from '@emotion/styled';
+import Inicio from './Inicio'; // Importando o novo componente
 
 // Definindo o tema inspirado nas cores do logo
 const theme = createTheme({
@@ -65,63 +66,64 @@ const App = () => {
     return (
         <ThemeProvider theme={theme}>
             <Router>
-                <MainContainer maxWidth={false}> // Ajustar maxWidth
-                    <LoginContainer
-                        component={motion.div}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        <Box
-                            display="flex"
-                            flexDirection="column"
-                            alignItems="center"
-                        >
-                            <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-                                <LockOutlinedIcon />
-                            </Avatar>
-                            <Typography component="h1" variant="h5">
-                                Login
-                            </Typography>
-                            {error && <Alert severity="error">{error}</Alert>}
-                            <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    id="username"
-                                    label="Nome de Usuário"
-                                    name="username"
-                                    autoComplete="username"
-                                    autoFocus
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                />
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    name="password"
-                                    label="Senha"
-                                    type="password"
-                                    id="password"
-                                    autoComplete="current-password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    sx={{ mt: 3, mb: 2 }}
-                                >
-                                    Entrar
-                                </Button>
-                            </Box>
-                        </Box>
-                    </LoginContainer>
-                </MainContainer>
+                <Routes>
+                    <Route path="/" element={
+                        <MainContainer>
+                            <LoginContainer
+                                component={motion.div}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.5 }}
+                            >
+                                <Box display="flex" flexDirection="column" alignItems="center">
+                                    <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+                                        <LockOutlinedIcon />
+                                    </Avatar>
+                                    <Typography component="h1" variant="h5">
+                                        Login
+                                    </Typography>
+                                    {error && <Alert severity="error">{error}</Alert>}
+                                    <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            id="username"
+                                            label="Nome de Usuário"
+                                            name="username"
+                                            autoComplete="username"
+                                            autoFocus
+                                            value={username}
+                                            onChange={(e) => setUsername(e.target.value)}
+                                        />
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            name="password"
+                                            label="Senha"
+                                            type="password"
+                                            id="password"
+                                            autoComplete="current-password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                        />
+                                        <Button
+                                            type="submit"
+                                            fullWidth
+                                            variant="contained"
+                                            color="primary"
+                                            sx={{ mt: 3, mb: 2 }}
+                                        >
+                                            Entrar
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            </LoginContainer>
+                        </MainContainer>
+                    } />
+                    <Route path="/inicio" element={<Inicio />} /> {/* Adicionando a nova rota */}
+                </Routes>
             </Router>
         </ThemeProvider>
     );
