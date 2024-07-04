@@ -1,6 +1,6 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Box, Button, TextField, Typography, Container, Avatar } from '@mui/material';
+import React, { useState } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { Box, Button, TextField, Typography, Container, Avatar, Alert } from '@mui/material';
 import { motion } from 'framer-motion';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -33,9 +33,32 @@ const LoginContainer = styled(Box)`
   border-radius: 15px;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
 `;
 
-function App() {
+const App = () => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        const users = {
+            'Raul': '221193',
+            'Monica': 'monica123',
+            'Adriana': 'adriana123',
+            'Anderson': 'anderson123',
+            'Santa Clara': 'santaclara'
+        };
+        if (users[username] && users[username] === password) {
+            alert('Login bem-sucedido!');
+        } else {
+            setError('Usuário ou senha incorretos');
+        }
+    };
+
     return (
         <ThemeProvider theme={theme}>
             <Router>
@@ -57,26 +80,31 @@ function App() {
                             <Typography component="h1" variant="h5">
                                 Login
                             </Typography>
-                            <Box component="form" noValidate sx={{ mt: 1 }}>
+                            {error && <Alert severity="error">{error}</Alert>}
+                            <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
                                 <TextField
                                     margin="normal"
                                     required
                                     fullWidth
-                                    id="email"
-                                    label="Email Address"
-                                    name="email"
-                                    autoComplete="email"
+                                    id="username"
+                                    label="Nome de Usuário"
+                                    name="username"
+                                    autoComplete="username"
                                     autoFocus
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
                                 />
                                 <TextField
                                     margin="normal"
                                     required
                                     fullWidth
                                     name="password"
-                                    label="Password"
+                                    label="Senha"
                                     type="password"
                                     id="password"
                                     autoComplete="current-password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                 />
                                 <Button
                                     type="submit"
@@ -85,7 +113,7 @@ function App() {
                                     color="primary"
                                     sx={{ mt: 3, mb: 2 }}
                                 >
-                                    Sign In
+                                    Entrar
                                 </Button>
                             </Box>
                         </Box>
@@ -94,6 +122,6 @@ function App() {
             </Router>
         </ThemeProvider>
     );
-}
+};
 
 export default App;
