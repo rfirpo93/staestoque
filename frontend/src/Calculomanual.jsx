@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Container, InputAdornment } from '@mui/material';
+import { Box, Button, TextField, Typography, Container, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { motion } from 'framer-motion';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -59,6 +59,15 @@ const Calculomanual = () => {
         comissaoPercentual: ''
     });
 
+    const [result, setResult] = useState({
+        vendaMediaDiaria: 0,
+        vendaMediaMensal: 0,
+        vendaMediaTrimestral: 0,
+        vendaMediaAnual: 0
+    });
+
+    const [open, setOpen] = useState(false);
+
     const handleChange = (e) => {
         setForm({
             ...form,
@@ -82,8 +91,27 @@ const Calculomanual = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Lógica de cálculo aqui
-        console.log('Cálculo realizado', form);
+        const { dataInicial, dataFinal, vendaTotal } = form;
+        const startDate = new Date(dataInicial);
+        const endDate = new Date(dataFinal);
+        const days = (endDate - startDate) / (1000 * 60 * 60 * 24);
+        const vendaMediaDiaria = vendaTotal / days;
+        const vendaMediaMensal = vendaMediaDiaria * 30;
+        const vendaMediaTrimestral = vendaMediaDiaria * 90;
+        const vendaMediaAnual = vendaMediaDiaria * 365;
+
+        setResult({
+            vendaMediaDiaria,
+            vendaMediaMensal,
+            vendaMediaTrimestral,
+            vendaMediaAnual
+        });
+
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
     };
 
     return (
@@ -278,6 +306,21 @@ const Calculomanual = () => {
                         </RowContainer>
                     </Box>
                 </FormContainer>
+
+                <Dialog open={open} onClose={handleClose}>
+                    <DialogTitle>Resultados do Cálculo</DialogTitle>
+                    <DialogContent>
+                        <Typography>Venda Média Diária: {result.vendaMediaDiaria.toFixed(2)}</Typography>
+                        <Typography>Venda Média Mensal: {result.vendaMediaMensal.toFixed(2)}</Typography>
+                        <Typography>Venda Média Trimestral: {result.vendaMediaTrimestral.toFixed(2)}</Typography>
+                        <Typography>Venda Média Anual: {result.vendaMediaAnual.toFixed(2)}</Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            Fechar
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </MainContainer>
         </ThemeProvider>
     );
