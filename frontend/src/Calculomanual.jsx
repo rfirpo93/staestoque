@@ -52,7 +52,7 @@ const RowContainer = styled(Box)`
 
 const ResultContainer = styled(DialogContent)`
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   gap: 2rem;
   text-align: center;
   width: 100%; // Aumenta a largura para preencher toda a tela horizontalmente
@@ -104,7 +104,9 @@ const Calculomanual = () => {
         custoTotal: 0,
         precoVenda: 0,
         liquidoUnidade: 0,
-        margemLiquida: 0
+        margemLiquida: 0,
+        diasAteMeta: 0,
+        vendaDiariaNecessaria: 0
     });
 
     const [open, setOpen] = useState(false);
@@ -139,10 +141,16 @@ const Calculomanual = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const { dataInicial, dataFinal, vendaTotal, custo, pmpf, percentualImposto, freteUnidade, comissaoPercentual, margem } = form;
+        const { dataInicial, dataFinal, vendaTotal, custo, pmpf, percentualImposto, freteUnidade, comissaoPercentual, margem, metaData, estoqueAtual } = form;
         const startDate = new Date(dataInicial);
         const endDate = new Date(dataFinal);
+        const currentDate = new Date();
+        const metaDate = new Date(metaData);
+
         const days = ((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1; // Corrige o cálculo dos dias
+        const diasAteMeta = ((metaDate - currentDate) / (1000 * 60 * 60 * 24)) + 1; // Calcula os dias até a data da meta
+        const vendaDiariaNecessaria = estoqueAtual / diasAteMeta;
+
         const vendaMediaDiaria = vendaTotal / days;
         const vendaMediaMensal = vendaMediaDiaria * 30;
         const vendaMediaTrimestral = vendaMediaDiaria * 90;
@@ -166,7 +174,9 @@ const Calculomanual = () => {
             custoTotal,
             precoVenda,
             liquidoUnidade,
-            margemLiquida
+            margemLiquida,
+            diasAteMeta,
+            vendaDiariaNecessaria
         });
 
         setOpen(true);
@@ -432,7 +442,7 @@ const Calculomanual = () => {
                     </Box>
                 </FormContainer>
 
-                <Dialog open={open} onClose={handleClose}>
+                <Dialog open={open} onClose={handleClose} maxWidth="xl" fullWidth>
                     <DialogTitle>
                         <Box display="flex" alignItems="center">
                             <InfoIcon sx={{ mr: 1 }} />
@@ -505,6 +515,19 @@ const Calculomanual = () => {
                             <ResultField>
                                 <AttachMoneyIcon />
                                 <Typography>Margem Líquida: {formatNumber(result.margemLiquida)}%</Typography>
+                            </ResultField>
+                        </ResultBox>
+                        <ResultBox component={motion.div} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} sx={{ borderColor: 'purple', color: 'purple' }}>
+                            <Typography variant="h6" gutterBottom>
+                                Meta
+                            </Typography>
+                            <ResultField>
+                                <CalendarTodayIcon />
+                                <Typography>Dias até a data limite: {result.diasAteMeta}</Typography>
+                            </ResultField>
+                            <ResultField>
+                                <BarChartIcon />
+                                <Typography>Venda diária necessária: {formatNumber(result.vendaDiariaNecessaria)}</Typography>
                             </ResultField>
                         </ResultBox>
                     </ResultContainer>
