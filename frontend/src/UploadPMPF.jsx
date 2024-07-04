@@ -1,5 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { Box, Button, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+// Importando xlsx diretamente do CDN
 import * as XLSX from 'xlsx';
 
 const UploadPMPF = () => {
