@@ -16,10 +16,11 @@ const MainContainer = styled(Box)`
   margin: 0; // Remover margin padrão do Container
 `;
 
-const MenuButton = styled(IconButton)`
+const MenuButton = styled(Button)`
   position: absolute;
   top: 10px;
-  right: 10px;
+  left: 10px;
+  transform: scale(2); // Aumenta o tamanho do botão
 `;
 
 const Inicio = () => {
@@ -36,25 +37,24 @@ const Inicio = () => {
     return (
         <MainContainer>
             <MenuButton
-                size="large"
-                edge="end"
-                color="inherit"
-                aria-label="menu"
+                variant="contained"
+                color="primary"
+                startIcon={<MenuIcon />}
                 onClick={handleMenuClick}
             >
-                <MenuIcon />
+                Menu
             </MenuButton>
             <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
                 anchorOrigin={{
                     vertical: 'top',
-                    horizontal: 'right',
+                    horizontal: 'left',
                 }}
                 keepMounted
                 transformOrigin={{
                     vertical: 'top',
-                    horizontal: 'right',
+                    horizontal: 'left',
                 }}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}

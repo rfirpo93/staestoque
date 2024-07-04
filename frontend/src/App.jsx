@@ -8,6 +8,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from '@emotion/styled';
 import Inicio from './Inicio'; // Importando o novo componente
+import Calculomanual from './Calculomanual'; // Importando o novo componente
 
 // Definindo o tema inspirado nas cores do logo
 const theme = createTheme({
@@ -144,6 +145,7 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<Login />} />
                     <Route path="/inicio" element={<Inicio />} />
+                    <Route path="/calculo" element={<Calculomanual />} />
                 </Routes>
             </Router>
         </ThemeProvider>
