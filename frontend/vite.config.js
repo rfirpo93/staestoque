@@ -5,12 +5,10 @@ export default defineConfig({
     plugins: [react()],
     resolve: {
         alias: {
-            'xlsx': require.resolve('xlsx')
-        }
+            '@': '/src',
+        },
     },
-    build: {
-        rollupOptions: {
-            external: ['xlsx']
-        }
-    }
+    server: {
+        port: 3000,
+    },
 });
