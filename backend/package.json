@@ -9,6 +9,11 @@
   "devDependencies": {
     "eslint": "^8.21.0"
   },
-  "eslintConfig": {
+  "eslintConfig": {},
+  "dependencies": {
+    "@eslint/config-array": "^0.17.0",
+    "@eslint/object-schema": "^2.1.4",
+    "glob": "^10.4.2",
+    "rimraf": "^5.0.7"
   }
 }
