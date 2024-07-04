@@ -106,7 +106,8 @@ const Calculomanual = () => {
         liquidoUnidade: 0,
         margemLiquida: 0,
         diasAteMeta: 0,
-        vendaDiariaNecessaria: 0
+        vendaDiariaNecessaria: 0,
+        diasDeEstoque: 0
     });
 
     const [open, setOpen] = useState(false);
@@ -148,7 +149,7 @@ const Calculomanual = () => {
         const metaDate = new Date(metaData);
 
         const days = ((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1; // Corrige o cálculo dos dias
-        const diasAteMeta = ((metaDate - currentDate) / (1000 * 60 * 60 * 24)) + 1; // Calcula os dias até a data da meta
+        const diasAteMeta = Math.floor(((metaDate - currentDate) / (1000 * 60 * 60 * 24)) + 1); // Calcula os dias até a data da meta arredondando para baixo
         const vendaDiariaNecessaria = estoqueAtual / diasAteMeta;
 
         const vendaMediaDiaria = vendaTotal / days;
@@ -161,6 +162,7 @@ const Calculomanual = () => {
         const precoVenda = parseFloat(custo) + frete + imposto + ((parseFloat(custo) + frete + imposto) * (margem / 100));
         const liquidoUnidade = precoVenda - custoTotal;
         const margemLiquida = (liquidoUnidade / precoVenda) * 100;
+        const diasDeEstoque = Math.ceil(estoqueAtual / vendaMediaDiaria); // Calcula os dias de estoque arredondando para cima
 
         setResult({
             vendaMediaDiaria,
@@ -176,7 +178,8 @@ const Calculomanual = () => {
             liquidoUnidade,
             margemLiquida,
             diasAteMeta,
-            vendaDiariaNecessaria
+            vendaDiariaNecessaria,
+            diasDeEstoque
         });
 
         setOpen(true);
@@ -521,6 +524,10 @@ const Calculomanual = () => {
                             <Typography variant="h6" gutterBottom>
                                 Meta
                             </Typography>
+                            <ResultField>
+                                <CalendarTodayIcon />
+                                <Typography>Dias de Estoque: {result.diasDeEstoque}</Typography>
+                            </ResultField>
                             <ResultField>
                                 <CalendarTodayIcon />
                                 <Typography>Dias até a data limite: {result.diasAteMeta}</Typography>
