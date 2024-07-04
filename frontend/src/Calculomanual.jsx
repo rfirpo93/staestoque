@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Container, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@mui/material';
+import { Box, Button, TextField, Typography, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import { motion } from 'framer-motion';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -63,7 +63,7 @@ const ResultBox = styled(Box)`
   padding: 1rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 300px;
+  max-width: 350px; // Aumentar a largura para evitar quebra de texto
   margin-top: 1rem;
   text-align: left;
 `;
@@ -149,7 +149,7 @@ const Calculomanual = () => {
         const imposto = (pmpf * percentualImposto) / 100;
         const frete = parseFloat(freteUnidade);
         const custoTotal = parseFloat(custo) + frete + imposto + ((parseFloat(custo) + imposto + frete) * comissaoPercentual) / 100;
-        const precoVenda = parseFloat(custo) + frete + imposto + (margem * pmpf / 100);
+        const precoVenda = parseFloat(custo) + frete + imposto + (parseFloat(custo) * (margem / 100));
         const liquidoUnidade = precoVenda - custoTotal;
         const margemLiquida = (liquidoUnidade / custoTotal) * 100;
 
