@@ -35,7 +35,7 @@ const LoginContainer = styled(Box)`
   background-color: #ffffff;
 `;
 
-const App = () => {
+function App() {
     return (
         <ThemeProvider theme={theme}>
             <Router>
@@ -94,6 +94,6 @@ const App = () => {
             </Router>
         </ThemeProvider>
     );
-};
+}
 
 export default App;
