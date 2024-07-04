@@ -5,7 +5,8 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import InfoIcon from '@mui/icons-material/Info';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import styled from '@emotion/styled';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -51,9 +52,8 @@ const RowContainer = styled(Box)`
 
 const ResultContainer = styled(DialogContent)`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+  justify-content: center;
+  gap: 2rem;
   text-align: center;
 `;
 
@@ -63,8 +63,9 @@ const ResultBox = styled(Box)`
   padding: 1rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 500px;
+  max-width: 300px;
   margin-top: 1rem;
+  text-align: left;
 `;
 
 const ResultField = styled(Typography)`
@@ -96,7 +97,9 @@ const Calculomanual = () => {
         vendaMediaAnual: 0,
         custo: 0,
         imposto: 0,
-        frete: 0
+        frete: 0,
+        comissao: 0,
+        custoTotal: 0
     });
 
     const [open, setOpen] = useState(false);
@@ -124,9 +127,13 @@ const Calculomanual = () => {
         });
     };
 
+    const formatNumber = (number) => {
+        return number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        const { dataInicial, dataFinal, vendaTotal, custo, pmpf, percentualImposto, freteUnidade } = form;
+        const { dataInicial, dataFinal, vendaTotal, custo, pmpf, percentualImposto, freteUnidade, comissaoPercentual, margem } = form;
         const startDate = new Date(dataInicial);
         const endDate = new Date(dataFinal);
         const days = ((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1; // Corrige o cálculo dos dias
@@ -136,6 +143,8 @@ const Calculomanual = () => {
         const vendaMediaAnual = vendaMediaDiaria * 365;
         const imposto = (pmpf * percentualImposto) / 100;
         const frete = parseFloat(freteUnidade);
+        const custoTotal = parseFloat(custo) + frete + imposto + (margem * pmpf / 100);
+        const comissao = (custoTotal * comissaoPercentual) / 100;
 
         setResult({
             vendaMediaDiaria,
@@ -144,7 +153,9 @@ const Calculomanual = () => {
             vendaMediaAnual,
             custo: parseFloat(custo),
             imposto,
-            frete
+            frete,
+            comissao,
+            custoTotal: custoTotal + comissao
         });
 
         setOpen(true);
@@ -397,42 +408,50 @@ const Calculomanual = () => {
                         </Box>
                     </DialogTitle>
                     <ResultContainer>
-                        <ResultBox component={motion.div} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+                        <ResultBox component={motion.div} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} sx={{ borderColor: 'blue', color: 'blue' }}>
                             <Typography variant="h6" gutterBottom>
                                 Venda Média
                             </Typography>
                             <ResultField>
-                                <MonetizationOnIcon />
-                                <Typography>Venda Média Diária: {result.vendaMediaDiaria.toFixed(2)}</Typography>
+                                <BarChartIcon />
+                                <Typography>Venda Média Diária: {formatNumber(result.vendaMediaDiaria)}</Typography>
                             </ResultField>
                             <ResultField>
-                                <MonetizationOnIcon />
-                                <Typography>Venda Média Mensal: {result.vendaMediaMensal.toFixed(2)}</Typography>
+                                <BarChartIcon />
+                                <Typography>Venda Média Mensal: {formatNumber(result.vendaMediaMensal)}</Typography>
                             </ResultField>
                             <ResultField>
-                                <MonetizationOnIcon />
-                                <Typography>Venda Média Trimestral: {result.vendaMediaTrimestral.toFixed(2)}</Typography>
+                                <BarChartIcon />
+                                <Typography>Venda Média Trimestral: {formatNumber(result.vendaMediaTrimestral)}</Typography>
                             </ResultField>
                             <ResultField>
-                                <MonetizationOnIcon />
-                                <Typography>Venda Média Anual: {result.vendaMediaAnual.toFixed(2)}</Typography>
+                                <BarChartIcon />
+                                <Typography>Venda Média Anual: {formatNumber(result.vendaMediaAnual)}</Typography>
                             </ResultField>
                         </ResultBox>
-                        <ResultBox component={motion.div} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+                        <ResultBox component={motion.div} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} sx={{ borderColor: 'red', color: 'red' }}>
                             <Typography variant="h6" gutterBottom>
                                 Custos
                             </Typography>
                             <ResultField>
                                 <AttachMoneyIcon />
-                                <Typography>Custo: {result.custo.toFixed(2)}</Typography>
+                                <Typography>Custo: R$ {formatNumber(result.custo)}</Typography>
                             </ResultField>
                             <ResultField>
-                                <AttachMoneyIcon />
-                                <Typography>Imposto: {result.imposto.toFixed(2)}</Typography>
+                                <AccountBalanceIcon />
+                                <Typography>Imposto: R$ {formatNumber(result.imposto)}</Typography>
                             </ResultField>
                             <ResultField>
                                 <LocalShippingIcon />
-                                <Typography>Frete: {result.frete.toFixed(2)}</Typography>
+                                <Typography>Frete: R$ {formatNumber(result.frete)}</Typography>
+                            </ResultField>
+                            <ResultField>
+                                <AttachMoneyIcon />
+                                <Typography>Comissão: R$ {formatNumber(result.comissao)}</Typography>
+                            </ResultField>
+                            <ResultField>
+                                <AttachMoneyIcon />
+                                <Typography>Custo Total: R$ {formatNumber(result.custoTotal)}</Typography>
                             </ResultField>
                         </ResultBox>
                     </ResultContainer>
