@@ -7,8 +7,9 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from '@emotion/styled';
-import Inicio from './Inicio'; // Importando o novo componente
-import Calculomanual from './Calculomanual'; // Importando o novo componente
+import Inicio from './Inicio';
+import Calculomanual from './Calculomanual';
+import UploadPMPF from './UploadPMPF'; // Importando o novo componente
 
 // Definindo o tema inspirado nas cores do logo
 const theme = createTheme({
@@ -146,6 +147,7 @@ const App = () => {
                     <Route path="/" element={<Login />} />
                     <Route path="/inicio" element={<Inicio />} />
                     <Route path="/calculo" element={<Calculomanual />} />
+                    <Route path="/upload-pmpf" element={<UploadPMPF />} />
                 </Routes>
             </Router>
         </ThemeProvider>

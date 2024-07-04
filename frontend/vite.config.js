@@ -3,7 +3,14 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
     plugins: [react()],
+    resolve: {
+        alias: {
+            'xlsx': require.resolve('xlsx')
+        }
+    },
     build: {
-        outDir: 'dist'
+        rollupOptions: {
+            external: ['xlsx']
+        }
     }
 });
