@@ -5,10 +5,9 @@ import styled from '@emotion/styled';
 import MenuIcon from '@mui/icons-material/Menu';
 
 // Container principal estilizado
-const MainContainer = styled(Container)`
+const MainContainer = styled(Box)`
   height: 100vh;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   background: linear-gradient(145deg, #e0e0e0, #ffffff);
