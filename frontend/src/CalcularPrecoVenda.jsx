@@ -193,9 +193,9 @@ const CalcularPrecoVenda = () => {
         const valorSTNumber = parseFloat(valorST);
 
         const precoVendaSemST = custoNumber + custoFreteNumber + (custoNumber * (margemNumber / 100));
-        const comissaoReaisPorUnidade = precoVendaSemST * (comissaoNumber / 100);
-        const margemLiquida = ((precoVendaSemST - custoNumber - custoFreteNumber - comissaoReaisPorUnidade) / custoNumber) * 100;
         const precoVendaComST = precoVendaSemST + valorSTNumber;
+        const comissaoReaisPorUnidade = precoVendaComST * (comissaoNumber / 100);
+        const margemLiquida = ((precoVendaSemST - custoNumber - custoFreteNumber - comissaoReaisPorUnidade) / custoNumber) * 100;
         const valorLiquidoPorUnidade = precoVendaSemST - custoNumber - custoFreteNumber - comissaoReaisPorUnidade;
         const valorTotalPedido = valorLiquidoPorUnidade * quantidadeNumber;
         const valorComissaoTotalPedido = comissaoReaisPorUnidade * quantidadeNumber;
