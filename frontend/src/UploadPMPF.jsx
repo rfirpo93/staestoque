@@ -3,6 +3,19 @@ import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead
 import SearchIcon from '@mui/icons-material/Search';
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+// Definindo o tema inspirado nas cores do logo
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#0d6efd', // Azul principal
+        },
+        secondary: {
+            main: '#6c757d', // Cinza secundário
+        },
+    },
+});
 
 const StyledTableCell = styled(TableCell)`
   background-color: #0d6efd;
@@ -20,6 +33,24 @@ const StyledTableRow = styled(TableRow)`
   }
 `;
 
+const MainContainer = styled(Box)`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(145deg, #e0e0e0, #ffffff);
+  width: 100vw;
+  padding: 0;
+  margin: 0;
+`;
+
+const TableContainerStyled = styled(TableContainer)`
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+`;
+
 const UploadPMPF = () => {
     const [rows, setRows] = useState([]);
     const [filters, setFilters] = useState({ ean: '', descricao: '', pmpf: '' });
@@ -35,7 +66,7 @@ const UploadPMPF = () => {
                 const worksheet = workbook.Sheets[sheetName];
                 const json = XLSX.utils.sheet_to_json(worksheet);
                 const formattedRows = json.map(row => ({
-                    ean: row['Codigo EAN'] ? row['Codigo EAN'].toString() : '',
+                    ean: row['EAN'] ? row['EAN'].toString() : '',
                     descricao: row['Descrição'] ? row['Descrição'].toString() : '',
                     pmpf: row['PMPF'] ? row['PMPF'].toString() : ''
                 }));
@@ -59,91 +90,95 @@ const UploadPMPF = () => {
     );
 
     return (
-        <Box sx={{ p: 2 }}>
-            <Typography variant="h4" gutterBottom>
-                Lista PMPF
-            </Typography>
-            {rows.length > 0 && (
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <StyledTableCell>
-                                    <TextField
-                                        placeholder="Codigo EAN"
-                                        name="ean"
-                                        value={filters.ean}
-                                        onChange={handleFilterChange}
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <SearchIcon />
-                                                </InputAdornment>
-                                            ),
-                                            style: { backgroundColor: 'white', borderRadius: 4 }
-                                        }}
-                                        variant="outlined"
-                                        size="small"
-                                    />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <TextField
-                                        placeholder="Descrição"
-                                        name="descricao"
-                                        value={filters.descricao}
-                                        onChange={handleFilterChange}
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <SearchIcon />
-                                                </InputAdornment>
-                                            ),
-                                            style: { backgroundColor: 'white', borderRadius: 4 }
-                                        }}
-                                        variant="outlined"
-                                        size="small"
-                                    />
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    <TextField
-                                        placeholder="PMPF"
-                                        name="pmpf"
-                                        value={filters.pmpf}
-                                        onChange={handleFilterChange}
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <SearchIcon />
-                                                </InputAdornment>
-                                            ),
-                                            style: { backgroundColor: 'white', borderRadius: 4 }
-                                        }}
-                                        variant="outlined"
-                                        size="small"
-                                    />
-                                </StyledTableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableHead>
-                            <TableRow>
-                                <StyledTableCell>Código EAN</StyledTableCell>
-                                <StyledTableCell>Descrição</StyledTableCell>
-                                <StyledTableCell>PMPF</StyledTableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {filteredRows.map((row, index) => (
-                                <StyledTableRow key={index}>
-                                    <TableCell align="center">{row.ean}</TableCell>
-                                    <TableCell align="center">{row.descricao}</TableCell>
-                                    <TableCell align="center">{row.pmpf}</TableCell>
-                                </StyledTableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )}
-        </Box>
+        <ThemeProvider theme={theme}>
+            <MainContainer>
+                <Box sx={{ width: '90%' }}>
+                    <Typography variant="h4" gutterBottom align="center">
+                        Lista PMPF
+                    </Typography>
+                    {rows.length > 0 && (
+                        <TableContainerStyled component={Paper}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <StyledTableCell>
+                                            <TextField
+                                                placeholder="EAN"
+                                                name="ean"
+                                                value={filters.ean}
+                                                onChange={handleFilterChange}
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <SearchIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                    style: { backgroundColor: 'white', borderRadius: 4 }
+                                                }}
+                                                variant="outlined"
+                                                size="small"
+                                            />
+                                        </StyledTableCell>
+                                        <StyledTableCell>
+                                            <TextField
+                                                placeholder="Descrição"
+                                                name="descricao"
+                                                value={filters.descricao}
+                                                onChange={handleFilterChange}
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <SearchIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                    style: { backgroundColor: 'white', borderRadius: 4 }
+                                                }}
+                                                variant="outlined"
+                                                size="small"
+                                            />
+                                        </StyledTableCell>
+                                        <StyledTableCell>
+                                            <TextField
+                                                placeholder="PMPF"
+                                                name="pmpf"
+                                                value={filters.pmpf}
+                                                onChange={handleFilterChange}
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <SearchIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                    style: { backgroundColor: 'white', borderRadius: 4 }
+                                                }}
+                                                variant="outlined"
+                                                size="small"
+                                            />
+                                        </StyledTableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableHead>
+                                    <TableRow>
+                                        <StyledTableCell>EAN</StyledTableCell>
+                                        <StyledTableCell>Descrição</StyledTableCell>
+                                        <StyledTableCell>PMPF</StyledTableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {filteredRows.map((row, index) => (
+                                        <StyledTableRow key={index}>
+                                            <TableCell align="center">{row.ean}</TableCell>
+                                            <TableCell align="center">{row.descricao}</TableCell>
+                                            <TableCell align="center">{row.pmpf}</TableCell>
+                                        </StyledTableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainerStyled>
+                    )}
+                </Box>
+            </MainContainer>
+        </ThemeProvider>
     );
 };
 
