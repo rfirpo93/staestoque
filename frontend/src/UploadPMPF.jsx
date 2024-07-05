@@ -66,7 +66,7 @@ const UploadPMPF = () => {
                 const worksheet = workbook.Sheets[sheetName];
                 const json = XLSX.utils.sheet_to_json(worksheet);
                 const formattedRows = json.map(row => ({
-                    ean: row['EAN'] ? row['EAN'].toString() : '',
+                    ean: row['Codigo EAN'] || row['EAN'] || row['CodigoEAN'] || row['EAN Codigo'] ? row['Codigo EAN'].toString() : '',
                     descricao: row['Descrição'] ? row['Descrição'].toString() : '',
                     pmpf: row['PMPF'] ? row['PMPF'].toString() : ''
                 }));
