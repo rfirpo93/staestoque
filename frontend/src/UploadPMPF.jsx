@@ -1,8 +1,10 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, InputAdornment } from '@mui/material';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, InputAdornment, Button } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
+import { Link } from 'react-router-dom';
 
 const StyledTableCell = styled(TableCell)`
   background-color: #0d6efd;
@@ -35,6 +37,16 @@ const TableContainerStyled = styled(TableContainer)`
   border-radius: 15px;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
+`;
+
+const BackButton = styled(Button)`
+  align-self: flex-start;
+  margin-bottom: 1rem;
+  background-color: #0d6efd;
+  color: white;
+  &:hover {
+    background-color: #0a58ca;
+  }
 `;
 
 const UploadPMPF = () => {
@@ -80,6 +92,9 @@ const UploadPMPF = () => {
 
     return (
         <MainContainer>
+            <BackButton variant="contained" component={Link} to="/inicio" startIcon={<ArrowBackIcon />}>
+                Voltar para o Início
+            </BackButton>
             <Typography variant="h4" gutterBottom align="center">
                 Lista PMPF
             </Typography>

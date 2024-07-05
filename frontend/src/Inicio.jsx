@@ -1,9 +1,11 @@
 import React from 'react';
-import { Container, Box, Button, Typography, Menu, MenuItem } from '@mui/material';
+import { Box, Button, Typography, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import SearchIcon from '@mui/icons-material/Search';
+import ListIcon from '@mui/icons-material/List';
+import InventoryIcon from '@mui/icons-material/Inventory';
 
 // Container principal estilizado
 const MainContainer = styled(Box)`
@@ -53,18 +55,18 @@ const Inicio = () => {
             <MenuButton
                 variant="contained"
                 color="primary"
-                startIcon={<MenuIcon />}
+                startIcon={<CalculateIcon />}
                 onClick={handleMenuClick}
             >
-                Menu
+                Cálculos de Oferta
             </MenuButton>
             <UploadButton
                 variant="contained"
                 color="secondary"
-                startIcon={<CloudUploadIcon />}
+                startIcon={<SearchIcon />}
                 onClick={handleUploadClick}
             >
-                Upload de Dados
+                Consulta de Dados
             </UploadButton>
             <Menu
                 id="menu-appbar"
@@ -100,8 +102,11 @@ const Inicio = () => {
                 open={Boolean(uploadAnchorEl)}
                 onClose={handleMenuClose}
             >
-                <MenuItem component={Link} to="/upload-pmpf" onClick={handleMenuClose}>
-                    Subir lista PMPF
+                <MenuItem component={Link} to="/upload-pmpf" onClick={handleMenuClose} startIcon={<ListIcon />}>
+                    Consultar lista PMPF
+                </MenuItem>
+                <MenuItem component={Link} to="/consultar-estoque" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                    Consultar estoque de produtos
                 </MenuItem>
             </Menu>
             <Box textAlign="center">
