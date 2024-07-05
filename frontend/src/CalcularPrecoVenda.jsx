@@ -481,10 +481,10 @@ const CalcularPrecoVenda = () => {
                     </ResultBox>
                     <ResultBox component={motion.div} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.0 }} sx={{ borderColor: 'yellow', color: 'yellow' }}>
                         <Typography variant="h6" gutterBottom>
-                            Valor Total do Pedido
+                            Valor Líquido Total do Pedido
                         </Typography>
                         <ResultField>
-                            <Typography>Valor Total do Pedido: R$ {formatNumber(result.valorTotalPedido)}</Typography>
+                            <Typography>Valor Líquido Total do Pedido: R$ {formatNumber(result.valorTotalPedido)}</Typography>
                         </ResultField>
                     </ResultBox>
                     <ResultBox component={motion.div} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.1 }} sx={{ borderColor: 'brown', color: 'brown' }}>
