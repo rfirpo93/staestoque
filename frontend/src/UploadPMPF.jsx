@@ -64,12 +64,17 @@ const UploadPMPF = () => {
                 const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
-                const json = XLSX.utils.sheet_to_json(worksheet);
-                const formattedRows = json.map(row => ({
-                    ean: row['Codigo EAN'] || row['EAN'] || row['CodigoEAN'] || row['EAN Codigo'] ? row['Codigo EAN'].toString() : '',
-                    descricao: row['Descrição'] ? row['Descrição'].toString() : '',
-                    pmpf: row['PMPF'] ? row['PMPF'].toString() : ''
+                const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                // Extrair os nomes das colunas da primeira linha
+                const columnNames = json[0];
+                // Mapear os dados
+                const formattedRows = json.slice(1).map(row => ({
+                    ean: row[columnNames.indexOf('Codigo EAN')] || row[columnNames.indexOf('EAN')] || row[columnNames.indexOf('CodigoEAN')] || row[columnNames.indexOf('EAN Codigo')] || '',
+                    descricao: row[columnNames.indexOf('Descrição')] || '',
+                    pmpf: row[columnNames.indexOf('PMPF')] || ''
                 }));
+
                 setRows(formattedRows);
             })
             .catch(error => console.error('Error fetching data:', error));
@@ -84,9 +89,9 @@ const UploadPMPF = () => {
     };
 
     const filteredRows = rows.filter(row =>
-        row.ean.toLowerCase().includes(filters.ean.toLowerCase()) &&
-        row.descricao.toLowerCase().includes(filters.descricao.toLowerCase()) &&
-        row.pmpf.toLowerCase().includes(filters.pmpf.toLowerCase())
+        row.ean.toString().toLowerCase().includes(filters.ean.toLowerCase()) &&
+        row.descricao.toString().toLowerCase().includes(filters.descricao.toLowerCase()) &&
+        row.pmpf.toString().toLowerCase().includes(filters.pmpf.toLowerCase())
     );
 
     return (
