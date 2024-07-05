@@ -152,14 +152,14 @@ const CalcularPrecoVenda = () => {
     };
 
     const filteredProdutoRows = rows.filter(row =>
-        row.produto.toLowerCase().includes(produtoFilters.produto.toLowerCase()) &&
-        row.quantidade.toLowerCase().includes(produtoFilters.quantidade.toLowerCase()) &&
-        row.custo.toLowerCase().includes(produtoFilters.custo.toLowerCase())
+        (row.produto || '').toLowerCase().includes(produtoFilters.produto.toLowerCase()) &&
+        (row.quantidade || '').toLowerCase().includes(produtoFilters.quantidade.toLowerCase()) &&
+        (row.custo || '').toLowerCase().includes(produtoFilters.custo.toLowerCase())
     );
 
     const filteredPmpfRows = rows.filter(row =>
-        row.descricao.toLowerCase().includes(filters.descricao.toLowerCase()) &&
-        row.pmpf.toLowerCase().includes(filters.pmpf.toLowerCase())
+        (row.descricao || '').toLowerCase().includes(filters.descricao.toLowerCase()) &&
+        (row.pmpf || '').toLowerCase().includes(filters.pmpf.toLowerCase())
     );
 
     const handleSubmit = (e) => {
