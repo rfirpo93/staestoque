@@ -9,6 +9,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import styled from '@emotion/styled';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import logo from './assets/logo.png'; // Importando a imagem do logo
 
 // Definindo o tema inspirado nas cores do logo
 const theme = createTheme({
@@ -26,6 +27,7 @@ const theme = createTheme({
 const MainContainer = styled(Box)`
   height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background: linear-gradient(145deg, #e0e0e0, #ffffff);
@@ -74,6 +76,11 @@ const ResultField = styled(Typography)`
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
+`;
+
+const LogoContainer = styled(Box)`
+  text-align: center;
+  margin-bottom: 2rem;
 `;
 
 const Calculomanual = () => {
@@ -192,6 +199,9 @@ const Calculomanual = () => {
     return (
         <ThemeProvider theme={theme}>
             <MainContainer>
+                <LogoContainer>
+                    <img src={logo} alt="Logo Santa Clara" style={{ maxWidth: '100%', height: 'auto' }} />
+                </LogoContainer>
                 <FormContainer
                     component={motion.div}
                     initial={{ opacity: 0, scale: 0.8 }}

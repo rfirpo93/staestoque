@@ -6,6 +6,7 @@ import CalculateIcon from '@mui/icons-material/Calculate';
 import SearchIcon from '@mui/icons-material/Search';
 import ListIcon from '@mui/icons-material/List';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import logo from './assets/logo.png'; // Importando a imagem do logo
 
 // Container principal estilizado
 const MainContainer = styled(Box)`
@@ -14,23 +15,25 @@ const MainContainer = styled(Box)`
   justify-content: center;
   align-items: center;
   background: linear-gradient(145deg, #e0e0e0, #ffffff);
-  width: 100vw; // Preencher horizontalmente
-  padding: 0; // Remover padding padrão do Container
-  margin: 0; // Remover margin padrão do Container
+  width: 100vw;
+  padding: 0;
+  margin: 0;
 `;
 
 const MenuButton = styled(Button)`
   position: absolute;
   top: 10px;
   left: 10px;
-  transform: scale(1.5); // Aumenta o tamanho do botão
 `;
 
 const UploadButton = styled(Button)`
   position: absolute;
   top: 10px;
   left: 200px;
-  transform: scale(1.5); // Aumenta o tamanho do botão
+`;
+
+const LogoContainer = styled(Box)`
+  text-align: center;
 `;
 
 const Inicio = () => {
@@ -109,11 +112,12 @@ const Inicio = () => {
                     Consultar estoque de produtos
                 </MenuItem>
             </Menu>
-            <Box textAlign="center">
+            <LogoContainer>
+                <img src={logo} alt="Logo Santa Clara" style={{ maxWidth: '100%', height: 'auto' }} />
                 <Typography variant="h3" gutterBottom>
                     Bem-vindo à Tela Inicial
                 </Typography>
-            </Box>
+            </LogoContainer>
         </MainContainer>
     );
 };

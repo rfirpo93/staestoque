@@ -5,6 +5,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
+import logo from './assets/logo.png'; // Verifique se o caminho está correto
 
 const StyledTableCell = styled(TableCell)`
   background-color: #0d6efd;
@@ -47,6 +48,11 @@ const BackButton = styled(Button)`
   &:hover {
     background-color: #0a58ca;
   }
+`;
+
+const LogoContainer = styled(Box)`
+  text-align: center;
+  margin-bottom: 2rem;
 `;
 
 const UploadPMPF = () => {
@@ -92,6 +98,9 @@ const UploadPMPF = () => {
 
     return (
         <MainContainer>
+            <LogoContainer>
+                <img src={logo} alt="Logo Santa Clara" style={{ maxWidth: '100%', height: 'auto' }} />
+            </LogoContainer>
             <BackButton variant="contained" component={Link} to="/inicio" startIcon={<ArrowBackIcon />}>
                 Voltar para o Início
             </BackButton>
