@@ -6,6 +6,7 @@ import CalculateIcon from '@mui/icons-material/Calculate';
 import SearchIcon from '@mui/icons-material/Search';
 import ListIcon from '@mui/icons-material/List';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import logo from './assets/logo.png'; // Importando a imagem do logo
 
 // Container principal estilizado
@@ -20,16 +21,12 @@ const MainContainer = styled(Box)`
   margin: 0;
 `;
 
-const MenuButton = styled(Button)`
+const ButtonContainer = styled(Box)`
   position: absolute;
   top: 10px;
   left: 10px;
-`;
-
-const UploadButton = styled(Button)`
-  position: absolute;
-  top: 10px;
-  left: 200px;
+  display: flex;
+  gap: 20px;
 `;
 
 const LogoContainer = styled(Box)`
@@ -55,22 +52,24 @@ const Inicio = () => {
 
     return (
         <MainContainer>
-            <MenuButton
-                variant="contained"
-                color="primary"
-                startIcon={<CalculateIcon />}
-                onClick={handleMenuClick}
-            >
-                Cálculos de Oferta
-            </MenuButton>
-            <UploadButton
-                variant="contained"
-                color="secondary"
-                startIcon={<SearchIcon />}
-                onClick={handleUploadClick}
-            >
-                Consulta de Dados
-            </UploadButton>
+            <ButtonContainer>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<CalculateIcon />}
+                    onClick={handleMenuClick}
+                >
+                    Cálculos de Oferta
+                </Button>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<SearchIcon />}
+                    onClick={handleUploadClick}
+                >
+                    Consulta de Dados
+                </Button>
+            </ButtonContainer>
             <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
@@ -88,6 +87,9 @@ const Inicio = () => {
             >
                 <MenuItem component={Link} to="/calculo" onClick={handleMenuClose}>
                     Cálculo Manual de Vencimento x Venda x Margem
+                </MenuItem>
+                <MenuItem component={Link} to="/calcular-preco-venda" onClick={handleMenuClose} startIcon={<PriceCheckIcon />}>
+                    Calcular Preço de Venda
                 </MenuItem>
             </Menu>
             <Menu
