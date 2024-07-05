@@ -69,6 +69,15 @@ const Inicio = () => {
                 >
                     Consulta de Dados
                 </Button>
+                <Button
+                    variant="contained"
+                    color="success"
+                    startIcon={<PriceCheckIcon />}
+                    component={Link}
+                    to="/calcular-preco-venda"
+                >
+                    Calcular Preço de Venda
+                </Button>
             </ButtonContainer>
             <Menu
                 id="menu-appbar"
@@ -87,9 +96,6 @@ const Inicio = () => {
             >
                 <MenuItem component={Link} to="/calculo" onClick={handleMenuClose}>
                     Cálculo Manual de Vencimento x Venda x Margem
-                </MenuItem>
-                <MenuItem component={Link} to="/calcular-preco-venda" onClick={handleMenuClose} startIcon={<PriceCheckIcon />}>
-                    Calcular Preço de Venda
                 </MenuItem>
             </Menu>
             <Menu
