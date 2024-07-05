@@ -50,18 +50,43 @@ const TableContainerStyled = styled(TableContainer)`
 
 const CalcularPrecoVenda = () => {
     const [produto, setProduto] = useState('');
+    const [custo, setCusto] = useState('');
     const [pmpf, setPmpf] = useState('');
     const [valorST, setValorST] = useState('');
     const [custoFrete, setCustoFrete] = useState('');
     const [margem, setMargem] = useState('');
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [rows, setRows] = useState([]);
-    const [filters, setFilters] = useState({ descricao: '', pmpf: '' });
+    const [produtoDialogOpen, setProdutoDialogOpen] = useState(false);
+    const [pmpfDialogOpen, setPmpfDialogOpen] = useState(false);
+    const [produtoRows, setProdutoRows] = useState([]);
+    const [pmpfRows, setPmpfRows] = useState([]);
+    const [produtoFilters, setProdutoFilters] = useState({ produto: '', quantidade: '', custo: '' });
+    const [pmpfFilters, setPmpfFilters] = useState({ descricao: '', pmpf: '' });
 
     useEffect(() => {
-        const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/listapmpf.xlsx';
+        // Carregar dados do estoque
+        const produtoUrl = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/estoque.xlsx';
+        fetch(produtoUrl)
+            .then(response => response.arrayBuffer())
+            .then(data => {
+                const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const json = XLSX.utils.sheet_to_json(worksheet);
 
-        fetch(url)
+                const formattedRows = json.map(row => ({
+                    produto: row['Produto'] ? row['Produto'].toString() : '',
+                    quantidade: row['Quantidade'] ? row['Quantidade'].toString() : '',
+                    custo: row['Custo'] ? row['Custo'].toString() : ''
+                }));
+
+                setProdutoRows(formattedRows);
+                console.log('Dados de estoque carregados:', formattedRows);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+
+        // Carregar dados da lista PMPF
+        const pmpfUrl = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/listapmpf.xlsx';
+        fetch(pmpfUrl)
             .then(response => response.arrayBuffer())
             .then(data => {
                 const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
@@ -74,38 +99,66 @@ const CalcularPrecoVenda = () => {
                     pmpf: row['PMPF'] ? row['PMPF'].toString() : ''
                 }));
 
-                setRows(formattedRows);
-                console.log('Dados carregados:', formattedRows);
+                setPmpfRows(formattedRows);
+                console.log('Dados da lista PMPF carregados:', formattedRows);
             })
             .catch(error => console.error('Error fetching data:', error));
     }, []);
 
-    const handleFilterChange = (e) => {
+    const handleProdutoFilterChange = (e) => {
         const { name, value } = e.target;
-        setFilters({
-            ...filters,
+        setProdutoFilters({
+            ...produtoFilters,
             [name]: value,
         });
     };
 
-    const handleDialogOpen = () => {
-        setDialogOpen(true);
+    const handlePmpfFilterChange = (e) => {
+        const { name, value } = e.target;
+        setPmpfFilters({
+            ...pmpfFilters,
+            [name]: value,
+        });
     };
 
-    const handleDialogClose = () => {
-        setDialogOpen(false);
+    const handleProdutoDialogOpen = () => {
+        setProdutoDialogOpen(true);
     };
 
-    const handleRowDoubleClick = (row) => {
+    const handleProdutoDialogClose = () => {
+        setProdutoDialogOpen(false);
+    };
+
+    const handlePmpfDialogOpen = () => {
+        setPmpfDialogOpen(true);
+    };
+
+    const handlePmpfDialogClose = () => {
+        setPmpfDialogOpen(false);
+    };
+
+    const handleProdutoRowDoubleClick = (row) => {
+        setProduto(row.produto);
+        setCusto(row.custo);
+        setProdutoDialogOpen(false);
+    };
+
+    const handlePmpfRowDoubleClick = (row) => {
         setProduto(row.descricao);
         setPmpf(row.pmpf);
         setValorST((parseFloat(row.pmpf) * 0.17).toFixed(2));
-        setDialogOpen(false);
+        setPmpfDialogOpen(false);
     };
 
-    const filteredRows = rows.filter(row =>
-        row.descricao.toLowerCase().includes(filters.descricao.toLowerCase()) &&
-        row.pmpf.toLowerCase().includes(filters.pmpf.toLowerCase())
+    const filteredProdutoRows = produtoRows.filter(row =>
+        row.produto.toLowerCase().includes(produtoFilters.produto.toLowerCase()) &&
+        row.quantidade.toLowerCase().includes(produtoFilters.quantidade.toLowerCase()) &&
+        row.custo.toLowerCase().includes(produtoFilters.custo.toLowerCase())
+    );
+
+    const filteredPmpfRows = pmpfRows.filter(row =>
+        row.descricao.toLowerCase().includes(pmpfFilters.descricao.toLowerCase()) &&
+        row.pmpf.toLowerCase().includes(pmpfFilters.pmpf.toLowerCase())
     );
 
     return (
@@ -120,12 +173,44 @@ const CalcularPrecoVenda = () => {
                         required
                         fullWidth
                         id="produto"
-                        label="Referência PMPF"
+                        label="Produto"
                         name="produto"
                         value={produto}
                         InputProps={{
                             endAdornment: (
-                                <Button onClick={handleDialogOpen} variant="contained" color="primary" size="small">
+                                <Button onClick={handleProdutoDialogOpen} variant="contained" color="primary" size="small">
+                                    Selecionar Produto
+                                </Button>
+                            ),
+                        }}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="custo"
+                        label="Custo"
+                        name="custo"
+                        value={custo}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    R$
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="referenciaPmpf"
+                        label="Referência PMPF"
+                        name="referenciaPmpf"
+                        value={produto}
+                        InputProps={{
+                            endAdornment: (
+                                <Button onClick={handlePmpfDialogOpen} variant="contained" color="primary" size="small">
                                     Selecionar Referência
                                 </Button>
                             ),
@@ -201,7 +286,96 @@ const CalcularPrecoVenda = () => {
                 </Box>
             </FormContainer>
 
-            <Dialog open={dialogOpen} onClose={handleDialogClose} maxWidth="lg" fullWidth>
+            <Dialog open={produtoDialogOpen} onClose={handleProdutoDialogClose} maxWidth="lg" fullWidth>
+                <DialogTitle>Selecionar Produto</DialogTitle>
+                <DialogContent>
+                    <TableContainerStyled component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>
+                                        <TextField
+                                            placeholder="Produto"
+                                            name="produto"
+                                            value={produtoFilters.produto}
+                                            onChange={handleProdutoFilterChange}
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <SearchIcon />
+                                                    </InputAdornment>
+                                                ),
+                                                style: { backgroundColor: 'white', borderRadius: 4 }
+                                            }}
+                                            variant="outlined"
+                                            size="small"
+                                        />
+                                    </StyledTableCell>
+                                    <StyledTableCell>
+                                        <TextField
+                                            placeholder="Quantidade"
+                                            name="quantidade"
+                                            value={produtoFilters.quantidade}
+                                            onChange={handleProdutoFilterChange}
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <SearchIcon />
+                                                    </InputAdornment>
+                                                ),
+                                                style: { backgroundColor: 'white', borderRadius: 4 }
+                                            }}
+                                            variant="outlined"
+                                            size="small"
+                                        />
+                                    </StyledTableCell>
+                                    <StyledTableCell>
+                                        <TextField
+                                            placeholder="Custo"
+                                            name="custo"
+                                            value={produtoFilters.custo}
+                                            onChange={handleProdutoFilterChange}
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <SearchIcon />
+                                                    </InputAdornment>
+                                                ),
+                                                style: { backgroundColor: 'white', borderRadius: 4 }
+                                            }}
+                                            variant="outlined"
+                                            size="small"
+                                        />
+                                    </StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>Produto</StyledTableCell>
+                                    <StyledTableCell>Quantidade</StyledTableCell>
+                                    <StyledTableCell>Custo</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {filteredProdutoRows.map((row, index) => (
+                                    <StyledTableRow key={index} onDoubleClick={() => handleProdutoRowDoubleClick(row)}>
+                                        <TableCell align="center">{row.produto}</TableCell>
+                                        <TableCell align="center">{row.quantidade}</TableCell>
+                                        <TableCell align="center">{row.custo}</TableCell>
+                                    </StyledTableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainerStyled>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleProdutoDialogClose} color="primary">
+                        Fechar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={pmpfDialogOpen} onClose={handlePmpfDialogClose} maxWidth="lg" fullWidth>
                 <DialogTitle>Selecionar Referência PMPF</DialogTitle>
                 <DialogContent>
                     <TableContainerStyled component={Paper}>
@@ -212,8 +386,8 @@ const CalcularPrecoVenda = () => {
                                         <TextField
                                             placeholder="Descrição"
                                             name="descricao"
-                                            value={filters.descricao}
-                                            onChange={handleFilterChange}
+                                            value={pmpfFilters.descricao}
+                                            onChange={handlePmpfFilterChange}
                                             InputProps={{
                                                 startAdornment: (
                                                     <InputAdornment position="start">
@@ -230,8 +404,8 @@ const CalcularPrecoVenda = () => {
                                         <TextField
                                             placeholder="PMPF"
                                             name="pmpf"
-                                            value={filters.pmpf}
-                                            onChange={handleFilterChange}
+                                            value={pmpfFilters.pmpf}
+                                            onChange={handlePmpfFilterChange}
                                             InputProps={{
                                                 startAdornment: (
                                                     <InputAdornment position="start">
@@ -253,8 +427,8 @@ const CalcularPrecoVenda = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {filteredRows.map((row, index) => (
-                                    <StyledTableRow key={index} onDoubleClick={() => handleRowDoubleClick(row)}>
+                                {filteredPmpfRows.map((row, index) => (
+                                    <StyledTableRow key={index} onDoubleClick={() => handlePmpfRowDoubleClick(row)}>
                                         <TableCell align="center">{row.descricao}</TableCell>
                                         <TableCell align="center">{row.pmpf}</TableCell>
                                     </StyledTableRow>
@@ -264,7 +438,7 @@ const CalcularPrecoVenda = () => {
                     </TableContainerStyled>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary">
+                    <Button onClick={handlePmpfDialogClose} color="primary">
                         Fechar
                     </Button>
                 </DialogActions>
@@ -274,3 +448,4 @@ const CalcularPrecoVenda = () => {
 };
 
 export default CalcularPrecoVenda;
+
