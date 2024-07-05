@@ -5,6 +5,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 const StyledTableCell = styled(TableCell)`
   background-color: #0d6efd;
@@ -49,12 +52,12 @@ const BackButton = styled(Button)`
   }
 `;
 
-const UploadPMPF = () => {
+const Estoque = () => {
     const [rows, setRows] = useState([]);
-    const [filters, setFilters] = useState({ ean: '', descricao: '', pmpf: '' });
+    const [filters, setFilters] = useState({ produto: '', quantidade: '', custo: '' });
 
     useEffect(() => {
-        const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/listapmpf.xlsx';
+        const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/estoque.xlsx';
 
         fetch(url)
             .then(response => response.arrayBuffer())
@@ -65,9 +68,9 @@ const UploadPMPF = () => {
                 const json = XLSX.utils.sheet_to_json(worksheet);
 
                 const formattedRows = json.map(row => ({
-                    ean: row['EAN'] ? row['EAN'].toString() : '',
-                    descricao: row['Descrição'] ? row['Descrição'].toString() : '',
-                    pmpf: row['PMPF'] ? row['PMPF'].toString() : ''
+                    produto: row['Produto'] ? row['Produto'].toString() : '',
+                    quantidade: row['Quantidade'] ? row['Quantidade'].toString() : '',
+                    custo: row['Custo'] ? row['Custo'].toString() : ''
                 }));
 
                 setRows(formattedRows);
@@ -85,9 +88,9 @@ const UploadPMPF = () => {
     };
 
     const filteredRows = rows.filter(row =>
-        row.ean.toLowerCase().includes(filters.ean.toLowerCase()) &&
-        row.descricao.toLowerCase().includes(filters.descricao.toLowerCase()) &&
-        row.pmpf.toLowerCase().includes(filters.pmpf.toLowerCase())
+        row.produto.toLowerCase().includes(filters.produto.toLowerCase()) &&
+        row.quantidade.toLowerCase().includes(filters.quantidade.toLowerCase()) &&
+        row.custo.toLowerCase().includes(filters.custo.toLowerCase())
     );
 
     return (
@@ -96,7 +99,7 @@ const UploadPMPF = () => {
                 Voltar para o Início
             </BackButton>
             <Typography variant="h4" gutterBottom align="center">
-                Lista PMPF
+                Consulta de Estoque
             </Typography>
             {rows.length > 0 ? (
                 <TableContainerStyled component={Paper}>
@@ -105,14 +108,14 @@ const UploadPMPF = () => {
                             <TableRow>
                                 <StyledTableCell>
                                     <TextField
-                                        placeholder="EAN"
-                                        name="ean"
-                                        value={filters.ean}
+                                        placeholder="Produto"
+                                        name="produto"
+                                        value={filters.produto}
                                         onChange={handleFilterChange}
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
-                                                    <SearchIcon />
+                                                    <InventoryIcon />
                                                 </InputAdornment>
                                             ),
                                             style: { backgroundColor: 'white', borderRadius: 4 }
@@ -123,14 +126,14 @@ const UploadPMPF = () => {
                                 </StyledTableCell>
                                 <StyledTableCell>
                                     <TextField
-                                        placeholder="Descrição"
-                                        name="descricao"
-                                        value={filters.descricao}
+                                        placeholder="Quantidade"
+                                        name="quantidade"
+                                        value={filters.quantidade}
                                         onChange={handleFilterChange}
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
-                                                    <SearchIcon />
+                                                    <LocalOfferIcon />
                                                 </InputAdornment>
                                             ),
                                             style: { backgroundColor: 'white', borderRadius: 4 }
@@ -141,14 +144,14 @@ const UploadPMPF = () => {
                                 </StyledTableCell>
                                 <StyledTableCell>
                                     <TextField
-                                        placeholder="PMPF"
-                                        name="pmpf"
-                                        value={filters.pmpf}
+                                        placeholder="Custo"
+                                        name="custo"
+                                        value={filters.custo}
                                         onChange={handleFilterChange}
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
-                                                    <SearchIcon />
+                                                    <AttachMoneyIcon />
                                                 </InputAdornment>
                                             ),
                                             style: { backgroundColor: 'white', borderRadius: 4 }
@@ -161,17 +164,17 @@ const UploadPMPF = () => {
                         </TableHead>
                         <TableHead>
                             <TableRow>
-                                <StyledTableCell>EAN</StyledTableCell>
-                                <StyledTableCell>Descrição</StyledTableCell>
-                                <StyledTableCell>PMPF</StyledTableCell>
+                                <StyledTableCell>Produto</StyledTableCell>
+                                <StyledTableCell>Quantidade</StyledTableCell>
+                                <StyledTableCell>Custo</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {filteredRows.map((row, index) => (
                                 <StyledTableRow key={index}>
-                                    <TableCell align="center">{row.ean}</TableCell>
-                                    <TableCell align="center">{row.descricao}</TableCell>
-                                    <TableCell align="center">{row.pmpf}</TableCell>
+                                    <TableCell align="center">{row.produto}</TableCell>
+                                    <TableCell align="center">{row.quantidade}</TableCell>
+                                    <TableCell align="center">{row.custo}</TableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>
@@ -186,4 +189,4 @@ const UploadPMPF = () => {
     );
 };
 
-export default UploadPMPF;
+export default Estoque;

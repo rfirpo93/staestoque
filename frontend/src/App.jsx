@@ -9,7 +9,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from '@emotion/styled';
 import Inicio from './Inicio';
 import Calculomanual from './Calculomanual';
-import UploadPMPF from './UploadPMPF'; // Importando o novo componente
+import UploadPMPF from './UploadPMPF';
+import Estoque from './Estoque'; // Importando o novo componente
 
 // Definindo o tema inspirado nas cores do logo
 const theme = createTheme({
@@ -148,6 +149,7 @@ const App = () => {
                     <Route path="/inicio" element={<Inicio />} />
                     <Route path="/calculo" element={<Calculomanual />} />
                     <Route path="/upload-pmpf" element={<UploadPMPF />} />
+                    <Route path="/consultar-estoque" element={<Estoque />} /> {/* Adicionando a rota para consulta de estoque */}
                 </Routes>
             </Router>
         </ThemeProvider>
