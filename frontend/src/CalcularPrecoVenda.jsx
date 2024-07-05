@@ -79,16 +79,16 @@ const CalcularPrecoVenda = () => {
     const [custo, setCusto] = useState('');
     const [produtoDialogOpen, setProdutoDialogOpen] = useState(false);
     const [pmpfDialogOpen, setPmpfDialogOpen] = useState(false);
-    const [rows, setRows] = useState([]);
+    const [produtoRows, setProdutoRows] = useState([]);
+    const [pmpfRows, setPmpfRows] = useState([]);
     const [filters, setFilters] = useState({ descricao: '', pmpf: '' });
     const [produtoFilters, setProdutoFilters] = useState({ produto: '', quantidade: '', custo: '' });
     const [result, setResult] = useState({});
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/estoque.xlsx';
-
-        fetch(url)
+        // Carregar dados de produtos
+        fetch('https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/estoque.xlsx')
             .then(response => response.arrayBuffer())
             .then(data => {
                 const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
@@ -102,10 +102,29 @@ const CalcularPrecoVenda = () => {
                     custo: row['Custo'] ? row['Custo'].toString() : ''
                 }));
 
-                setRows(formattedRows);
-                console.log('Dados carregados:', formattedRows);
+                setProdutoRows(formattedRows);
+                console.log('Dados de produtos carregados:', formattedRows);
             })
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => console.error('Erro ao buscar dados de produtos:', error));
+
+        // Carregar dados de PMPF
+        fetch('https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/listapmpf.xlsx')
+            .then(response => response.arrayBuffer())
+            .then(data => {
+                const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const json = XLSX.utils.sheet_to_json(worksheet);
+
+                const formattedRows = json.map(row => ({
+                    descricao: row['Descrição'] ? row['Descrição'].toString() : '',
+                    pmpf: row['PMPF'] ? row['PMPF'].toString() : ''
+                }));
+
+                setPmpfRows(formattedRows);
+                console.log('Dados de PMPF carregados:', formattedRows);
+            })
+            .catch(error => console.error('Erro ao buscar dados de PMPF:', error));
     }, []);
 
     const handleProdutoFilterChange = (e) => {
@@ -153,13 +172,13 @@ const CalcularPrecoVenda = () => {
         setPmpfDialogOpen(false);
     };
 
-    const filteredProdutoRows = rows.filter(row =>
+    const filteredProdutoRows = produtoRows.filter(row =>
         (row.produto || '').toLowerCase().includes(produtoFilters.produto.toLowerCase()) &&
         (row.quantidade || '').toLowerCase().includes(produtoFilters.quantidade.toLowerCase()) &&
         (row.custo || '').toLowerCase().includes(produtoFilters.custo.toLowerCase())
     );
 
-    const filteredPmpfRows = rows.filter(row =>
+    const filteredPmpfRows = pmpfRows.filter(row =>
         (row.descricao || '').toLowerCase().includes(filters.descricao.toLowerCase()) &&
         (row.pmpf || '').toLowerCase().includes(filters.pmpf.toLowerCase())
     );
