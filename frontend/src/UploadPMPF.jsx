@@ -68,11 +68,15 @@ const UploadPMPF = () => {
 
                 // Extrair os nomes das colunas da primeira linha
                 const columnNames = json[0];
+
                 // Mapear os dados
                 const formattedRows = json.slice(1).map(row => ({
-                    ean: row[columnNames.indexOf('Codigo EAN')] || row[columnNames.indexOf('EAN')] || row[columnNames.indexOf('CodigoEAN')] || row[columnNames.indexOf('EAN Codigo')] || '',
-                    descricao: row[columnNames.indexOf('Descrição')] || '',
-                    pmpf: row[columnNames.indexOf('PMPF')] || ''
+                    ean: row[columnNames.indexOf('Codigo EAN')] !== undefined ? row[columnNames.indexOf('Codigo EAN')].toString() :
+                        row[columnNames.indexOf('EAN')] !== undefined ? row[columnNames.indexOf('EAN')].toString() :
+                            row[columnNames.indexOf('CodigoEAN')] !== undefined ? row[columnNames.indexOf('CodigoEAN')].toString() :
+                                row[columnNames.indexOf('EAN Codigo')] !== undefined ? row[columnNames.indexOf('EAN Codigo')].toString() : '',
+                    descricao: row[columnNames.indexOf('Descrição')] !== undefined ? row[columnNames.indexOf('Descrição')].toString() : '',
+                    pmpf: row[columnNames.indexOf('PMPF')] !== undefined ? row[columnNames.indexOf('PMPF')].toString() : ''
                 }));
 
                 setRows(formattedRows);
