@@ -67,6 +67,17 @@ const ResultField = styled(Typography)`
   margin-bottom: 0.5rem;
 `;
 
+const StyledTableCell = styled(TableCell)`
+  background-color: #f5f5f5;
+  font-weight: bold;
+`;
+
+const StyledTableRow = styled(TableRow)`
+  &:nth-of-type(odd) {
+    background-color: #f9f9f9;
+  }
+`;
+
 const CalcularPrecoVenda = () => {
     const [produto, setProduto] = useState('');
     const [pmpf, setPmpf] = useState('');
@@ -98,7 +109,9 @@ const CalcularPrecoVenda = () => {
                 const formattedRows = json.map(row => ({
                     produto: row['Produto'] ? row['Produto'].toString() : '',
                     quantidade: row['Quantidade'] ? row['Quantidade'].toString() : '',
-                    custo: row['Custo'] ? row['Custo'].toString() : ''
+                    custo: row['Custo'] ? row['Custo'].toString() : '',
+                    descricao: row['Descrição'] ? row['Descrição'].toString() : '',
+                    pmpf: row['PMPF'] ? row['PMPF'].toString() : ''
                 }));
 
                 setRows(formattedRows);
@@ -233,6 +246,23 @@ const CalcularPrecoVenda = () => {
                                 <Button onClick={handleProdutoDialogOpen} variant="contained" color="primary" size="small">
                                     Selecionar Produto
                                 </Button>
+                            ),
+                        }}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="custo"
+                        label="Custo"
+                        name="custo"
+                        value={custo}
+                        onChange={(e) => setCusto(e.target.value)}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    R$
+                                </InputAdornment>
                             ),
                         }}
                     />
@@ -456,7 +486,7 @@ const CalcularPrecoVenda = () => {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>
+                                    <StyledTableCell>
                                         <TextField
                                             placeholder="Produto"
                                             name="produto"
@@ -473,8 +503,8 @@ const CalcularPrecoVenda = () => {
                                             variant="outlined"
                                             size="small"
                                         />
-                                    </TableCell>
-                                    <TableCell>
+                                    </StyledTableCell>
+                                    <StyledTableCell>
                                         <TextField
                                             placeholder="Quantidade"
                                             name="quantidade"
@@ -491,8 +521,8 @@ const CalcularPrecoVenda = () => {
                                             variant="outlined"
                                             size="small"
                                         />
-                                    </TableCell>
-                                    <TableCell>
+                                    </StyledTableCell>
+                                    <StyledTableCell>
                                         <TextField
                                             placeholder="Custo"
                                             name="custo"
@@ -509,16 +539,16 @@ const CalcularPrecoVenda = () => {
                                             variant="outlined"
                                             size="small"
                                         />
-                                    </TableCell>
+                                    </StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {filteredProdutoRows.map((row, index) => (
-                                    <TableRow key={index} onDoubleClick={() => handleProdutoRowDoubleClick(row)}>
+                                    <StyledTableRow key={index} onDoubleClick={() => handleProdutoRowDoubleClick(row)}>
                                         <TableCell align="center">{row.produto}</TableCell>
                                         <TableCell align="center">{row.quantidade}</TableCell>
                                         <TableCell align="center">{row.custo}</TableCell>
-                                    </TableRow>
+                                    </StyledTableRow>
                                 ))}
                             </TableBody>
                         </Table>
@@ -538,7 +568,7 @@ const CalcularPrecoVenda = () => {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>
+                                    <StyledTableCell>
                                         <TextField
                                             placeholder="Descrição"
                                             name="descricao"
@@ -555,8 +585,8 @@ const CalcularPrecoVenda = () => {
                                             variant="outlined"
                                             size="small"
                                         />
-                                    </TableCell>
-                                    <TableCell>
+                                    </StyledTableCell>
+                                    <StyledTableCell>
                                         <TextField
                                             placeholder="PMPF"
                                             name="pmpf"
@@ -573,15 +603,15 @@ const CalcularPrecoVenda = () => {
                                             variant="outlined"
                                             size="small"
                                         />
-                                    </TableCell>
+                                    </StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {filteredPmpfRows.map((row, index) => (
-                                    <TableRow key={index} onDoubleClick={() => handlePmpfRowDoubleClick(row)}>
+                                    <StyledTableRow key={index} onDoubleClick={() => handlePmpfRowDoubleClick(row)}>
                                         <TableCell align="center">{row.descricao}</TableCell>
                                         <TableCell align="center">{row.pmpf}</TableCell>
-                                    </TableRow>
+                                    </StyledTableRow>
                                 ))}
                             </TableBody>
                         </Table>
