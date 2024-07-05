@@ -50,13 +50,16 @@ const TableContainerStyled = styled(TableContainer)`
 
 const CalcularPrecoVenda = () => {
     const [produto, setProduto] = useState('');
-    const [custo, setCusto] = useState('');
+    const [pmpf, setPmpf] = useState('');
+    const [valorST, setValorST] = useState('');
+    const [custoFrete, setCustoFrete] = useState('');
+    const [margem, setMargem] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
     const [rows, setRows] = useState([]);
-    const [filters, setFilters] = useState({ produto: '', quantidade: '', custo: '' });
+    const [filters, setFilters] = useState({ descricao: '', pmpf: '' });
 
     useEffect(() => {
-        const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/estoque.xlsx';
+        const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/listapmpf.xlsx';
 
         fetch(url)
             .then(response => response.arrayBuffer())
@@ -67,9 +70,8 @@ const CalcularPrecoVenda = () => {
                 const json = XLSX.utils.sheet_to_json(worksheet);
 
                 const formattedRows = json.map(row => ({
-                    produto: row['Produto'] ? row['Produto'].toString() : '',
-                    quantidade: row['Quantidade'] ? row['Quantidade'].toString() : '',
-                    custo: row['Custo'] ? row['Custo'].toString() : ''
+                    descricao: row['Descrição'] ? row['Descrição'].toString() : '',
+                    pmpf: row['PMPF'] ? row['PMPF'].toString() : ''
                 }));
 
                 setRows(formattedRows);
@@ -95,15 +97,15 @@ const CalcularPrecoVenda = () => {
     };
 
     const handleRowDoubleClick = (row) => {
-        setProduto(row.produto);
-        setCusto(row.custo);
+        setProduto(row.descricao);
+        setPmpf(row.pmpf);
+        setValorST((parseFloat(row.pmpf) * 0.17).toFixed(2));
         setDialogOpen(false);
     };
 
     const filteredRows = rows.filter(row =>
-        row.produto.toLowerCase().includes(filters.produto.toLowerCase()) &&
-        row.quantidade.toLowerCase().includes(filters.quantidade.toLowerCase()) &&
-        row.custo.toLowerCase().includes(filters.custo.toLowerCase())
+        row.descricao.toLowerCase().includes(filters.descricao.toLowerCase()) &&
+        row.pmpf.toLowerCase().includes(filters.pmpf.toLowerCase())
     );
 
     return (
@@ -118,13 +120,13 @@ const CalcularPrecoVenda = () => {
                         required
                         fullWidth
                         id="produto"
-                        label="Produto"
+                        label="Referência PMPF"
                         name="produto"
                         value={produto}
                         InputProps={{
                             endAdornment: (
                                 <Button onClick={handleDialogOpen} variant="contained" color="primary" size="small">
-                                    Selecionar Produto
+                                    Selecionar Referência
                                 </Button>
                             ),
                         }}
@@ -133,10 +135,10 @@ const CalcularPrecoVenda = () => {
                         margin="normal"
                         required
                         fullWidth
-                        id="custo"
-                        label="Custo"
-                        name="custo"
-                        value={custo}
+                        id="pmpf"
+                        label="PMPF"
+                        name="pmpf"
+                        value={pmpf}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
@@ -145,11 +147,62 @@ const CalcularPrecoVenda = () => {
                             ),
                         }}
                     />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="valorST"
+                        label="Valor ST"
+                        name="valorST"
+                        value={valorST}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    R$
+                                </InputAdornment>
+                            ),
+                        }}
+                        disabled
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="custoFrete"
+                        label="Custo de Frete por Unidade"
+                        name="custoFrete"
+                        value={custoFrete}
+                        onChange={(e) => setCustoFrete(e.target.value)}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    R$
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="margem"
+                        label="Margem Desejada"
+                        name="margem"
+                        value={margem}
+                        onChange={(e) => setMargem(e.target.value)}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    %
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
                 </Box>
             </FormContainer>
 
             <Dialog open={dialogOpen} onClose={handleDialogClose} maxWidth="lg" fullWidth>
-                <DialogTitle>Selecionar Produto</DialogTitle>
+                <DialogTitle>Selecionar Referência PMPF</DialogTitle>
                 <DialogContent>
                     <TableContainerStyled component={Paper}>
                         <Table>
@@ -157,9 +210,9 @@ const CalcularPrecoVenda = () => {
                                 <TableRow>
                                     <StyledTableCell>
                                         <TextField
-                                            placeholder="Produto"
-                                            name="produto"
-                                            value={filters.produto}
+                                            placeholder="Descrição"
+                                            name="descricao"
+                                            value={filters.descricao}
                                             onChange={handleFilterChange}
                                             InputProps={{
                                                 startAdornment: (
@@ -175,27 +228,9 @@ const CalcularPrecoVenda = () => {
                                     </StyledTableCell>
                                     <StyledTableCell>
                                         <TextField
-                                            placeholder="Quantidade"
-                                            name="quantidade"
-                                            value={filters.quantidade}
-                                            onChange={handleFilterChange}
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <SearchIcon />
-                                                    </InputAdornment>
-                                                ),
-                                                style: { backgroundColor: 'white', borderRadius: 4 }
-                                            }}
-                                            variant="outlined"
-                                            size="small"
-                                        />
-                                    </StyledTableCell>
-                                    <StyledTableCell>
-                                        <TextField
-                                            placeholder="Custo"
-                                            name="custo"
-                                            value={filters.custo}
+                                            placeholder="PMPF"
+                                            name="pmpf"
+                                            value={filters.pmpf}
                                             onChange={handleFilterChange}
                                             InputProps={{
                                                 startAdornment: (
@@ -213,17 +248,15 @@ const CalcularPrecoVenda = () => {
                             </TableHead>
                             <TableHead>
                                 <TableRow>
-                                    <StyledTableCell>Produto</StyledTableCell>
-                                    <StyledTableCell>Quantidade</StyledTableCell>
-                                    <StyledTableCell>Custo</StyledTableCell>
+                                    <StyledTableCell>Descrição</StyledTableCell>
+                                    <StyledTableCell>PMPF</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {filteredRows.map((row, index) => (
                                     <StyledTableRow key={index} onDoubleClick={() => handleRowDoubleClick(row)}>
-                                        <TableCell align="center">{row.produto}</TableCell>
-                                        <TableCell align="center">{row.quantidade}</TableCell>
-                                        <TableCell align="center">{row.custo}</TableCell>
+                                        <TableCell align="center">{row.descricao}</TableCell>
+                                        <TableCell align="center">{row.pmpf}</TableCell>
                                     </StyledTableRow>
                                 ))}
                             </TableBody>
