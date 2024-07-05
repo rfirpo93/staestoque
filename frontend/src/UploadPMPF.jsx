@@ -77,6 +77,7 @@ const UploadPMPF = () => {
                 }));
 
                 setRows(formattedRows);
+                console.log('Dados carregados:', formattedRows);
             })
             .catch(error => console.error('Error fetching data:', error));
     }, []);
@@ -102,7 +103,7 @@ const UploadPMPF = () => {
                     <Typography variant="h4" gutterBottom align="center">
                         Lista PMPF
                     </Typography>
-                    {rows.length > 0 && (
+                    {rows.length > 0 ? (
                         <TableContainerStyled component={Paper}>
                             <Table>
                                 <TableHead>
@@ -181,6 +182,10 @@ const UploadPMPF = () => {
                                 </TableBody>
                             </Table>
                         </TableContainerStyled>
+                    ) : (
+                        <Typography variant="h6" align="center">
+                            Carregando dados...
+                        </Typography>
                     )}
                 </Box>
             </MainContainer>
