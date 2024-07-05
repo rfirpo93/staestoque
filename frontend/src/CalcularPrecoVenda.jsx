@@ -86,7 +86,7 @@ const CalcularPrecoVenda = () => {
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/listapmpf.xlsx';
+        const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/estoque.xlsx';
 
         fetch(url)
             .then(response => response.arrayBuffer())
@@ -97,9 +97,9 @@ const CalcularPrecoVenda = () => {
                 const json = XLSX.utils.sheet_to_json(worksheet);
 
                 const formattedRows = json.map(row => ({
-                    ean: row['EAN'] ? row['EAN'].toString() : '',
-                    descricao: row['Descrição'] ? row['Descrição'].toString() : '',
-                    pmpf: row['PMPF'] ? row['PMPF'].toString() : ''
+                    produto: row['Produto'] ? row['Produto'].toString() : '',
+                    quantidade: row['Quantidade'] ? row['Quantidade'].toString() : '',
+                    custo: row['Custo'] ? row['Custo'].toString() : ''
                 }));
 
                 setRows(formattedRows);
@@ -244,7 +244,7 @@ const CalcularPrecoVenda = () => {
                         required
                         fullWidth
                         id="descricao"
-                        label="Descrição"
+                        label="Referência PMPF"
                         name="descricao"
                         value={descricao}
                         InputProps={{
@@ -271,6 +271,7 @@ const CalcularPrecoVenda = () => {
                                     </InputAdornment>
                                 ),
                             }}
+                            disabled
                         />
                         <TextField
                             margin="normal"
@@ -574,7 +575,7 @@ const CalcularPrecoVenda = () => {
                                 <TableRow>
                                     <TableCell>
                                         <TextField
-                                            placeholder="Descrição"
+                                            placeholder="Referência PMPF"
                                             name="descricao"
                                             value={filters.descricao}
                                             onChange={handlePmpfFilterChange}
