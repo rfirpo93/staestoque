@@ -10,10 +10,10 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import ArrowBackIcon from '@mui/icons-material/ArrowBackIos';
 import SearchIcon from '@mui/icons-material/SearchOff';
-import AttachMoneyIcon from '@mui/icons-material/MonetizationOn';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import InventoryIcon from '@mui/icons-material/Inventory';
 
 const MainContainer = styled(Box)`
   display: flex;
@@ -104,6 +104,7 @@ const CalcularDiasEstoque = () => {
     const [vendaMediaTrimestral, setVendaMediaTrimestral] = useState(0);
     const [vendaMediaAnual, setVendaMediaAnual] = useState(0);
     const [diasEstoque, setDiasEstoque] = useState(0);
+    const [totalDias, setTotalDias] = useState(0); // New state for total days
     const [showHeader, setShowHeader] = useState(false);
     const [open, setOpen] = useState(false);
     const [products, setProducts] = useState([]);
@@ -162,6 +163,7 @@ const CalcularDiasEstoque = () => {
 
             const diffTime = Math.abs(new Date(dataFim) - new Date(dataInicio));
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including both start and end dates
+            setTotalDias(diffDays);
 
             const vendaDiariaCalc = vendaTotalCalc / diffDays;
             setVendaDiaria(vendaDiariaCalc);
@@ -273,6 +275,20 @@ const CalcularDiasEstoque = () => {
                             }}
                         />
                         <Field
+                            label="Total de Dias no Intervalo"
+                            value={totalDias}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <CalendarTodayIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                        <Field
                             label="Venda Total no Período"
                             value={vendaTotal}
                             variant="outlined"
@@ -281,7 +297,7 @@ const CalcularDiasEstoque = () => {
                                 readOnly: true,
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <AttachMoneyIcon />
+                                        <InventoryIcon />
                                     </InputAdornment>
                                 ),
                             }}
@@ -295,7 +311,7 @@ const CalcularDiasEstoque = () => {
                                 readOnly: true,
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <AttachMoneyIcon />
+                                        <InventoryIcon />
                                     </InputAdornment>
                                 ),
                             }}
