@@ -54,7 +54,7 @@ const BackButton = styled(Button)`
 
 const Estoque = () => {
     const [rows, setRows] = useState([]);
-    const [filters, setFilters] = useState({ produto: '', quantidade: '', custo: '' });
+    const [filters, setFilters] = useState({ codigo: '', produto: '', quantidade: '', custo: '' });
 
     useEffect(() => {
         const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/estoque.xlsx';
@@ -68,6 +68,7 @@ const Estoque = () => {
                 const json = XLSX.utils.sheet_to_json(worksheet);
 
                 const formattedRows = json.map(row => ({
+                    codigo: row['Código'] ? row['Código'].toString() : '',
                     produto: row['Produto'] ? row['Produto'].toString() : '',
                     quantidade: row['Quantidade'] ? row['Quantidade'].toString() : '',
                     custo: row['Custo'] ? row['Custo'].toString() : ''
@@ -88,6 +89,7 @@ const Estoque = () => {
     };
 
     const filteredRows = rows.filter(row =>
+        row.codigo.toLowerCase().includes(filters.codigo.toLowerCase()) &&
         row.produto.toLowerCase().includes(filters.produto.toLowerCase()) &&
         row.quantidade.toLowerCase().includes(filters.quantidade.toLowerCase()) &&
         row.custo.toLowerCase().includes(filters.custo.toLowerCase())
@@ -106,6 +108,24 @@ const Estoque = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
+                                <StyledTableCell>
+                                    <TextField
+                                        placeholder="Código"
+                                        name="codigo"
+                                        value={filters.codigo}
+                                        onChange={handleFilterChange}
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <SearchIcon />
+                                                </InputAdornment>
+                                            ),
+                                            style: { backgroundColor: 'white', borderRadius: 4 }
+                                        }}
+                                        variant="outlined"
+                                        size="small"
+                                    />
+                                </StyledTableCell>
                                 <StyledTableCell>
                                     <TextField
                                         placeholder="Produto"
@@ -164,6 +184,7 @@ const Estoque = () => {
                         </TableHead>
                         <TableHead>
                             <TableRow>
+                                <StyledTableCell>Código</StyledTableCell>
                                 <StyledTableCell>Produto</StyledTableCell>
                                 <StyledTableCell>Quantidade</StyledTableCell>
                                 <StyledTableCell>Custo</StyledTableCell>
@@ -172,6 +193,7 @@ const Estoque = () => {
                         <TableBody>
                             {filteredRows.map((row, index) => (
                                 <StyledTableRow key={index}>
+                                    <TableCell align="center">{row.codigo}</TableCell>
                                     <TableCell align="center">{row.produto}</TableCell>
                                     <TableCell align="center">{row.quantidade}</TableCell>
                                     <TableCell align="center">{row.custo}</TableCell>
