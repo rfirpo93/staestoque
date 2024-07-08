@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, InputAdornment, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
@@ -105,10 +105,25 @@ const CalcularDiasEstoque = () => {
     const [vendaMediaTrimestral, setVendaMediaTrimestral] = useState(0);
     const [vendaMediaAnual, setVendaMediaAnual] = useState(0);
     const [diasEstoque, setDiasEstoque] = useState(0);
-    const [totalDias, setTotalDias] = useState(0); // New state for total days
+    const [totalDias, setTotalDias] = useState(0);
     const [showHeader, setShowHeader] = useState(false);
     const [open, setOpen] = useState(false);
     const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        if (dataInicio && dataFim) {
+            const diffTime = Math.abs(new Date(dataFim) - new Date(dataInicio));
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including both start and end dates
+            setTotalDias(diffDays);
+
+            const vendaDiariaCalc = vendaTotal / diffDays;
+            setVendaDiaria(vendaDiariaCalc);
+            setVendaMediaMensal(vendaDiariaCalc * 30);
+            setVendaMediaTrimestral(vendaDiariaCalc * 90);
+            setVendaMediaAnual(vendaDiariaCalc * 365);
+            setDiasEstoque(estoqueAtual / vendaDiariaCalc);
+        }
+    }, [dataInicio, dataFim, vendaTotal, estoqueAtual]);
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -161,18 +176,6 @@ const CalcularDiasEstoque = () => {
             setCompraTotal(compraTotalCalc);
             setQtdUltimaCompra(qtdUltimaCompraCalc);
             setValorUltimaCompra(valorUltimaCompraCalc);
-
-            const diffTime = Math.abs(new Date(dataFim) - new Date(dataInicio));
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including both start and end dates
-            setTotalDias(diffDays);
-
-            const vendaDiariaCalc = vendaTotalCalc / diffDays;
-            setVendaDiaria(vendaDiariaCalc);
-            setVendaMediaMensal(vendaDiariaCalc * 30);
-            setVendaMediaTrimestral(vendaDiariaCalc * 90);
-            setVendaMediaAnual(vendaDiariaCalc * 365);
-
-            setDiasEstoque(estoqueAtual / vendaDiariaCalc);
 
             setShowHeader(true);
         };
