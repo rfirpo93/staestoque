@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Box, Button, TextField, Typography, Avatar, Alert, InputAdornment } from '@mui/material';
 import { motion } from 'framer-motion';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -12,8 +12,10 @@ import Calculomanual from './Calculomanual';
 import UploadPMPF from './UploadPMPF';
 import Estoque from './Estoque';
 import CalcularPrecoVenda from './CalcularPrecoVenda';
-import CalcularDiasEstoque from './CalcularDiasEstoque'; // Importando o novo componente
-import AnaliseDiasEstoque from './AnaliseDiasEstoque'; // Importando o novo componente
+import CalcularDiasEstoque from './CalcularDiasEstoque';
+import AnaliseDiasEstoque from './AnaliseDiasEstoque';
+import Valorestoquexcusto from './Valorestoquexcusto';
+import Valorestoquexvenda from './Valorestoquexvenda';
 
 // Definindo o tema inspirado nas cores do logo
 const theme = createTheme({
@@ -156,6 +158,8 @@ const App = () => {
                     <Route path="/calcular-preco-venda" element={<CalcularPrecoVenda />} />
                     <Route path="/calcular-dias-estoque" element={<CalcularDiasEstoque />} />
                     <Route path="/analise-dias-estoque" element={<AnaliseDiasEstoque />} />
+                    <Route path="/estoquexcusto" element={<Valorestoquexcusto />} />
+                    <Route path="/valorestoquexvenda" element={<Valorestoquexvenda />} />
                 </Routes>
             </Router>
         </ThemeProvider>

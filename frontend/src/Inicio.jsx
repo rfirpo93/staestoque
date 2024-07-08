@@ -9,6 +9,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import StorageIcon from '@mui/icons-material/Storage';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import SettingsIcon from '@mui/icons-material/Settings';
 import logo from './assets/logo.png'; // Importando a imagem do logo
 
 // Container principal estilizado
@@ -40,6 +41,7 @@ const Inicio = () => {
     const [uploadAnchorEl, setUploadAnchorEl] = React.useState(null);
     const [stockAnchorEl, setStockAnchorEl] = React.useState(null);
     const [gerenciadorAnchorEl, setGerenciadorAnchorEl] = React.useState(null);
+    const [configurarAnchorEl, setConfigurarAnchorEl] = React.useState(null);
 
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -57,11 +59,16 @@ const Inicio = () => {
         setGerenciadorAnchorEl(event.currentTarget);
     };
 
+    const handleConfigurarClick = (event) => {
+        setConfigurarAnchorEl(event.currentTarget);
+    };
+
     const handleMenuClose = () => {
         setAnchorEl(null);
         setUploadAnchorEl(null);
         setStockAnchorEl(null);
         setGerenciadorAnchorEl(null);
+        setConfigurarAnchorEl(null);
     };
 
     return (
@@ -107,6 +114,14 @@ const Inicio = () => {
                     onClick={handleGerenciadorClick}
                 >
                     Gerenciador de Estoque
+                </Button>
+                <Button
+                    variant="contained"
+                    color="default"
+                    startIcon={<SettingsIcon />}
+                    onClick={handleConfigurarClick}
+                >
+                    Configurar Produtos
                 </Button>
             </ButtonContainer>
             <Menu
@@ -186,6 +201,31 @@ const Inicio = () => {
             >
                 <MenuItem component={Link} to="/analise-dias-estoque" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
                     Análise de Dias de Estoque com Base na Venda Informada
+                </MenuItem>
+                <MenuItem component={Link} to="/estoquexcusto" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                    Análise de Valor em Estoque por Custo
+                </MenuItem>
+                <MenuItem component={Link} to="/valorestoquexvenda" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                    Análise de Valor em Estoque por Preço de Venda
+                </MenuItem>
+            </Menu>
+            <Menu
+                id="configurar-menu"
+                anchorEl={configurarAnchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={Boolean(configurarAnchorEl)}
+                onClose={handleMenuClose}
+            >
+                <MenuItem component={Link} to="/vincular-codigos" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                    Vincular Códigos a Produto
                 </MenuItem>
             </Menu>
             <LogoContainer>
