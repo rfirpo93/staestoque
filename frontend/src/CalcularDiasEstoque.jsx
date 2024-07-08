@@ -2,10 +2,18 @@
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, InputAdornment, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
 import Estoque from './Estoque'; // Import the Estoque component
+import InfoIcon from '@mui/icons-material/Info';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import ArrowBackIcon from '@mui/icons-material/ArrowBackIos';
+import SearchIcon from '@mui/icons-material/SearchOff';
+import AttachMoneyIcon from '@mui/icons-material/MonetizationOn';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 const MainContainer = styled(Box)`
   display: flex;
@@ -227,84 +235,168 @@ const CalcularDiasEstoque = () => {
                             value={estoqueAtual}
                             variant="outlined"
                             size="small"
-                            InputProps={{ readOnly: true }}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <ShoppingCartIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <Field
                             label="Data Início"
                             value={dataInicio}
                             variant="outlined"
                             size="small"
-                            InputProps={{ readOnly: true }}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <CalendarTodayIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <Field
                             label="Data Fim"
                             value={dataFim}
                             variant="outlined"
                             size="small"
-                            InputProps={{ readOnly: true }}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <CalendarTodayIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <Field
                             label="Venda Total no Período"
                             value={vendaTotal}
                             variant="outlined"
                             size="small"
-                            InputProps={{ readOnly: true }}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <AttachMoneyIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <Field
                             label="Compra Total no Período"
                             value={compraTotal}
                             variant="outlined"
                             size="small"
-                            InputProps={{ readOnly: true }}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <AttachMoneyIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <Field
                             label="QTD Última Compra"
                             value={qtdUltimaCompra}
                             variant="outlined"
                             size="small"
-                            InputProps={{ readOnly: true }}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <BarChartIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <Field
                             label="Valor Unitário Última Compra"
                             value={valorUltimaCompra}
                             variant="outlined"
                             size="small"
-                            InputProps={{ readOnly: true }}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <AttachMoneyIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <Field
                             label="Venda Diária"
                             value={vendaDiaria}
                             variant="outlined"
                             size="small"
-                            InputProps={{ readOnly: true }}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <TrendingUpIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <Field
                             label="Venda Média Mensal"
                             value={vendaMediaMensal}
                             variant="outlined"
                             size="small"
-                            InputProps={{ readOnly: true }}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <TrendingUpIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <Field
                             label="Venda Média Trimestral"
                             value={vendaMediaTrimestral}
                             variant="outlined"
                             size="small"
-                            InputProps={{ readOnly: true }}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <TrendingUpIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <Field
                             label="Venda Média Anual"
                             value={vendaMediaAnual}
                             variant="outlined"
                             size="small"
-                            InputProps={{ readOnly: true }}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <TrendingUpIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                         <Field
                             label="Dias de Estoque"
                             value={diasEstoque}
                             variant="outlined"
                             size="small"
-                            InputProps={{ readOnly: true }}
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <TrendingUpIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                     </HeaderFields>
                 </HeaderContainer>
