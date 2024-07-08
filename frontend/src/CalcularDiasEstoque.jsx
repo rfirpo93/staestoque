@@ -8,12 +8,13 @@ import InfoIcon from '@mui/icons-material/Info';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import ArrowBackIcon from '@mui/icons-material/ArrowBackIos';
-import SearchIcon from '@mui/icons-material/SearchOff';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 const MainContainer = styled(Box)`
   display: flex;
@@ -204,7 +205,7 @@ const CalcularDiasEstoque = () => {
 
     return (
         <MainContainer>
-            <BackButton variant="contained" component={Link} to="/inicio" startIcon={<ArrowBackIcon />}>
+            <BackButton variant="contained" component={Link} to="/inicio" startIcon={<ArrowBackIosIcon />}>
                 Voltar para o Início
             </BackButton>
             <Typography variant="h4" gutterBottom align="center">
@@ -225,7 +226,7 @@ const CalcularDiasEstoque = () => {
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <SearchIcon onClick={handleSelectProduto} />
+                                        <SearchOffIcon onClick={handleSelectProduto} />
                                     </InputAdornment>
                                 ),
                             }}
@@ -339,7 +340,7 @@ const CalcularDiasEstoque = () => {
                                 readOnly: true,
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <AttachMoneyIcon />
+                                        <MonetizationOnIcon />
                                     </InputAdornment>
                                 ),
                             }}
