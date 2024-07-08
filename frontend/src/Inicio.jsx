@@ -8,6 +8,7 @@ import ListIcon from '@mui/icons-material/List';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import StorageIcon from '@mui/icons-material/Storage';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import logo from './assets/logo.png'; // Importando a imagem do logo
 
 // Container principal estilizado
@@ -38,6 +39,7 @@ const Inicio = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [uploadAnchorEl, setUploadAnchorEl] = React.useState(null);
     const [stockAnchorEl, setStockAnchorEl] = React.useState(null);
+    const [gerenciadorAnchorEl, setGerenciadorAnchorEl] = React.useState(null);
 
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -51,10 +53,15 @@ const Inicio = () => {
         setStockAnchorEl(event.currentTarget);
     };
 
+    const handleGerenciadorClick = (event) => {
+        setGerenciadorAnchorEl(event.currentTarget);
+    };
+
     const handleMenuClose = () => {
         setAnchorEl(null);
         setUploadAnchorEl(null);
         setStockAnchorEl(null);
+        setGerenciadorAnchorEl(null);
     };
 
     return (
@@ -92,6 +99,14 @@ const Inicio = () => {
                     onClick={handleStockClick}
                 >
                     Cálculos de Estoque
+                </Button>
+                <Button
+                    variant="contained"
+                    color="warning"
+                    startIcon={<AssessmentIcon />}
+                    onClick={handleGerenciadorClick}
+                >
+                    Gerenciador de Estoque
                 </Button>
             </ButtonContainer>
             <Menu
@@ -152,6 +167,25 @@ const Inicio = () => {
             >
                 <MenuItem component={Link} to="/calcular-dias-estoque" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
                     Calcular Dias de Estoque com Base no Cardex
+                </MenuItem>
+            </Menu>
+            <Menu
+                id="gerenciador-menu"
+                anchorEl={gerenciadorAnchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={Boolean(gerenciadorAnchorEl)}
+                onClose={handleMenuClose}
+            >
+                <MenuItem component={Link} to="/analise-dias-estoque" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                    Análise de Dias de Estoque com Base na Venda Informada
                 </MenuItem>
             </Menu>
             <LogoContainer>
