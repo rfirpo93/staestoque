@@ -10,7 +10,44 @@ import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import StorageIcon from '@mui/icons-material/Storage';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import logo from './assets/logo.png'; // Importando a imagem do logo
+
+// Definindo o tema inspirado nas cores do logo
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#0d6efd', // Azul principal
+        },
+        secondary: {
+            main: '#6c757d', // Cinza secundário
+        },
+        background: {
+            default: '#e0e0e0',
+            paper: '#ffffff',
+        },
+        text: {
+            primary: '#000000',
+            secondary: '#6c757d',
+        },
+        action: {
+            active: '#0d6efd',
+            hover: '#0b5ed7',
+            selected: '#0a58ca',
+            disabled: '#6c757d',
+            disabledBackground: '#e0e0e0',
+        },
+    },
+    components: {
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    margin: '5px',
+                },
+            },
+        },
+    },
+});
 
 // Container principal estilizado
 const MainContainer = styled(Box)`
@@ -238,4 +275,12 @@ const Inicio = () => {
     );
 };
 
-export default Inicio;
+const ThemedInicio = () => {
+    return (
+        <ThemeProvider theme={theme}>
+            <Inicio />
+        </ThemeProvider>
+    );
+};
+
+export default ThemedInicio;
