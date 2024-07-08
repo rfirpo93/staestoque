@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Typography, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
@@ -37,11 +37,11 @@ const LogoContainer = styled(Box)`
 `;
 
 const Inicio = () => {
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [uploadAnchorEl, setUploadAnchorEl] = React.useState(null);
-    const [stockAnchorEl, setStockAnchorEl] = React.useState(null);
-    const [gerenciadorAnchorEl, setGerenciadorAnchorEl] = React.useState(null);
-    const [configurarAnchorEl, setConfigurarAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [uploadAnchorEl, setUploadAnchorEl] = useState(null);
+    const [stockAnchorEl, setStockAnchorEl] = useState(null);
+    const [gerenciadorAnchorEl, setGerenciadorAnchorEl] = useState(null);
+    const [configurarAnchorEl, setConfigurarAnchorEl] = useState(null);
 
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
