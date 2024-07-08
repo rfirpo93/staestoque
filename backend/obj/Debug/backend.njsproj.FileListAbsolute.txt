@@ -1,0 +1,3 @@
+C:\Users\raulf\OneDrive\Área de Trabalho\Raul\Compras e estoque\backend\obj\Debug\backend.njsproj.AssemblyReference.cache
+C:\Users\raulf\OneDrive\Área de Trabalho\Raul\Compras e estoque\backend\obj\Debug\backend.njsproj.CoreCompileInputs.cache
+C:\Users\raulf\OneDrive\Área de Trabalho\Raul\Compras e estoque\backend\bin\Microsoft.NodejsTools.WebRole.dll

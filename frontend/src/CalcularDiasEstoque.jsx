@@ -57,6 +57,10 @@ const HeaderContainer = styled(Box)`
   justify-content: center;
   width: 100%;
   margin-bottom: 20px;
+  background: linear-gradient(145deg, #f0f0f0, #d0d0d0);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 `;
 
 const HeaderFields = styled(Box)`
@@ -65,6 +69,16 @@ const HeaderFields = styled(Box)`
   justify-content: center;
   gap: 1rem;
   margin-bottom: 1rem;
+`;
+
+const Field = styled(TextField)`
+  .MuiInputBase-root {
+    background-color: #ffffff;
+    border-radius: 4px;
+  }
+  .MuiInputAdornment-root {
+    cursor: pointer;
+  }
 `;
 
 const CalcularDiasEstoque = () => {
@@ -195,97 +209,97 @@ const CalcularDiasEstoque = () => {
             {showHeader && (
                 <HeaderContainer>
                     <HeaderFields>
-                        <TextField
+                        <Field
                             label="Produto"
                             value={produto}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <SearchIcon onClick={handleSelectProduto} style={{ cursor: 'pointer' }} />
+                                        <SearchIcon onClick={handleSelectProduto} />
                                     </InputAdornment>
                                 ),
                             }}
                             variant="outlined"
                             size="small"
                         />
-                        <TextField
+                        <Field
                             label="Estoque Atual"
                             value={estoqueAtual}
                             variant="outlined"
                             size="small"
                             InputProps={{ readOnly: true }}
                         />
-                        <TextField
+                        <Field
                             label="Data Início"
                             value={dataInicio}
                             variant="outlined"
                             size="small"
                             InputProps={{ readOnly: true }}
                         />
-                        <TextField
+                        <Field
                             label="Data Fim"
                             value={dataFim}
                             variant="outlined"
                             size="small"
                             InputProps={{ readOnly: true }}
                         />
-                        <TextField
+                        <Field
                             label="Venda Total no Período"
                             value={vendaTotal}
                             variant="outlined"
                             size="small"
                             InputProps={{ readOnly: true }}
                         />
-                        <TextField
+                        <Field
                             label="Compra Total no Período"
                             value={compraTotal}
                             variant="outlined"
                             size="small"
                             InputProps={{ readOnly: true }}
                         />
-                        <TextField
+                        <Field
                             label="QTD Última Compra"
                             value={qtdUltimaCompra}
                             variant="outlined"
                             size="small"
                             InputProps={{ readOnly: true }}
                         />
-                        <TextField
+                        <Field
                             label="Valor Unitário Última Compra"
                             value={valorUltimaCompra}
                             variant="outlined"
                             size="small"
                             InputProps={{ readOnly: true }}
                         />
-                        <TextField
+                        <Field
                             label="Venda Diária"
                             value={vendaDiaria}
                             variant="outlined"
                             size="small"
                             InputProps={{ readOnly: true }}
                         />
-                        <TextField
+                        <Field
                             label="Venda Média Mensal"
                             value={vendaMediaMensal}
                             variant="outlined"
                             size="small"
                             InputProps={{ readOnly: true }}
                         />
-                        <TextField
+                        <Field
                             label="Venda Média Trimestral"
                             value={vendaMediaTrimestral}
                             variant="outlined"
                             size="small"
                             InputProps={{ readOnly: true }}
                         />
-                        <TextField
+                        <Field
                             label="Venda Média Anual"
                             value={vendaMediaAnual}
                             variant="outlined"
                             size="small"
                             InputProps={{ readOnly: true }}
                         />
-                        <TextField
+                        <Field
                             label="Dias de Estoque"
                             value={diasEstoque}
                             variant="outlined"
