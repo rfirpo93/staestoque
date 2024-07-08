@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { Box, Button, TextField, Typography, Avatar, Alert, InputAdornment } from '@mui/material';
 import { motion } from 'framer-motion';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -12,10 +12,10 @@ import Calculomanual from './Calculomanual';
 import UploadPMPF from './UploadPMPF';
 import Estoque from './Estoque';
 import CalcularPrecoVenda from './CalcularPrecoVenda';
-import CalcularDiasEstoque from './CalcularDiasEstoque';
-import AnaliseDiasEstoque from './AnaliseDiasEstoque';
-import Valorestoquexcusto from './Valorestoquexcusto';
-import Valorestoquexvenda from './Valorestoquexvenda';
+import CalcularDiasEstoque from './CalcularDiasEstoque'; // Importando o novo componente
+import AnaliseDiasEstoque from './AnaliseDiasEstoque'; // Importando o novo componente
+import Valorestoquexcusto from './Valorestoquexcusto'; // Importando o novo componente
+import Valorestoquexvenda from './Valorestoquexvenda'; // Importando o novo componente
 
 // Definindo o tema inspirado nas cores do logo
 const theme = createTheme({
