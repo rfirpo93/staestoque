@@ -187,8 +187,8 @@ const CalcularDiasEstoque = () => {
     };
 
     const handleProductSelect = (product) => {
-        setProduto(product['Produto']);
-        setEstoqueAtual(product['Quantidade']);
+        setProduto(product.produto);
+        setEstoqueAtual(product.quantidade);
         setOpen(false);
     };
 

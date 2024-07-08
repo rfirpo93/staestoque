@@ -5,6 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import * as XLSX from 'xlsx';
 
 const StyledTableCell = styled(TableCell)`
   background-color: #0d6efd;
