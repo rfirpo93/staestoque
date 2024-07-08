@@ -342,7 +342,7 @@ const CalcularDiasEstoque = () => {
             <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
                 <DialogTitle>Selecione um Produto</DialogTitle>
                 <DialogContent>
-                    <Estoque onSelectProduct={handleProductSelect} products={products} />
+                    <Estoque onSelectProduct={handleProductSelect} />
                 </DialogContent>
             </Dialog>
         </MainContainer>
