@@ -12,10 +12,10 @@ import Calculomanual from './Calculomanual';
 import UploadPMPF from './UploadPMPF';
 import Estoque from './Estoque';
 import CalcularPrecoVenda from './CalcularPrecoVenda';
-import CalcularDiasEstoque from './CalcularDiasEstoque'; // Importando o novo componente
-import AnaliseDiasEstoque from './AnaliseDiasEstoque'; // Importando o novo componente
-import Valorestoquexcusto from './Valorestoquexcusto'; // Importando o novo componente
-import Valorestoquexvenda from './Valorestoquexvenda'; // Importando o novo componente
+import CalcularDiasEstoque from './CalcularDiasEstoque';
+import AnaliseDiasEstoque from './AnaliseDiasEstoque';
+import Valorestoquexcusto from './Valorestoquexcusto';
+import Valorestoquexvenda from './Valorestoquexvenda';
 
 // Definindo o tema inspirado nas cores do logo
 const theme = createTheme({
@@ -25,6 +25,10 @@ const theme = createTheme({
         },
         secondary: {
             main: '#6c757d', // Cinza secundário
+        },
+        background: {
+            default: '#e0e0e0',
+            paper: '#ffffff',
         },
     },
 });
