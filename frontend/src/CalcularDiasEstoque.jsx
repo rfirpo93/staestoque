@@ -112,7 +112,9 @@ const CalcularDiasEstoque = () => {
 
     useEffect(() => {
         if (dataInicio && dataFim) {
-            const diffTime = Math.abs(new Date(dataFim) - new Date(dataInicio));
+            const startDate = new Date(dataInicio);
+            const endDate = new Date(dataFim);
+            const diffTime = Math.abs(endDate - startDate);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including both start and end dates
             setTotalDias(diffDays);
 
