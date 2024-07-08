@@ -65,12 +65,15 @@ const CalcularDiasEstoque = () => {
             // Process the data
             const processedData = [];
             let lastDate = null;
+            let lastOperation = null;
 
             jsonData.slice(12).forEach((row) => { // Start from the 13th row (index 12)
                 if (row[2] !== undefined && row[2] !== '') { // Ignore rows where the 3rd column is blank
                     const date = row[0] || lastDate; // Use the last known date if the current date is blank
-                    processedData.push([date, row[1], row[2]]);
+                    const operation = row[1] || lastOperation; // Use the last known operation if the current operation is blank
+                    processedData.push([date, operation, row[2], row[7], row[10]]);
                     lastDate = date;
+                    lastOperation = operation;
                 }
             });
 
@@ -100,8 +103,10 @@ const CalcularDiasEstoque = () => {
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>Data</StyledTableCell>
-                                <StyledTableCell>Coluna 2</StyledTableCell>
-                                <StyledTableCell>Coluna 3</StyledTableCell>
+                                <StyledTableCell>Operação</StyledTableCell>
+                                <StyledTableCell>Entidade</StyledTableCell>
+                                <StyledTableCell>Quantidade</StyledTableCell>
+                                <StyledTableCell>Valor</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -110,6 +115,8 @@ const CalcularDiasEstoque = () => {
                                     <TableCell align="center">{row[0]}</TableCell>
                                     <TableCell align="center">{row[1]}</TableCell>
                                     <TableCell align="center">{row[2]}</TableCell>
+                                    <TableCell align="center">{row[3]}</TableCell>
+                                    <TableCell align="center">{row[4]}</TableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>
