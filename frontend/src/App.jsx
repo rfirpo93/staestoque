@@ -174,56 +174,16 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <Router>
                 <Routes>
-                    <Route path="/" element={
-                        <ErrorBoundary>
-                            <Login />
-                        </ErrorBoundary>
-                    } />
-                    <Route path="/inicio" element={
-                        <ErrorBoundary>
-                            <Inicio />
-                        </ErrorBoundary>
-                    } />
-                    <Route path="/calculo" element={
-                        <ErrorBoundary>
-                            <Calculomanual />
-                        </ErrorBoundary>
-                    } />
-                    <Route path="/upload-pmpf" element={
-                        <ErrorBoundary>
-                            <UploadPMPF />
-                        </ErrorBoundary>
-                    } />
-                    <Route path="/consultar-estoque" element={
-                        <ErrorBoundary>
-                            <Estoque />
-                        </ErrorBoundary>
-                    } />
-                    <Route path="/calcular-preco-venda" element={
-                        <ErrorBoundary>
-                            <CalcularPrecoVenda />
-                        </ErrorBoundary>
-                    } />
-                    <Route path="/calcular-dias-estoque" element={
-                        <ErrorBoundary>
-                            <CalcularDiasEstoque />
-                        </ErrorBoundary>
-                    } />
-                    <Route path="/analise-dias-estoque" element={
-                        <ErrorBoundary>
-                            <AnaliseDiasEstoque />
-                        </ErrorBoundary>
-                    } />
-                    <Route path="/estoquexcusto" element={
-                        <ErrorBoundary>
-                            <Valorestoquexcusto />
-                        </ErrorBoundary>
-                    } />
-                    <Route path="/valorestoquexvenda" element={
-                        <ErrorBoundary>
-                            <Valorestoquexvenda />
-                        </ErrorBoundary>
-                    } />
+                    <Route path="/" element={<Login />} />
+                    <Route path="/inicio" element={<Inicio />} />
+                    <Route path="/calculo" element={<Calculomanual />} />
+                    <Route path="/upload-pmpf" element={<UploadPMPF />} />
+                    <Route path="/consultar-estoque" element={<Estoque />} />
+                    <Route path="/calcular-preco-venda" element={<CalcularPrecoVenda />} />
+                    <Route path="/calcular-dias-estoque" element={<CalcularDiasEstoque />} />
+                    <Route path="/analise-dias-estoque" element={<AnaliseDiasEstoque />} />
+                    <Route path="/estoquexcusto" element={<Valorestoquexcusto />} />
+                    <Route path="/valorestoquexvenda" element={<Valorestoquexvenda />} />
                 </Routes>
             </Router>
         </ThemeProvider>
