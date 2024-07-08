@@ -1,10 +1,11 @@
 ﻿import React, { useState } from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, InputAdornment } from '@mui/material';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, InputAdornment, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
+import Estoque from './Estoque'; // Import the Estoque component
 
 const MainContainer = styled(Box)`
   display: flex;
@@ -81,6 +82,9 @@ const CalcularDiasEstoque = () => {
     const [vendaMediaTrimestral, setVendaMediaTrimestral] = useState(0);
     const [vendaMediaAnual, setVendaMediaAnual] = useState(0);
     const [diasEstoque, setDiasEstoque] = useState(0);
+    const [showHeader, setShowHeader] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [products, setProducts] = useState([]);
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -144,6 +148,8 @@ const CalcularDiasEstoque = () => {
             setVendaMediaAnual(vendaDiariaCalc * 365);
 
             setDiasEstoque(estoqueAtual / vendaDiariaCalc);
+
+            setShowHeader(true);
         };
 
         reader.readAsBinaryString(file);
@@ -160,15 +166,16 @@ const CalcularDiasEstoque = () => {
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
                 const json = XLSX.utils.sheet_to_json(worksheet);
-
-                // Open a modal or a new page with the products list
-                // On double-click, select the product and set the values for produto and estoqueAtual
-                // Here we simulate the selection
-                const selectedProduct = json[0]; // Simulate selecting the first product
-                setProduto(selectedProduct['Produto']);
-                setEstoqueAtual(selectedProduct['Quantidade']);
+                setProducts(json);
+                setOpen(true);
             })
             .catch(error => console.error('Error fetching data:', error));
+    };
+
+    const handleProductSelect = (product) => {
+        setProduto(product['Produto']);
+        setEstoqueAtual(product['Quantidade']);
+        setOpen(false);
     };
 
     return (
@@ -176,107 +183,6 @@ const CalcularDiasEstoque = () => {
             <BackButton variant="contained" component={Link} to="/inicio" startIcon={<ArrowBackIcon />}>
                 Voltar para o Início
             </BackButton>
-            <HeaderContainer>
-                <HeaderFields>
-                    <TextField
-                        label="Produto"
-                        value={produto}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon onClick={handleSelectProduto} style={{ cursor: 'pointer' }} />
-                                </InputAdornment>
-                            ),
-                        }}
-                        variant="outlined"
-                        size="small"
-                    />
-                    <TextField
-                        label="Estoque Atual"
-                        value={estoqueAtual}
-                        variant="outlined"
-                        size="small"
-                        InputProps={{ readOnly: true }}
-                    />
-                    <TextField
-                        label="Data Início"
-                        value={dataInicio}
-                        variant="outlined"
-                        size="small"
-                        InputProps={{ readOnly: true }}
-                    />
-                    <TextField
-                        label="Data Fim"
-                        value={dataFim}
-                        variant="outlined"
-                        size="small"
-                        InputProps={{ readOnly: true }}
-                    />
-                    <TextField
-                        label="Venda Total no Período"
-                        value={vendaTotal}
-                        variant="outlined"
-                        size="small"
-                        InputProps={{ readOnly: true }}
-                    />
-                    <TextField
-                        label="Compra Total no Período"
-                        value={compraTotal}
-                        variant="outlined"
-                        size="small"
-                        InputProps={{ readOnly: true }}
-                    />
-                    <TextField
-                        label="QTD Última Compra"
-                        value={qtdUltimaCompra}
-                        variant="outlined"
-                        size="small"
-                        InputProps={{ readOnly: true }}
-                    />
-                    <TextField
-                        label="Valor Unitário Última Compra"
-                        value={valorUltimaCompra}
-                        variant="outlined"
-                        size="small"
-                        InputProps={{ readOnly: true }}
-                    />
-                    <TextField
-                        label="Venda Diária"
-                        value={vendaDiaria}
-                        variant="outlined"
-                        size="small"
-                        InputProps={{ readOnly: true }}
-                    />
-                    <TextField
-                        label="Venda Média Mensal"
-                        value={vendaMediaMensal}
-                        variant="outlined"
-                        size="small"
-                        InputProps={{ readOnly: true }}
-                    />
-                    <TextField
-                        label="Venda Média Trimestral"
-                        value={vendaMediaTrimestral}
-                        variant="outlined"
-                        size="small"
-                        InputProps={{ readOnly: true }}
-                    />
-                    <TextField
-                        label="Venda Média Anual"
-                        value={vendaMediaAnual}
-                        variant="outlined"
-                        size="small"
-                        InputProps={{ readOnly: true }}
-                    />
-                    <TextField
-                        label="Dias de Estoque"
-                        value={diasEstoque}
-                        variant="outlined"
-                        size="small"
-                        InputProps={{ readOnly: true }}
-                    />
-                </HeaderFields>
-            </HeaderContainer>
             <Typography variant="h4" gutterBottom align="center">
                 Dados de Estoque
             </Typography>
@@ -286,6 +192,109 @@ const CalcularDiasEstoque = () => {
                 onChange={handleFileUpload}
                 style={{ marginTop: '20px', marginBottom: '20px' }}
             />
+            {showHeader && (
+                <HeaderContainer>
+                    <HeaderFields>
+                        <TextField
+                            label="Produto"
+                            value={produto}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon onClick={handleSelectProduto} style={{ cursor: 'pointer' }} />
+                                    </InputAdornment>
+                                ),
+                            }}
+                            variant="outlined"
+                            size="small"
+                        />
+                        <TextField
+                            label="Estoque Atual"
+                            value={estoqueAtual}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{ readOnly: true }}
+                        />
+                        <TextField
+                            label="Data Início"
+                            value={dataInicio}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{ readOnly: true }}
+                        />
+                        <TextField
+                            label="Data Fim"
+                            value={dataFim}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{ readOnly: true }}
+                        />
+                        <TextField
+                            label="Venda Total no Período"
+                            value={vendaTotal}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{ readOnly: true }}
+                        />
+                        <TextField
+                            label="Compra Total no Período"
+                            value={compraTotal}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{ readOnly: true }}
+                        />
+                        <TextField
+                            label="QTD Última Compra"
+                            value={qtdUltimaCompra}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{ readOnly: true }}
+                        />
+                        <TextField
+                            label="Valor Unitário Última Compra"
+                            value={valorUltimaCompra}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{ readOnly: true }}
+                        />
+                        <TextField
+                            label="Venda Diária"
+                            value={vendaDiaria}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{ readOnly: true }}
+                        />
+                        <TextField
+                            label="Venda Média Mensal"
+                            value={vendaMediaMensal}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{ readOnly: true }}
+                        />
+                        <TextField
+                            label="Venda Média Trimestral"
+                            value={vendaMediaTrimestral}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{ readOnly: true }}
+                        />
+                        <TextField
+                            label="Venda Média Anual"
+                            value={vendaMediaAnual}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{ readOnly: true }}
+                        />
+                        <TextField
+                            label="Dias de Estoque"
+                            value={diasEstoque}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{ readOnly: true }}
+                        />
+                    </HeaderFields>
+                </HeaderContainer>
+            )}
             {data.length > 0 ? (
                 <TableContainerStyled component={Paper}>
                     <Table>
@@ -316,6 +325,12 @@ const CalcularDiasEstoque = () => {
                     Carregando dados...
                 </Typography>
             )}
+            <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+                <DialogTitle>Selecione um Produto</DialogTitle>
+                <DialogContent>
+                    <Estoque onSelectProduct={handleProductSelect} products={products} />
+                </DialogContent>
+            </Dialog>
         </MainContainer>
     );
 };
