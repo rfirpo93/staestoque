@@ -20,6 +20,7 @@ import Valorestoquexvenda from './Valorestoquexvenda';
 // Definindo o tema inspirado nas cores do logo
 const theme = createTheme({
     palette: {
+        mode: 'light', // Adicionando modo claro explicitamente
         primary: {
             main: '#0d6efd', // Azul principal
         },
@@ -29,26 +30,6 @@ const theme = createTheme({
         background: {
             default: '#e0e0e0',
             paper: '#ffffff',
-        },
-        text: {
-            primary: '#000000',
-            secondary: '#6c757d',
-        },
-        action: {
-            active: '#0d6efd',
-            hover: '#0b5ed7',
-            selected: '#0a58ca',
-            disabled: '#6c757d',
-            disabledBackground: '#e0e0e0',
-        },
-    },
-    components: {
-        MuiButton: {
-            styleOverrides: {
-                root: {
-                    margin: '5px',
-                },
-            },
         },
     },
 });
@@ -60,9 +41,9 @@ const MainContainer = styled(Box)`
   justify-content: center;
   align-items: center;
   background: linear-gradient(145deg, #e0e0e0, #ffffff);
-  width: 100vw;
-  padding: 0;
-  margin: 0;
+  width: 100vw; // Preencher horizontalmente
+  padding: 0; // Remover padding padrão do Container
+  margin: 0; // Remover margin padrão do Container
 `;
 
 // Container de login estilizado
