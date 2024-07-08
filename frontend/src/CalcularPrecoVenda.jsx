@@ -82,7 +82,7 @@ const CalcularPrecoVenda = () => {
     const [produtoRows, setProdutoRows] = useState([]);
     const [pmpfRows, setPmpfRows] = useState([]);
     const [filters, setFilters] = useState({ descricao: '', pmpf: '' });
-    const [produtoFilters, setProdutoFilters] = useState({ produto: '', quantidade: '', custo: '' });
+    const [produtoFilters, setProdutoFilters] = useState({ codigo: '', produto: '', quantidade: '', custo: '' });
     const [result, setResult] = useState({});
     const [open, setOpen] = useState(false);
 
@@ -97,6 +97,7 @@ const CalcularPrecoVenda = () => {
                 const json = XLSX.utils.sheet_to_json(worksheet);
 
                 const formattedRows = json.map(row => ({
+                    codigo: row['Código'] ? row['Código'].toString() : '',
                     produto: row['Produto'] ? row['Produto'].toString() : '',
                     quantidade: row['Quantidade'] ? row['Quantidade'].toString() : '',
                     custo: row['Custo'] ? row['Custo'].toString() : ''
@@ -173,6 +174,7 @@ const CalcularPrecoVenda = () => {
     };
 
     const filteredProdutoRows = produtoRows.filter(row =>
+        (row.codigo || '').toLowerCase().includes(produtoFilters.codigo.toLowerCase()) &&
         (row.produto || '').toLowerCase().includes(produtoFilters.produto.toLowerCase()) &&
         (row.quantidade || '').toLowerCase().includes(produtoFilters.quantidade.toLowerCase()) &&
         (row.custo || '').toLowerCase().includes(produtoFilters.custo.toLowerCase())
@@ -512,6 +514,24 @@ const CalcularPrecoVenda = () => {
                                 <TableRow>
                                     <TableCell>
                                         <TextField
+                                            placeholder="Código"
+                                            name="codigo"
+                                            value={produtoFilters.codigo}
+                                            onChange={handleProdutoFilterChange}
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <SearchIcon />
+                                                    </InputAdornment>
+                                                ),
+                                                style: { backgroundColor: 'white', borderRadius: 4 }
+                                            }}
+                                            variant="outlined"
+                                            size="small"
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
                                             placeholder="Produto"
                                             name="produto"
                                             value={produtoFilters.produto}
@@ -569,6 +589,7 @@ const CalcularPrecoVenda = () => {
                             <TableBody>
                                 {filteredProdutoRows.map((row, index) => (
                                     <TableRow key={index} onDoubleClick={() => handleProdutoRowDoubleClick(row)}>
+                                        <TableCell align="center">{row.codigo}</TableCell>
                                         <TableCell align="center">{row.produto}</TableCell>
                                         <TableCell align="center">{row.quantidade}</TableCell>
                                         <TableCell align="center">{row.custo}</TableCell>
