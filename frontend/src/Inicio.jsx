@@ -1,58 +1,16 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import { Box, Button, TextField, Typography, Avatar, Alert, InputAdornment } from '@mui/material';
-import { motion } from 'framer-motion';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import LockIcon from '@mui/icons-material/Lock';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Box, Button, Typography, Menu, MenuItem } from '@mui/material';
+import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
-import Inicio from './Inicio';
-import Calculomanual from './Calculomanual';
-import UploadPMPF from './UploadPMPF';
-import Estoque from './Estoque';
-import CalcularPrecoVenda from './CalcularPrecoVenda';
-import CalcularDiasEstoque from './CalcularDiasEstoque';
-import AnaliseDiasEstoque from './AnaliseDiasEstoque';
-import Valorestoquexcusto from './Valorestoquexcusto';
-import Valorestoquexvenda from './Valorestoquexvenda';
-
-// Definindo o tema inspirado nas cores do logo
-const theme = createTheme({
-    palette: {
-        mode: 'light', // Adicionando modo claro explicitamente
-        primary: {
-            main: '#0d6efd', // Azul principal
-        },
-        secondary: {
-            main: '#6c757d', // Cinza secundário
-        },
-        background: {
-            default: '#e0e0e0',
-            paper: '#ffffff',
-        },
-        text: {
-            primary: '#000000',
-            secondary: '#6c757d',
-        },
-        action: {
-            active: '#0d6efd',
-            hover: '#0b5ed7',
-            selected: '#0a58ca',
-            disabled: '#6c757d',
-            disabledBackground: '#e0e0e0',
-        },
-    },
-    components: {
-        MuiButton: {
-            styleOverrides: {
-                root: {
-                    margin: '5px',
-                },
-            },
-        },
-    },
-});
+import CalculateIcon from '@mui/icons-material/Calculate';
+import SearchIcon from '@mui/icons-material/Search';
+import ListIcon from '@mui/icons-material/List';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import StorageIcon from '@mui/icons-material/Storage';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import SettingsIcon from '@mui/icons-material/Settings';
+import logo from './assets/logo.png'; // Importando a imagem do logo
 
 // Container principal estilizado
 const MainContainer = styled(Box)`
@@ -61,134 +19,223 @@ const MainContainer = styled(Box)`
   justify-content: center;
   align-items: center;
   background: linear-gradient(145deg, #e0e0e0, #ffffff);
-  width: 100vw; // Preencher horizontalmente
-  padding: 0; // Remover padding padrão do Container
-  margin: 0; // Remover margin padrão do Container
+  width: 100vw;
+  padding: 0;
+  margin: 0;
 `;
 
-// Container de login estilizado
-const LoginContainer = styled(Box)`
-  padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
-  max-width: 400px;
-  width: 100%;
+const ButtonContainer = styled(Box)`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 20px;
+`;
+
+const LogoContainer = styled(Box)`
   text-align: center;
 `;
 
-const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+const Inicio = () => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [uploadAnchorEl, setUploadAnchorEl] = useState(null);
+    const [stockAnchorEl, setStockAnchorEl] = useState(null);
+    const [gerenciadorAnchorEl, setGerenciadorAnchorEl] = useState(null);
+    const [configurarAnchorEl, setConfigurarAnchorEl] = useState(null);
 
-    const handleLogin = (e) => {
-        e.preventDefault();
-        const users = {
-            'Raul': '221193',
-            'Monica': 'monica123',
-            'Adriana': 'adriana123',
-            'Anderson': 'anderson123',
-            'Santa Clara': 'santaclara'
-        };
-        if (users[username] && users[username] === password) {
-            navigate('/inicio');
-        } else {
-            setError('Usuário ou senha incorretos');
-        }
+    const handleMenuClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleUploadClick = (event) => {
+        setUploadAnchorEl(event.currentTarget);
+    };
+
+    const handleStockClick = (event) => {
+        setStockAnchorEl(event.currentTarget);
+    };
+
+    const handleGerenciadorClick = (event) => {
+        setGerenciadorAnchorEl(event.currentTarget);
+    };
+
+    const handleConfigurarClick = (event) => {
+        setConfigurarAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+        setUploadAnchorEl(null);
+        setStockAnchorEl(null);
+        setGerenciadorAnchorEl(null);
+        setConfigurarAnchorEl(null);
     };
 
     return (
         <MainContainer>
-            <LoginContainer
-                component={motion.div}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
+            <ButtonContainer>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<CalculateIcon />}
+                    onClick={handleMenuClick}
+                >
+                    Cálculos de Oferta
+                </Button>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<SearchIcon />}
+                    onClick={handleUploadClick}
+                >
+                    Consulta de Dados
+                </Button>
+                <Button
+                    variant="contained"
+                    color="success"
+                    startIcon={<PriceCheckIcon />}
+                    component={Link}
+                    to="/calcular-preco-venda"
+                >
+                    Calcular Preço de Venda
+                </Button>
+                <Button
+                    variant="contained"
+                    color="info"
+                    startIcon={<StorageIcon />}
+                    onClick={handleStockClick}
+                >
+                    Cálculos de Estoque
+                </Button>
+                <Button
+                    variant="contained"
+                    color="warning"
+                    startIcon={<AssessmentIcon />}
+                    onClick={handleGerenciadorClick}
+                >
+                    Gerenciador de Estoque
+                </Button>
+                <Button
+                    variant="contained"
+                    color="default"
+                    startIcon={<SettingsIcon />}
+                    onClick={handleConfigurarClick}
+                >
+                    Configurar Produtos
+                </Button>
+            </ButtonContainer>
+            <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
             >
-                <Box display="flex" flexDirection="column" alignItems="center">
-                    <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Login
-                    </Typography>
-                    {error && <Alert severity="error">{error}</Alert>}
-                    <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="username"
-                            label="Nome de Usuário"
-                            name="username"
-                            autoComplete="username"
-                            autoFocus
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <AccountCircle />
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Senha"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <LockIcon />
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Entrar
-                        </Button>
-                    </Box>
-                </Box>
-            </LoginContainer>
+                <MenuItem component={Link} to="/calculo" onClick={handleMenuClose}>
+                    Cálculo Manual de Vencimento x Venda x Margem
+                </MenuItem>
+            </Menu>
+            <Menu
+                id="upload-menu"
+                anchorEl={uploadAnchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={Boolean(uploadAnchorEl)}
+                onClose={handleMenuClose}
+            >
+                <MenuItem component={Link} to="/upload-pmpf" onClick={handleMenuClose} startIcon={<ListIcon />}>
+                    Consultar lista PMPF
+                </MenuItem>
+                <MenuItem component={Link} to="/consultar-estoque" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                    Consultar estoque de produtos
+                </MenuItem>
+            </Menu>
+            <Menu
+                id="stock-menu"
+                anchorEl={stockAnchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={Boolean(stockAnchorEl)}
+                onClose={handleMenuClose}
+            >
+                <MenuItem component={Link} to="/calcular-dias-estoque" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                    Calcular Dias de Estoque com Base no Cardex
+                </MenuItem>
+            </Menu>
+            <Menu
+                id="gerenciador-menu"
+                anchorEl={gerenciadorAnchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={Boolean(gerenciadorAnchorEl)}
+                onClose={handleMenuClose}
+            >
+                <MenuItem component={Link} to="/analise-dias-estoque" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                    Análise de Dias de Estoque com Base na Venda Informada
+                </MenuItem>
+                <MenuItem component={Link} to="/estoquexcusto" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                    Análise de Valor em Estoque por Custo
+                </MenuItem>
+                <MenuItem component={Link} to="/valorestoquexvenda" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                    Análise de Valor em Estoque por Preço de Venda
+                </MenuItem>
+            </Menu>
+            <Menu
+                id="configurar-menu"
+                anchorEl={configurarAnchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={Boolean(configurarAnchorEl)}
+                onClose={handleMenuClose}
+            >
+                <MenuItem component={Link} to="/vincular-codigos" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                    Vincular Códigos a Produto
+                </MenuItem>
+            </Menu>
+            <LogoContainer>
+                <img src={logo} alt="Logo Santa Clara" style={{ maxWidth: '100%', height: 'auto' }} />
+                <Typography variant="h3" gutterBottom>
+                    Bem-vindo à Tela Inicial
+                </Typography>
+            </LogoContainer>
         </MainContainer>
     );
 };
 
-const App = () => {
-    return (
-        <ThemeProvider theme={theme}>
-            <Router>
-                <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/inicio" element={<Inicio />} />
-                    <Route path="/calculo" element={<Calculomanual />} />
-                    <Route path="/upload-pmpf" element={<UploadPMPF />} />
-                    <Route path="/consultar-estoque" element={<Estoque />} />
-                    <Route path="/calcular-preco-venda" element={<CalcularPrecoVenda />} />
-                    <Route path="/calcular-dias-estoque" element={<CalcularDiasEstoque />} />
-                    <Route path="/analise-dias-estoque" element={<AnaliseDiasEstoque />} />
-                    <Route path="/estoquexcusto" element={<Valorestoquexcusto />} />
-                    <Route path="/valorestoquexvenda" element={<Valorestoquexvenda />} />
-                </Routes>
-            </Router>
-        </ThemeProvider>
-    );
-};
-
-export default App;
+export default Inicio;
