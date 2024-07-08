@@ -13,6 +13,7 @@ import UploadPMPF from './UploadPMPF';
 import Estoque from './Estoque';
 import CalcularPrecoVenda from './CalcularPrecoVenda';
 import CalcularDiasEstoque from './CalcularDiasEstoque'; // Importando o novo componente
+import AnaliseDiasEstoque from './AnaliseDiasEstoque'; // Importando o novo componente
 
 // Definindo o tema inspirado nas cores do logo
 const theme = createTheme({
@@ -154,6 +155,7 @@ const App = () => {
                     <Route path="/consultar-estoque" element={<Estoque />} />
                     <Route path="/calcular-preco-venda" element={<CalcularPrecoVenda />} />
                     <Route path="/calcular-dias-estoque" element={<CalcularDiasEstoque />} />
+                    <Route path="/analise-dias-estoque" element={<AnaliseDiasEstoque />} />
                 </Routes>
             </Router>
         </ThemeProvider>
