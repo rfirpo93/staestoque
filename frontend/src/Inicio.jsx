@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { ThemeProvider } from '@mui/material/styles';
+import React from 'react';
 import { Box, Button, Typography, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
@@ -12,43 +11,6 @@ import StorageIcon from '@mui/icons-material/Storage';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import SettingsIcon from '@mui/icons-material/Settings';
 import logo from './assets/logo.png'; // Importando a imagem do logo
-import { createTheme } from '@mui/material/styles';
-
-// Definindo o tema inspirado nas cores do logo
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#0d6efd', // Azul principal
-        },
-        secondary: {
-            main: '#6c757d', // Cinza secundário
-        },
-        background: {
-            default: '#e0e0e0',
-            paper: '#ffffff',
-        },
-        text: {
-            primary: '#000000',
-            secondary: '#6c757d',
-        },
-        action: {
-            active: '#0d6efd',
-            hover: '#0b5ed7',
-            selected: '#0a58ca',
-            disabled: '#6c757d',
-            disabledBackground: '#e0e0e0',
-        },
-    },
-    components: {
-        MuiButton: {
-            styleOverrides: {
-                root: {
-                    margin: '5px',
-                },
-            },
-        },
-    },
-});
 
 // Container principal estilizado
 const MainContainer = styled(Box)`
@@ -75,11 +37,11 @@ const LogoContainer = styled(Box)`
 `;
 
 const Inicio = () => {
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [uploadAnchorEl, setUploadAnchorEl] = useState(null);
-    const [stockAnchorEl, setStockAnchorEl] = useState(null);
-    const [gerenciadorAnchorEl, setGerenciadorAnchorEl] = useState(null);
-    const [configurarAnchorEl, setConfigurarAnchorEl] = useState(null);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [uploadAnchorEl, setUploadAnchorEl] = React.useState(null);
+    const [stockAnchorEl, setStockAnchorEl] = React.useState(null);
+    const [gerenciadorAnchorEl, setGerenciadorAnchorEl] = React.useState(null);
+    const [configurarAnchorEl, setConfigurarAnchorEl] = React.useState(null);
 
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -276,10 +238,4 @@ const Inicio = () => {
     );
 };
 
-const ThemedInicio = () => (
-    <ThemeProvider theme={theme}>
-        <Inicio />
-    </ThemeProvider>
-);
-
-export default ThemedInicio;
+export default Inicio;
