@@ -479,7 +479,7 @@ const CalcularPrecoVenda = () => {
                             <Typography>Valor Líquido por Unidade: R$ {formatNumber(result.valorLiquidoPorUnidade)}</Typography>
                         </ResultField>
                     </ResultBox>
-                    <ResultBox component={motion.div} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.0 }} sx={{ borderColor: 'yellow', color: 'yellow' }}>
+                    <ResultBox component={motion.div} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.0 }} sx={{ borderColor: 'yellow', color: 'black' }}>
                         <Typography variant="h6" gutterBottom>
                             Valor Líquido Total do Pedido
                         </Typography>
