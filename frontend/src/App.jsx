@@ -12,10 +12,10 @@ import Calculomanual from './Calculomanual';
 import UploadPMPF from './UploadPMPF';
 import Estoque from './Estoque';
 import CalcularPrecoVenda from './CalcularPrecoVenda';
-import CalcularDiasEstoque from './CalcularDiasEstoque';
-import AnaliseDiasEstoque from './AnaliseDiasEstoque';
-import Valorestoquexcusto from './Valorestoquexcusto';
-import Valorestoquexvenda from './Valorestoquexvenda';
+import CalcularDiasEstoque from './CalcularDiasEstoque'; // Importando o novo componente
+import AnaliseDiasEstoque from './AnaliseDiasEstoque'; // Importando o novo componente
+import Valorestoquexcusto from './Valorestoquexcusto'; // Importando o novo componente
+import Valorestoquexvenda from './Valorestoquexvenda'; // Importando o novo componente
 
 // Definindo o tema inspirado nas cores do logo
 const theme = createTheme({
@@ -29,6 +29,26 @@ const theme = createTheme({
         background: {
             default: '#e0e0e0',
             paper: '#ffffff',
+        },
+        text: {
+            primary: '#000000',
+            secondary: '#6c757d',
+        },
+        action: {
+            active: '#0d6efd',
+            hover: '#0b5ed7',
+            selected: '#0a58ca',
+            disabled: '#6c757d',
+            disabledBackground: '#e0e0e0',
+        },
+    },
+    components: {
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    margin: '5px',
+                },
+            },
         },
     },
 });
