@@ -1,10 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, InputAdornment, Button } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import * as XLSX from 'xlsx';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, InputAdornment } from '@mui/material';
 import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
+import SearchIcon from '@mui/icons-material/Search';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -22,6 +19,7 @@ const StyledTableRow = styled(TableRow)`
   }
   &:hover {
     background-color: #e0f7fa;
+    cursor: pointer;
   }
 `;
 
@@ -42,17 +40,7 @@ const TableContainerStyled = styled(TableContainer)`
   background-color: #ffffff;
 `;
 
-const BackButton = styled(Button)`
-  align-self: flex-start;
-  margin-bottom: 1rem;
-  background-color: #0d6efd;
-  color: white;
-  &:hover {
-    background-color: #0a58ca;
-  }
-`;
-
-const Estoque = () => {
+const Estoque = ({ onSelectProduct }) => {
     const [rows, setRows] = useState([]);
     const [filters, setFilters] = useState({ codigo: '', produto: '', quantidade: '', custo: '' });
 
@@ -97,9 +85,6 @@ const Estoque = () => {
 
     return (
         <MainContainer>
-            <BackButton variant="contained" component={Link} to="/inicio" startIcon={<ArrowBackIcon />}>
-                Voltar para o Início
-            </BackButton>
             <Typography variant="h4" gutterBottom align="center">
                 Consulta de Estoque
             </Typography>
@@ -192,7 +177,7 @@ const Estoque = () => {
                         </TableHead>
                         <TableBody>
                             {filteredRows.map((row, index) => (
-                                <StyledTableRow key={index}>
+                                <StyledTableRow key={index} onDoubleClick={() => onSelectProduct(row)}>
                                     <TableCell align="center">{row.codigo}</TableCell>
                                     <TableCell align="center">{row.produto}</TableCell>
                                     <TableCell align="center">{row.quantidade}</TableCell>
