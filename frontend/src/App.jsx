@@ -174,20 +174,83 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <Router>
                 <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/inicio" element={<Inicio />} />
-                    <Route path="/calculo" element={<Calculomanual />} />
-                    <Route path="/upload-pmpf" element={<UploadPMPF />} />
-                    <Route path="/consultar-estoque" element={<Estoque />} />
-                    <Route path="/calcular-preco-venda" element={<CalcularPrecoVenda />} />
-                    <Route path="/calcular-dias-estoque" element={<CalcularDiasEstoque />} />
-                    <Route path="/analise-dias-estoque" element={<AnaliseDiasEstoque />} />
-                    <Route path="/estoquexcusto" element={<Valorestoquexcusto />} />
-                    <Route path="/valorestoquexvenda" element={<Valorestoquexvenda />} />
+                    <Route path="/" element={
+                        <ErrorBoundary>
+                            <Login />
+                        </ErrorBoundary>
+                    } />
+                    <Route path="/inicio" element={
+                        <ErrorBoundary>
+                            <Inicio />
+                        </ErrorBoundary>
+                    } />
+                    <Route path="/calculo" element={
+                        <ErrorBoundary>
+                            <Calculomanual />
+                        </ErrorBoundary>
+                    } />
+                    <Route path="/upload-pmpf" element={
+                        <ErrorBoundary>
+                            <UploadPMPF />
+                        </ErrorBoundary>
+                    } />
+                    <Route path="/consultar-estoque" element={
+                        <ErrorBoundary>
+                            <Estoque />
+                        </ErrorBoundary>
+                    } />
+                    <Route path="/calcular-preco-venda" element={
+                        <ErrorBoundary>
+                            <CalcularPrecoVenda />
+                        </ErrorBoundary>
+                    } />
+                    <Route path="/calcular-dias-estoque" element={
+                        <ErrorBoundary>
+                            <CalcularDiasEstoque />
+                        </ErrorBoundary>
+                    } />
+                    <Route path="/analise-dias-estoque" element={
+                        <ErrorBoundary>
+                            <AnaliseDiasEstoque />
+                        </ErrorBoundary>
+                    } />
+                    <Route path="/estoquexcusto" element={
+                        <ErrorBoundary>
+                            <Valorestoquexcusto />
+                        </ErrorBoundary>
+                    } />
+                    <Route path="/valorestoquexvenda" element={
+                        <ErrorBoundary>
+                            <Valorestoquexvenda />
+                        </ErrorBoundary>
+                    } />
                 </Routes>
             </Router>
         </ThemeProvider>
     );
 };
+
+// Componente ErrorBoundary para capturar e logar erros
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false, errorInfo: null };
+    }
+
+    componentDidCatch(error, errorInfo) {
+        console.log("Error caught in ErrorBoundary:", error);
+        this.setState({
+            hasError: true,
+            errorInfo: errorInfo
+        });
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return <h1>Something went wrong.</h1>;
+        }
+        return this.props.children;
+    }
+}
 
 export default App;
