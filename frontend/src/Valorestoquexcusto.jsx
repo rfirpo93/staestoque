@@ -25,23 +25,24 @@ const Valorestoquexcusto = () => {
     const [total, setTotal] = useState(0);
 
     useEffect(() => {
-        const url = '/mnt/data/estoquecusto.xlsx';
+        const fetchData = async () => {
+            const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/estoquecusto.xlsx';
 
-        fetch(url)
-            .then(response => response.arrayBuffer())
-            .then(data => {
-                const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
-                const sheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[sheetName];
-                const json = XLSX.utils.sheet_to_json(worksheet);
+            const response = await fetch(url);
+            const arrayBuffer = await response.arrayBuffer();
+            const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet);
 
-                const filteredRows = json.filter(row => row['Quantidade'] > 0);
-                const totalValue = filteredRows.reduce((sum, row) => sum + (row['Quantidade'] * row['Custo']), 0);
+            const filteredRows = json.filter(row => row['Quantidade'] > 0);
+            const totalValue = filteredRows.reduce((sum, row) => sum + (row['Quantidade'] * row['Custo']), 0);
 
-                setRows(filteredRows);
-                setTotal(totalValue);
-            })
-            .catch(error => console.error('Error fetching data:', error));
+            setRows(filteredRows);
+            setTotal(totalValue);
+        };
+
+        fetchData().catch(console.error);
     }, []);
 
     return (

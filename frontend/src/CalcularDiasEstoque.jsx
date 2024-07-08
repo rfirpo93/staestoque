@@ -1,32 +1,55 @@
 ﻿import React, { useState } from 'react';
-import { Box, Button, Typography, TextField } from '@mui/material';
-import styled from '@emotion/styled';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
 import * as XLSX from 'xlsx';
+import styled from '@emotion/styled';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Link } from 'react-router-dom';
 
-// Estilização para o container principal
 const MainContainer = styled(Box)`
-  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
   background: linear-gradient(145deg, #e0e0e0, #ffffff);
-  padding: 20px;
+`;
+
+const TableContainerStyled = styled(TableContainer)`
+  margin-top: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+`;
+
+const StyledTableCell = styled(TableCell)`
+  background-color: #0d6efd;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+`;
+
+const StyledTableRow = styled(TableRow)`
+  &:nth-of-type(odd) {
+    background-color: #f2f2f2;
+  }
+  &:hover {
+    background-color: #e0f7fa;
+  }
+`;
+
+const BackButton = styled(Button)`
+  align-self: flex-start;
+  margin-bottom: 1rem;
+  background-color: #0d6efd;
+  color: white;
+  &:hover {
+    background-color: #0a58ca;
+  }
 `;
 
 const CalcularDiasEstoque = () => {
-    const [vendas, setVendas] = useState('');
-    const [estoque, setEstoque] = useState('');
-    const [dias, setDias] = useState(null);
     const [data, setData] = useState([]);
-
-    const calcularDias = () => {
-        if (vendas && estoque) {
-            setDias((parseFloat(estoque) / parseFloat(vendas)).toFixed(2));
-        } else {
-            setDias(null);
-        }
-    };
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -59,66 +82,43 @@ const CalcularDiasEstoque = () => {
 
     return (
         <MainContainer>
-            <Typography variant="h4" gutterBottom>
-                Calcular Dias de Estoque
+            <BackButton variant="contained" component={Link} to="/inicio" startIcon={<ArrowBackIcon />}>
+                Voltar para o Início
+            </BackButton>
+            <Typography variant="h4" gutterBottom align="center">
+                Dados de Estoque
             </Typography>
-            <TextField
-                label="Vendas Diárias"
-                value={vendas}
-                onChange={(e) => setVendas(e.target.value)}
-                margin="normal"
-                variant="outlined"
-            />
-            <TextField
-                label="Estoque Atual"
-                value={estoque}
-                onChange={(e) => setEstoque(e.target.value)}
-                margin="normal"
-                variant="outlined"
-            />
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={calcularDias}
-                sx={{ mt: 2 }}
-            >
-                Calcular
-            </Button>
-            {dias !== null && (
-                <Typography variant="h6" sx={{ mt: 2 }}>
-                    Dias de Estoque: {dias}
-                </Typography>
-            )}
             <input
                 type="file"
                 accept=".xlsx, .xls"
                 onChange={handleFileUpload}
-                style={{ marginTop: '20px' }}
+                style={{ marginTop: '20px', marginBottom: '20px' }}
             />
-            {data.length > 0 && (
-                <Box sx={{ mt: 4 }}>
-                    <Typography variant="h6" gutterBottom>
-                        Dados do Arquivo:
-                    </Typography>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Coluna 2</th>
-                                <th>Coluna 3</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            {data.length > 0 ? (
+                <TableContainerStyled component={Paper}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell>Data</StyledTableCell>
+                                <StyledTableCell>Coluna 2</StyledTableCell>
+                                <StyledTableCell>Coluna 3</StyledTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
                             {data.map((row, index) => (
-                                <tr key={index}>
-                                    <td>{row[0]}</td>
-                                    <td>{row[1]}</td>
-                                    <td>{row[2]}</td>
-                                </tr>
+                                <StyledTableRow key={index}>
+                                    <TableCell align="center">{row[0]}</TableCell>
+                                    <TableCell align="center">{row[1]}</TableCell>
+                                    <TableCell align="center">{row[2]}</TableCell>
+                                </StyledTableRow>
                             ))}
-                        </tbody>
-                    </table>
-                </Box>
+                        </TableBody>
+                    </Table>
+                </TableContainerStyled>
+            ) : (
+                <Typography variant="h6" align="center">
+                    Carregando dados...
+                </Typography>
             )}
         </MainContainer>
     );
