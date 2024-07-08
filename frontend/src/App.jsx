@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from '@emotion/styled';
 import Inicio from './Inicio';
 import Calculomanual from './Calculomanual';
@@ -16,42 +15,6 @@ import CalcularDiasEstoque from './CalcularDiasEstoque';
 import AnaliseDiasEstoque from './AnaliseDiasEstoque';
 import Valorestoquexcusto from './Valorestoquexcusto';
 import Valorestoquexvenda from './Valorestoquexvenda';
-
-// Definindo o tema inspirado nas cores do logo
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#0d6efd', // Azul principal
-        },
-        secondary: {
-            main: '#6c757d', // Cinza secundário
-        },
-        background: {
-            default: '#e0e0e0',
-            paper: '#ffffff',
-        },
-        text: {
-            primary: '#000000',
-            secondary: '#6c757d',
-        },
-        action: {
-            active: '#0d6efd',
-            hover: '#0b5ed7',
-            selected: '#0a58ca',
-            disabled: '#6c757d',
-            disabledBackground: '#e0e0e0',
-        },
-    },
-    components: {
-        MuiButton: {
-            styleOverrides: {
-                root: {
-                    margin: '5px',
-                },
-            },
-        },
-    },
-});
 
 // Container principal estilizado
 const MainContainer = styled(Box)`
@@ -107,7 +70,7 @@ const Login = () => {
                 transition={{ duration: 0.5 }}
             >
                 <Box display="flex" flexDirection="column" alignItems="center">
-                    <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+                    <Avatar sx={{ m: 1, bgcolor: '#0d6efd' }}>
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
@@ -157,7 +120,7 @@ const Login = () => {
                             type="submit"
                             fullWidth
                             variant="contained"
-                            color="primary"
+                            style={{ backgroundColor: '#0d6efd', color: '#fff' }}
                             sx={{ mt: 3, mb: 2 }}
                         >
                             Entrar
@@ -171,22 +134,20 @@ const Login = () => {
 
 const App = () => {
     return (
-        <ThemeProvider theme={theme}>
-            <Router>
-                <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/inicio" element={<Inicio />} />
-                    <Route path="/calculo" element={<Calculomanual />} />
-                    <Route path="/upload-pmpf" element={<UploadPMPF />} />
-                    <Route path="/consultar-estoque" element={<Estoque />} />
-                    <Route path="/calcular-preco-venda" element={<CalcularPrecoVenda />} />
-                    <Route path="/calcular-dias-estoque" element={<CalcularDiasEstoque />} />
-                    <Route path="/analise-dias-estoque" element={<AnaliseDiasEstoque />} />
-                    <Route path="/estoquexcusto" element={<Valorestoquexcusto />} />
-                    <Route path="/valorestoquexvenda" element={<Valorestoquexvenda />} />
-                </Routes>
-            </Router>
-        </ThemeProvider>
+        <Router>
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/inicio" element={<Inicio />} />
+                <Route path="/calculo" element={<Calculomanual />} />
+                <Route path="/upload-pmpf" element={<UploadPMPF />} />
+                <Route path="/consultar-estoque" element={<Estoque />} />
+                <Route path="/calcular-preco-venda" element={<CalcularPrecoVenda />} />
+                <Route path="/calcular-dias-estoque" element={<CalcularDiasEstoque />} />
+                <Route path="/analise-dias-estoque" element={<AnaliseDiasEstoque />} />
+                <Route path="/estoquexcusto" element={<Valorestoquexcusto />} />
+                <Route path="/valorestoquexvenda" element={<Valorestoquexvenda />} />
+            </Routes>
+        </Router>
     );
 };
 
