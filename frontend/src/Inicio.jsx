@@ -7,6 +7,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ListIcon from '@mui/icons-material/List';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import StorageIcon from '@mui/icons-material/Storage';
 import logo from './assets/logo.png'; // Importando a imagem do logo
 
 // Container principal estilizado
@@ -36,6 +37,7 @@ const LogoContainer = styled(Box)`
 const Inicio = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [uploadAnchorEl, setUploadAnchorEl] = React.useState(null);
+    const [stockAnchorEl, setStockAnchorEl] = React.useState(null);
 
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -45,9 +47,14 @@ const Inicio = () => {
         setUploadAnchorEl(event.currentTarget);
     };
 
+    const handleStockClick = (event) => {
+        setStockAnchorEl(event.currentTarget);
+    };
+
     const handleMenuClose = () => {
         setAnchorEl(null);
         setUploadAnchorEl(null);
+        setStockAnchorEl(null);
     };
 
     return (
@@ -77,6 +84,14 @@ const Inicio = () => {
                     to="/calcular-preco-venda"
                 >
                     Calcular Preço de Venda
+                </Button>
+                <Button
+                    variant="contained"
+                    color="info"
+                    startIcon={<StorageIcon />}
+                    onClick={handleStockClick}
+                >
+                    Cálculos de Estoque
                 </Button>
             </ButtonContainer>
             <Menu
@@ -118,6 +133,25 @@ const Inicio = () => {
                 </MenuItem>
                 <MenuItem component={Link} to="/consultar-estoque" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
                     Consultar estoque de produtos
+                </MenuItem>
+            </Menu>
+            <Menu
+                id="stock-menu"
+                anchorEl={stockAnchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={Boolean(stockAnchorEl)}
+                onClose={handleMenuClose}
+            >
+                <MenuItem component={Link} to="/calcular-dias-estoque" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                    Calcular Dias de Estoque com Base no Cardex
                 </MenuItem>
             </Menu>
             <LogoContainer>

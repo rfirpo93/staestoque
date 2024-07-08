@@ -10,8 +10,9 @@ import styled from '@emotion/styled';
 import Inicio from './Inicio';
 import Calculomanual from './Calculomanual';
 import UploadPMPF from './UploadPMPF';
-import Estoque from './Estoque'; // Importando o novo componente
-import CalcularPrecoVenda from './CalcularPrecoVenda'; // Importando o novo componente
+import Estoque from './Estoque';
+import CalcularPrecoVenda from './CalcularPrecoVenda';
+import CalcularDiasEstoque from './CalcularDiasEstoque'; // Importando o novo componente
 
 // Definindo o tema inspirado nas cores do logo
 const theme = createTheme({
@@ -152,6 +153,7 @@ const App = () => {
                     <Route path="/upload-pmpf" element={<UploadPMPF />} />
                     <Route path="/consultar-estoque" element={<Estoque />} />
                     <Route path="/calcular-preco-venda" element={<CalcularPrecoVenda />} />
+                    <Route path="/calcular-dias-estoque" element={<CalcularDiasEstoque />} />
                 </Routes>
             </Router>
         </ThemeProvider>
