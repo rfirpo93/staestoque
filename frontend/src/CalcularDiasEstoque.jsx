@@ -157,8 +157,10 @@ const CalcularDiasEstoque = () => {
 
             // Set date range
             if (processedData.length > 0) {
-                setDataInicio(processedData[0][0]);
-                setDataFim(processedData[processedData.length - 1][0]);
+                const firstDate = processedData[0][0];
+                const lastDate = processedData[processedData.length - 1][0];
+                setDataInicio(firstDate);
+                setDataFim(lastDate);
             }
 
             // Calculate totals and averages
