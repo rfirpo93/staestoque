@@ -182,7 +182,7 @@ const CalcularDiasEstoque = () => {
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including both start and end dates
                     console.log('Diferença em tempo (ms):', diffTime);
                     console.log('Total de dias calculados:', diffDays);
-                    setTotalDias(diffDays);
+                    setTotalDias(diffDays.toString()); // Convert to string
                 } else {
                     console.error('Análise de data inválida:', startDate, endDate);
                     setTotalDias('Erro ao calcular');
@@ -217,6 +217,7 @@ const CalcularDiasEstoque = () => {
 
         reader.readAsBinaryString(file);
     };
+
 
     const handleSelectProduto = () => {
         // Fetch and process the products data
