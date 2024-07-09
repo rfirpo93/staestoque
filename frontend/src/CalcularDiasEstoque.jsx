@@ -243,6 +243,12 @@ const CalcularDiasEstoque = () => {
         setOpen(false);
     };
 
+    const handleAddToEstoque = (event) => {
+        const addedValue = parseFloat(event.target.value) || 0;
+        setEstoqueAtual(prev => (parseFloat(prev) + addedValue).toString());
+        event.target.value = ''; // Clear input field
+    };
+
     return (
         <MainContainer>
             <BackButton variant="contained" component={Link} to="/inicio" startIcon={<ArrowBackIosIcon />}>
@@ -280,6 +286,19 @@ const CalcularDiasEstoque = () => {
                             size="small"
                             InputProps={{
                                 readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <ShoppingCartIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                        <Field
+                            label="Adicionar ao Estoque"
+                            onBlur={handleAddToEstoque}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
                                         <ShoppingCartIcon />
@@ -332,10 +351,10 @@ const CalcularDiasEstoque = () => {
                         <Field
                             label="Venda Total no Período"
                             value={vendaTotal}
+                            onChange={(e) => setVendaTotal(e.target.value)}
                             variant="outlined"
                             size="small"
                             InputProps={{
-                                readOnly: true,
                                 startAdornment: (
                                     <InputAdornment position="start">
                                         <InventoryIcon />
