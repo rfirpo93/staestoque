@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Typography, Menu, MenuItem, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, Button, Typography, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import CalculateIcon from '@mui/icons-material/Calculate';
@@ -34,15 +34,6 @@ const ButtonContainer = styled(Box)`
   gap: 20px;
 `;
 
-const SectionContainer = styled(Box)`
-  margin-top: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
-  padding: 2rem;
-  width: 80%;
-`;
-
 const LogoContainer = styled(Box)`
   text-align: center;
 `;
@@ -53,6 +44,7 @@ const Inicio = () => {
     const [stockAnchorEl, setStockAnchorEl] = React.useState(null);
     const [gerenciadorAnchorEl, setGerenciadorAnchorEl] = React.useState(null);
     const [configurarAnchorEl, setConfigurarAnchorEl] = React.useState(null);
+    const [vendasAnchorEl, setVendasAnchorEl] = React.useState(null); // Novo estado para o menu de vendas
 
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -74,12 +66,17 @@ const Inicio = () => {
         setConfigurarAnchorEl(event.currentTarget);
     };
 
+    const handleVendasClick = (event) => { // Novo manipulador de eventos para o menu de vendas
+        setVendasAnchorEl(event.currentTarget);
+    };
+
     const handleMenuClose = () => {
         setAnchorEl(null);
         setUploadAnchorEl(null);
         setStockAnchorEl(null);
         setGerenciadorAnchorEl(null);
         setConfigurarAnchorEl(null);
+        setVendasAnchorEl(null); // Fechar o menu de vendas
     };
 
     return (
@@ -133,6 +130,14 @@ const Inicio = () => {
                     onClick={handleConfigurarClick}
                 >
                     Configurar Produtos
+                </Button>
+                <Button
+                    variant="contained"
+                    style={{ backgroundColor: '#007bff', color: '#fff' }} // Cor para o botão de vendas
+                    startIcon={<ShoppingCartIcon />} // Ícone de vendas
+                    onClick={handleVendasClick} // Clique para abrir o menu de vendas
+                >
+                    Área de Vendas
                 </Button>
             </ButtonContainer>
             <Menu
@@ -239,22 +244,28 @@ const Inicio = () => {
                     Vincular Códigos a Produto
                 </MenuItem>
             </Menu>
+            <Menu
+                id="vendas-menu" // Novo menu para a seção de vendas
+                anchorEl={vendasAnchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={Boolean(vendasAnchorEl)}
+                onClose={handleMenuClose}
+            >
+                <MenuItem component={Link} to="/importar-venda" onClick={handleMenuClose} startIcon={<FileUploadIcon />}>
+                    Importar Venda
+                </MenuItem>
+            </Menu>
             <LogoContainer>
                 <img src={logo} alt="Logo Santa Clara" style={{ maxWidth: '100%', height: 'auto' }} />
             </LogoContainer>
-            <SectionContainer>
-                <Typography variant="h4" gutterBottom align="center" style={{ fontFamily: 'Segoe UI', color: '#0078d4' }}>
-                    Área de Vendas
-                </Typography>
-                <List>
-                    <ListItem button component={Link} to="/importar-venda">
-                        <ListItemIcon>
-                            <FileUploadIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Importar Venda" />
-                    </ListItem>
-                </List>
-            </SectionContainer>
         </MainContainer>
     );
 };
