@@ -18,6 +18,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import StoreIcon from '@mui/icons-material/Store';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -94,6 +95,10 @@ const Field = styled(TextField)`
     cursor: pointer;
   }
 `;
+
+const formatNumber = (number) => {
+    return number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
 
 const CalcularDiasEstoque = () => {
     const [data, setData] = useState([]);
@@ -214,7 +219,7 @@ const CalcularDiasEstoque = () => {
             const precoMedioVendaCalc = (valorTotalVendasCalc / vendaTotalCalc).toFixed(2);
             setPrecoMedioVenda(precoMedioVendaCalc);
 
-            const margemBrutaCalc = (((valorUltimaCompraCalc - precoMedioVendaCalc) / valorUltimaCompraCalc) * 100).toFixed(2);
+            const margemBrutaCalc = (((valorUltimaCompraCalc - precoMedioVendaCalc) / valorUltimaCompraCalc) * 100 * -1).toFixed(2);
             setMargemBruta(margemBrutaCalc);
 
             const monthlyData = {};
@@ -283,7 +288,8 @@ const CalcularDiasEstoque = () => {
             <BackButton variant="contained" component={Link} to="/inicio" startIcon={<ArrowBackIosIcon />}>
                 Voltar para o Início
             </BackButton>
-            <Typography variant="h4" gutterBottom align="center">
+            <Typography variant="h4" gutterBottom align="center" style={{ fontWeight: 'bold', color: '#0d6efd', textShadow: '2px 2px #e0e0e0' }}>
+                <StoreIcon style={{ fontSize: '1.5em', verticalAlign: 'middle', marginRight: '0.5em' }} />
                 Dados de Estoque
             </Typography>
             <input
@@ -310,7 +316,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Estoque Atual"
-                            value={estoqueAtual}
+                            value={formatNumber(parseFloat(estoqueAtual))}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -385,7 +391,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Venda Total no Período"
-                            value={vendaTotal}
+                            value={formatNumber(vendaTotal)}
                             onChange={(e) => setVendaTotal(parseFloat(e.target.value) || 0)}
                             variant="outlined"
                             size="small"
@@ -399,7 +405,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Compra Total no Período"
-                            value={compraTotal}
+                            value={formatNumber(compraTotal)}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -413,7 +419,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="QTD Última Compra"
-                            value={qtdUltimaCompra}
+                            value={formatNumber(qtdUltimaCompra)}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -427,7 +433,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Valor Unitário Última Compra"
-                            value={valorUltimaCompra}
+                            value={`R$ ${formatNumber(valorUltimaCompra)}`}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -441,7 +447,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Valor Total de Vendas no Período (R$)"
-                            value={valorTotalVendas}
+                            value={`R$ ${formatNumber(valorTotalVendas)}`}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -455,7 +461,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Preço Médio de Venda"
-                            value={precoMedioVenda}
+                            value={`R$ ${formatNumber(precoMedioVenda)}`}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -469,7 +475,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Margem Bruta Realizada (%)"
-                            value={margemBruta}
+                            value={`${formatNumber(margemBruta)}`}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -483,7 +489,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Venda Diária"
-                            value={vendaDiaria}
+                            value={formatNumber(vendaDiaria)}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -497,7 +503,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Venda Média Mensal"
-                            value={vendaMediaMensal}
+                            value={formatNumber(vendaMediaMensal)}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -511,7 +517,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Venda Média Trimestral"
-                            value={vendaMediaTrimestral}
+                            value={formatNumber(vendaMediaTrimestral)}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -525,7 +531,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Venda Média Anual"
-                            value={vendaMediaAnual}
+                            value={formatNumber(vendaMediaAnual)}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -539,7 +545,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Dias de Estoque"
-                            value={diasEstoque}
+                            value={formatNumber(diasEstoque)}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -590,8 +596,8 @@ const CalcularDiasEstoque = () => {
                                     <TableCell align="center">{row[0]}</TableCell>
                                     <TableCell align="center">{row[1]}</TableCell>
                                     <TableCell align="center">{row[2]}</TableCell>
-                                    <TableCell align="center">{row[3]}</TableCell>
-                                    <TableCell align="center">{row[4]}</TableCell>
+                                    <TableCell align="center">{formatNumber(row[3])}</TableCell>
+                                    <TableCell align="center">{`R$ ${formatNumber(row[4])}`}</TableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>
@@ -653,7 +659,7 @@ const CalcularDiasEstoque = () => {
                                 {clientData.map((row, index) => (
                                     <StyledTableRow key={index}>
                                         <TableCell align="center">{row.client}</TableCell>
-                                        <TableCell align="center">{row.total}</TableCell>
+                                        <TableCell align="center">{`R$ ${formatNumber(row.total)}`}</TableCell>
                                     </StyledTableRow>
                                 ))}
                             </TableBody>
