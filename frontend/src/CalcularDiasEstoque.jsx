@@ -114,7 +114,9 @@ const CalcularDiasEstoque = () => {
     const [showHeader, setShowHeader] = useState(false);
     const [open, setOpen] = useState(false);
     const [openGraph, setOpenGraph] = useState(false);
+    const [openClientAnalysis, setOpenClientAnalysis] = useState(false);
     const [graphData, setGraphData] = useState([]);
+    const [clientData, setClientData] = useState([]);
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
@@ -202,6 +204,7 @@ const CalcularDiasEstoque = () => {
             setValorUltimaCompra(valorUltimaCompraCalc);
 
             const monthlyData = {};
+            const clientDataMap = {};
 
             processedData.forEach(row => {
                 if (row[1] === 'Fatura') {
@@ -211,6 +214,12 @@ const CalcularDiasEstoque = () => {
                         monthlyData[monthYear] = 0;
                     }
                     monthlyData[monthYear] += row[3];
+
+                    const client = row[2];
+                    if (!clientDataMap[client]) {
+                        clientDataMap[client] = 0;
+                    }
+                    clientDataMap[client] += row[3];
                 }
             });
 
@@ -219,7 +228,13 @@ const CalcularDiasEstoque = () => {
                 value: monthlyData[monthYear]
             }));
 
+            const clientDataArray = Object.keys(clientDataMap).map(client => ({
+                client,
+                total: clientDataMap[client]
+            }));
+
             setGraphData(chartData);
+            setClientData(clientDataArray);
 
             setShowHeader(true);
         };
@@ -481,14 +496,24 @@ const CalcularDiasEstoque = () => {
                             }}
                         />
                     </HeaderFields>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<ShowChartIcon />}
-                        onClick={() => setOpenGraph(true)}
-                    >
-                        Análise de Vendas
-                    </Button>
+                    <Box display="flex" gap="1rem">
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<ShowChartIcon />}
+                            onClick={() => setOpenGraph(true)}
+                        >
+                            Análise de Vendas
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<InfoIcon />}
+                            onClick={() => setOpenClientAnalysis(true)}
+                        >
+                            Análise por Cliente
+                        </Button>
+                    </Box>
                 </HeaderContainer>
             )}
             {data.length > 0 ? (
@@ -555,6 +580,29 @@ const CalcularDiasEstoque = () => {
                             },
                         }}
                     />
+                </DialogContent>
+            </Dialog>
+            <Dialog open={openClientAnalysis} onClose={() => setOpenClientAnalysis(false)} maxWidth="md" fullWidth>
+                <DialogTitle>Análise por Cliente</DialogTitle>
+                <DialogContent>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>Cliente</StyledTableCell>
+                                    <StyledTableCell>Total Comprado</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {clientData.map((row, index) => (
+                                    <StyledTableRow key={index}>
+                                        <TableCell align="center">{row.client}</TableCell>
+                                        <TableCell align="center">{row.total}</TableCell>
+                                    </StyledTableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </DialogContent>
             </Dialog>
         </MainContainer>
