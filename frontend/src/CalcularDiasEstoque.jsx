@@ -120,12 +120,12 @@ const CalcularDiasEstoque = () => {
             console.log('Dias calculados no useEffect:', diffDays);
             setTotalDias(diffDays.toString());
 
-            const vendaDiariaCalc = vendaTotal / diffDays;
+            const vendaDiariaCalc = (vendaTotal / diffDays).toFixed(2);
             setVendaDiaria(vendaDiariaCalc);
-            setVendaMediaMensal(vendaDiariaCalc * 30);
-            setVendaMediaTrimestral(vendaDiariaCalc * 90);
-            setVendaMediaAnual(vendaDiariaCalc * 365);
-            setDiasEstoque(estoqueAtual / vendaDiariaCalc);
+            setVendaMediaMensal((vendaDiariaCalc * 30).toFixed(2));
+            setVendaMediaTrimestral((vendaDiariaCalc * 90).toFixed(2));
+            setVendaMediaAnual((vendaDiariaCalc * 365).toFixed(2));
+            setDiasEstoque((estoqueAtual / vendaDiariaCalc).toFixed(2));
         }
     }, [dataInicio, dataFim, vendaTotal, estoqueAtual]);
 
