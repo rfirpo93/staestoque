@@ -231,7 +231,7 @@ const CalcularDiasEstoque = () => {
             const clientDataArray = Object.keys(clientDataMap).map(client => ({
                 client,
                 total: clientDataMap[client]
-            }));
+            })).sort((a, b) => b.total - a.total);
 
             setGraphData(chartData);
             setClientData(clientDataArray);
