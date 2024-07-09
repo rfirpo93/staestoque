@@ -147,11 +147,11 @@ const CalcularDiasEstoque = () => {
 
             jsonData.slice(12).forEach((row, index) => { // Start from the 13th row (index 12)
                 console.log(`Processando linha ${index + 13}:`, row);
-                if (row[2] !== undefined && row[2] !== '') { // Ignore rows where the 3rd column is blank
-                    const date = row[0] || lastDate; // Use the last known date if the current date is blank
-                    const operation = row[1] || lastOperation; // Use the last known operation if the current operation is blank
+                if (row[3] !== undefined && row[3] !== '') { // Ignore rows where the 4th column is blank
+                    const date = row[1] || lastDate; // Use the last known date if the current date is blank
+                    const operation = row[2] || lastOperation; // Use the last known operation if the current operation is blank
                     console.log(`Linha ${index + 13} - Data: ${date}, Operação: ${operation}`);
-                    processedData.push([date, operation, row[2], row[7], row[10]]);
+                    processedData.push([date, operation, row[3], row[8], row[11]]);
                     lastDate = date;
                     lastOperation = operation;
                 }
