@@ -111,6 +111,9 @@ const CalcularDiasEstoque = () => {
     const [vendaMediaAnual, setVendaMediaAnual] = useState(0);
     const [diasEstoque, setDiasEstoque] = useState(0);
     const [totalDias, setTotalDias] = useState('');
+    const [valorTotalVendas, setValorTotalVendas] = useState(0);
+    const [precoMedioVenda, setPrecoMedioVenda] = useState(0);
+    const [margemBruta, setMargemBruta] = useState(0);
     const [showHeader, setShowHeader] = useState(false);
     const [open, setOpen] = useState(false);
     const [openGraph, setOpenGraph] = useState(false);
@@ -202,6 +205,17 @@ const CalcularDiasEstoque = () => {
             setCompraTotal(compraTotalCalc);
             setQtdUltimaCompra(qtdUltimaCompraCalc);
             setValorUltimaCompra(valorUltimaCompraCalc);
+
+            const valorTotalVendasCalc = processedData
+                .filter(row => row[1] === 'Fatura')
+                .reduce((sum, row) => sum + (row[3] * row[4]), 0);
+            setValorTotalVendas(valorTotalVendasCalc);
+
+            const precoMedioVendaCalc = (valorTotalVendasCalc / vendaTotalCalc).toFixed(2);
+            setPrecoMedioVenda(precoMedioVendaCalc);
+
+            const margemBrutaCalc = (((valorUltimaCompraCalc - precoMedioVendaCalc) / valorUltimaCompraCalc) * 100).toFixed(2);
+            setMargemBruta(margemBrutaCalc);
 
             const monthlyData = {};
             const clientDataMap = {};
@@ -421,6 +435,48 @@ const CalcularDiasEstoque = () => {
                                 startAdornment: (
                                     <InputAdornment position="start">
                                         <MonetizationOnIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                        <Field
+                            label="Valor Total de Vendas no Período (R$)"
+                            value={valorTotalVendas}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <MonetizationOnIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                        <Field
+                            label="Preço Médio de Venda"
+                            value={precoMedioVenda}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <TrendingUpIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                        <Field
+                            label="Margem Bruta Realizada (%)"
+                            value={margemBruta}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{
+                                readOnly: true,
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <TrendingUpIcon />
                                     </InputAdornment>
                                 ),
                             }}
