@@ -7,6 +7,15 @@ import SearchIcon from '@mui/icons-material/Search';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import CodeIcon from '@mui/icons-material/Code';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
+
+const formatCurrency = (value) => {
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+};
 
 const MainContainer = styled(Box)`
   display: flex;
@@ -63,9 +72,10 @@ const FilterInput = styled(TextField)`
 const TitleContainer = styled(Box)`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 10px;
   margin-bottom: 20px;
+  width: 90%;
 `;
 
 const TitleIcon = styled(InventoryIcon)`
@@ -81,6 +91,17 @@ const TitleIcon = styled(InventoryIcon)`
       transform: rotate(360deg);
     }
   }
+`;
+
+const TotalValueContainer = styled(Box)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0078d4;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: bold;
 `;
 
 const Valorestoquexcusto = () => {
@@ -115,24 +136,28 @@ const Valorestoquexcusto = () => {
                 accessor: 'Código',
                 Filter: ColumnFilter,
                 filter: 'text',
+                icon: <CodeIcon />
             },
             {
                 Header: 'Produto',
                 accessor: 'Produto',
                 Filter: ColumnFilter,
                 filter: 'text',
+                icon: <ShoppingCartIcon />
             },
             {
                 Header: 'Quantidade',
                 accessor: 'Quantidade',
                 Filter: ColumnFilter,
                 filter: 'text',
+                icon: <FormatListNumberedIcon />
             },
             {
                 Header: 'Custo',
                 accessor: 'Custo',
                 Filter: ColumnFilter,
                 filter: 'text',
+                icon: <AttachMoneyIcon />
             },
             {
                 Header: 'Valor Total',
@@ -140,6 +165,7 @@ const Valorestoquexcusto = () => {
                 id: 'ValorTotal',
                 Filter: ColumnFilter,
                 filter: 'text',
+                icon: <ReceiptIcon />
             },
         ],
         []
@@ -165,10 +191,15 @@ const Valorestoquexcusto = () => {
     return (
         <MainContainer>
             <TitleContainer>
-                <TitleIcon />
-                <Typography variant="h4" gutterBottom align="center" style={{ fontFamily: 'Segoe UI', color: '#0078d4' }}>
-                    Análise de Valor em Estoque por Custo
-                </Typography>
+                <Box display="flex" alignItems="center">
+                    <TitleIcon />
+                    <Typography variant="h4" gutterBottom align="center" style={{ fontFamily: 'Segoe UI', color: '#0078d4' }}>
+                        Análise de Valor em Estoque por Custo
+                    </Typography>
+                </Box>
+                <TotalValueContainer>
+                    <Typography variant="h6">Total em Estoque: {formatCurrency(total)}</Typography>
+                </TotalValueContainer>
             </TitleContainer>
             <TableContainerStyled>
                 <StyledTable {...getTableProps()}>
@@ -177,13 +208,13 @@ const Valorestoquexcusto = () => {
                             <tr {...headerGroup.getHeaderGroupProps()}>
                                 {headerGroup.headers.map(column => (
                                     <StyledTh {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                        {column.render('Header')}
+                                        {column.icon} {column.render('Header')}
                                         <span>
                                             {column.isSorted
                                                 ? column.isSortedDesc
                                                     ? <ArrowDownwardIcon fontSize="small" />
                                                     : <ArrowUpwardIcon fontSize="small" />
-                                                : ''}
+                                                : <ArrowUpwardIcon fontSize="small" />}
                                         </span>
                                         <div>{column.canFilter ? column.render('Filter') : null}</div>
                                     </StyledTh>
@@ -197,7 +228,11 @@ const Valorestoquexcusto = () => {
                             return (
                                 <tr {...row.getRowProps()}>
                                     {row.cells.map(cell => (
-                                        <StyledTd {...cell.getCellProps()}>{cell.render('Cell')}</StyledTd>
+                                        <StyledTd {...cell.getCellProps()}>
+                                            {['Custo', 'ValorTotal'].includes(cell.column.id)
+                                                ? formatCurrency(parseFloat(cell.value))
+                                                : cell.render('Cell')}
+                                        </StyledTd>
                                     ))}
                                 </tr>
                             );
@@ -206,7 +241,7 @@ const Valorestoquexcusto = () => {
                     <tfoot>
                         <tr>
                             <td colSpan={4} align="right" style={{ padding: '10px', fontWeight: 'bold', backgroundColor: '#f0f0f0' }}>Total em Estoque:</td>
-                            <td align="center" style={{ padding: '10px', fontWeight: 'bold', backgroundColor: '#f0f0f0' }}>{total.toFixed(2)}</td>
+                            <td align="center" style={{ padding: '10px', fontWeight: 'bold', backgroundColor: '#f0f0f0' }}>{formatCurrency(total)}</td>
                         </tr>
                     </tfoot>
                 </StyledTable>
