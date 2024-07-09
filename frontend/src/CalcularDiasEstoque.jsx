@@ -143,10 +143,12 @@ const CalcularDiasEstoque = () => {
             let lastDate = null;
             let lastOperation = null;
 
-            jsonData.slice(12).forEach((row) => { // Start from the 13th row (index 12)
+            jsonData.slice(12).forEach((row, index) => { // Start from the 13th row (index 12)
+                console.log(`Processing row ${index + 13}:`, row);
                 if (row[2] !== undefined && row[2] !== '') { // Ignore rows where the 3rd column is blank
                     const date = row[0] || lastDate; // Use the last known date if the current date is blank
                     const operation = row[1] || lastOperation; // Use the last known operation if the current operation is blank
+                    console.log(`Row ${index + 13} - Date: ${date}, Operation: ${operation}`);
                     processedData.push([date, operation, row[2], row[7], row[10]]);
                     lastDate = date;
                     lastOperation = operation;
@@ -159,8 +161,22 @@ const CalcularDiasEstoque = () => {
             if (processedData.length > 0) {
                 const firstDate = processedData[0][0];
                 const lastDate = processedData[processedData.length - 1][0];
+                console.log('First date:', firstDate);
+                console.log('Last date:', lastDate);
                 setDataInicio(firstDate);
                 setDataFim(lastDate);
+
+                // Calculate total days
+                const startDate = new Date(firstDate);
+                const endDate = new Date(lastDate);
+                console.log('Parsed first date:', startDate);
+                console.log('Parsed last date:', endDate);
+
+                const diffTime = Math.abs(endDate - startDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including both start and end dates
+                console.log('Difference in time (ms):', diffTime);
+                console.log('Total days calculated:', diffDays);
+                setTotalDias(diffDays);
             }
 
             // Calculate totals and averages
@@ -175,6 +191,11 @@ const CalcularDiasEstoque = () => {
                 .slice(-1)[0];
             const qtdUltimaCompraCalc = ultimaCompra ? ultimaCompra[3] : 0;
             const valorUltimaCompraCalc = ultimaCompra ? ultimaCompra[4] : 0;
+
+            console.log('Venda total calculada:', vendaTotalCalc);
+            console.log('Compra total calculada:', compraTotalCalc);
+            console.log('Quantidade última compra:', qtdUltimaCompraCalc);
+            console.log('Valor última compra:', valorUltimaCompraCalc);
 
             setVendaTotal(vendaTotalCalc);
             setCompraTotal(compraTotalCalc);
