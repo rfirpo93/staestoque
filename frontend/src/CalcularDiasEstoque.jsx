@@ -15,6 +15,8 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const MainContainer = styled(Box)`
   display: flex;
@@ -108,16 +110,16 @@ const CalcularDiasEstoque = () => {
     const [totalDias, setTotalDias] = useState('');
     const [showHeader, setShowHeader] = useState(false);
     const [open, setOpen] = useState(false);
+    const [openGraph, setOpenGraph] = useState(false);
+    const [graphData, setGraphData] = useState([]);
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        console.log('Valores atualizados:', { dataInicio, dataFim, totalDias });
         if (dataInicio && dataFim) {
             const startDate = new Date(dataInicio.split('/').reverse().join('-'));
             const endDate = new Date(dataFim.split('/').reverse().join('-'));
             const diffTime = Math.abs(endDate - startDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including both start and end dates
-            console.log('Dias calculados no useEffect:', diffDays);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
             setTotalDias(diffDays.toString());
 
             const vendaDiariaCalc = (vendaTotal / diffDays).toFixed(2);
@@ -140,17 +142,14 @@ const CalcularDiasEstoque = () => {
             const sheet = workbook.Sheets[sheetName];
             const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-            // Process the data
             const processedData = [];
             let lastDate = null;
             let lastOperation = null;
 
-            jsonData.slice(12).forEach((row, index) => { // Start from the 13th row (index 12)
-                console.log(`Processando linha ${index + 13}:`, row);
-                if (row[3] !== undefined && row[3] !== '') { // Ignore rows where the 4th column is blank
-                    const date = row[1] || lastDate; // Use the last known date if the current date is blank
-                    const operation = row[2] || lastOperation; // Use the last known operation if the current operation is blank
-                    console.log(`Linha ${index + 13} - Data: ${date}, Operação: ${operation}`);
+            jsonData.slice(12).forEach((row, index) => {
+                if (row[3] !== undefined && row[3] !== '') {
+                    const date = row[1] || lastDate;
+                    const operation = row[2] || lastOperation;
                     processedData.push([date, operation, row[3], row[8], row[11]]);
                     lastDate = date;
                     lastOperation = operation;
@@ -159,16 +158,12 @@ const CalcularDiasEstoque = () => {
 
             setData(processedData);
 
-            // Set date range
             if (processedData.length > 0) {
                 const firstDate = processedData[0][0];
                 const lastDate = processedData[processedData.length - 1][0];
-                console.log('Primeira data:', firstDate);
-                console.log('Última data:', lastDate);
                 setDataInicio(firstDate);
                 setDataFim(lastDate);
 
-                // Attempt to parse dates in a consistent format
                 const parseDate = (dateStr) => {
                     const [day, month, year] = dateStr.split('/').map(Number);
                     return new Date(year, month - 1, day);
@@ -176,22 +171,16 @@ const CalcularDiasEstoque = () => {
 
                 const startDate = parseDate(firstDate);
                 const endDate = parseDate(lastDate);
-                console.log('Primeira data analisada:', startDate);
-                console.log('Última data analisada:', endDate);
 
                 if (!isNaN(startDate) && !isNaN(endDate)) {
                     const diffTime = Math.abs(endDate - startDate);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including both start and end dates
-                    console.log('Diferença em tempo (ms):', diffTime);
-                    console.log('Total de dias calculados:', diffDays);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
                     setTotalDias(diffDays.toString());
                 } else {
-                    console.error('Análise de data inválida:', startDate, endDate);
                     setTotalDias('Erro ao calcular');
                 }
             }
 
-            // Calculate totals and averages
             const vendaTotalCalc = processedData
                 .filter(row => row[1] === 'Fatura')
                 .reduce((sum, row) => sum + (row[3] || 0), 0);
@@ -204,15 +193,30 @@ const CalcularDiasEstoque = () => {
             const qtdUltimaCompraCalc = ultimaCompra ? ultimaCompra[3] : 0;
             const valorUltimaCompraCalc = ultimaCompra ? ultimaCompra[4] : 0;
 
-            console.log('Venda total calculada:', vendaTotalCalc);
-            console.log('Compra total calculada:', compraTotalCalc);
-            console.log('Quantidade última compra:', qtdUltimaCompraCalc);
-            console.log('Valor última compra:', valorUltimaCompraCalc);
-
             setVendaTotal(vendaTotalCalc);
             setCompraTotal(compraTotalCalc);
             setQtdUltimaCompra(qtdUltimaCompraCalc);
             setValorUltimaCompra(valorUltimaCompraCalc);
+
+            const monthlyData = {};
+
+            processedData.forEach(row => {
+                if (row[1] === 'Fatura') {
+                    const [day, month, year] = row[0].split('/');
+                    const monthYear = `${month}/${year}`;
+                    if (!monthlyData[monthYear]) {
+                        monthlyData[monthYear] = 0;
+                    }
+                    monthlyData[monthYear] += row[3];
+                }
+            });
+
+            const chartData = Object.keys(monthlyData).map(monthYear => ({
+                name: monthYear,
+                value: monthlyData[monthYear]
+            }));
+
+            setGraphData(chartData);
 
             setShowHeader(true);
         };
@@ -221,7 +225,6 @@ const CalcularDiasEstoque = () => {
     };
 
     const handleSelectProduto = () => {
-        // Fetch and process the products data
         const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/estoque.xlsx';
 
         fetch(url)
@@ -241,12 +244,6 @@ const CalcularDiasEstoque = () => {
         setProduto(product.produto);
         setEstoqueAtual(product.quantidade);
         setOpen(false);
-    };
-
-    const handleAddToEstoque = (event) => {
-        const addedValue = parseFloat(event.target.value) || 0;
-        setEstoqueAtual(prev => (parseFloat(prev) + addedValue).toString());
-        event.target.value = ''; // Clear input field
     };
 
     return (
@@ -295,13 +292,19 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Adicionar ao Estoque"
-                            onBlur={handleAddToEstoque}
+                            value=""
+                            onBlur={(e) => {
+                                const newValue = parseFloat(e.target.value);
+                                if (!isNaN(newValue)) {
+                                    setEstoqueAtual((prev) => (parseFloat(prev) + newValue).toString());
+                                }
+                            }}
                             variant="outlined"
                             size="small"
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <ShoppingCartIcon />
+                                        <LocalShippingIcon />
                                     </InputAdornment>
                                 ),
                             }}
@@ -351,7 +354,7 @@ const CalcularDiasEstoque = () => {
                         <Field
                             label="Venda Total no Período"
                             value={vendaTotal}
-                            onChange={(e) => setVendaTotal(e.target.value)}
+                            onChange={(e) => setVendaTotal(parseFloat(e.target.value) || 0)}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -475,6 +478,14 @@ const CalcularDiasEstoque = () => {
                             }}
                         />
                     </HeaderFields>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<ShowChartIcon />}
+                        onClick={() => setOpenGraph(true)}
+                    >
+                        Análise de Vendas
+                    </Button>
                 </HeaderContainer>
             )}
             {data.length > 0 ? (
@@ -511,6 +522,26 @@ const CalcularDiasEstoque = () => {
                 <DialogTitle>Selecione um Produto</DialogTitle>
                 <DialogContent>
                     <Estoque onSelectProduct={handleProductSelect} />
+                </DialogContent>
+            </Dialog>
+            <Dialog open={openGraph} onClose={() => setOpenGraph(false)} maxWidth="md" fullWidth>
+                <DialogTitle>Análise de Vendas</DialogTitle>
+                <DialogContent>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <LineChart
+                            data={graphData}
+                            margin={{
+                                top: 10, right: 30, left: 0, bottom: 0,
+                            }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
+                        </LineChart>
+                    </ResponsiveContainer>
                 </DialogContent>
             </Dialog>
         </MainContainer>
