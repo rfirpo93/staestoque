@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import InventoryIcon from '@mui/icons-material/Inventory';
 
 const MainContainer = styled(Box)`
   display: flex;
@@ -14,13 +15,13 @@ const MainContainer = styled(Box)`
   justify-content: center;
   min-height: 100vh;
   padding: 2rem;
-  background: linear-gradient(145deg, #e0e0e0, #ffffff);
+  background: linear-gradient(145deg, #f3f4f6, #e0e0e0);
 `;
 
 const TableContainerStyled = styled(Paper)`
   margin-top: 2rem;
   border-radius: 15px;
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
   width: 90%;
 `;
@@ -28,22 +29,26 @@ const TableContainerStyled = styled(Paper)`
 const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 `;
 
 const StyledTh = styled.th`
-  background-color: #0d6efd;
+  background-color: #0078d4;
   color: white;
   font-weight: bold;
   text-align: center;
   padding: 10px;
   position: relative;
+  &:hover {
+    background-color: #005a9e;
+  }
 `;
 
 const StyledTd = styled.td`
   text-align: center;
   padding: 10px;
   &:nth-of-type(odd) {
-    background-color: #f2f2f2;
+    background-color: #f9f9f9;
   }
   &:hover {
     background-color: #e0f7fa;
@@ -53,6 +58,29 @@ const StyledTd = styled.td`
 const FilterInput = styled(TextField)`
   width: 100%;
   margin-top: 5px;
+`;
+
+const TitleContainer = styled(Box)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+`;
+
+const TitleIcon = styled(InventoryIcon)`
+  font-size: 2.5rem;
+  color: #0078d4;
+  animation: rotate 2s infinite linear;
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 `;
 
 const Valorestoquexcusto = () => {
@@ -136,9 +164,12 @@ const Valorestoquexcusto = () => {
 
     return (
         <MainContainer>
-            <Typography variant="h4" gutterBottom align="center">
-                Análise de Valor em Estoque por Custo
-            </Typography>
+            <TitleContainer>
+                <TitleIcon />
+                <Typography variant="h4" gutterBottom align="center" style={{ fontFamily: 'Segoe UI', color: '#0078d4' }}>
+                    Análise de Valor em Estoque por Custo
+                </Typography>
+            </TitleContainer>
             <TableContainerStyled>
                 <StyledTable {...getTableProps()}>
                     <thead>
@@ -174,8 +205,8 @@ const Valorestoquexcusto = () => {
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan={4} align="right" style={{ padding: '10px', fontWeight: 'bold' }}>Total em Estoque:</td>
-                            <td align="center" style={{ padding: '10px', fontWeight: 'bold' }}>{total.toFixed(2)}</td>
+                            <td colSpan={4} align="right" style={{ padding: '10px', fontWeight: 'bold', backgroundColor: '#f0f0f0' }}>Total em Estoque:</td>
+                            <td align="center" style={{ padding: '10px', fontWeight: 'bold', backgroundColor: '#f0f0f0' }}>{total.toFixed(2)}</td>
                         </tr>
                     </tfoot>
                 </StyledTable>
