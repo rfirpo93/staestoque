@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Box, Typography, Paper, TextField } from '@mui/material';
+import { Box, Typography, Paper, TextField, Button, Menu, MenuItem } from '@mui/material';
 import { useTable, useSortBy, useFilters } from 'react-table';
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
@@ -66,7 +66,7 @@ const StyledTd = styled.td`
 
 const FilterInput = styled(TextField)`
   width: 100%;
-  margin-top: 5px;
+  margin-bottom: 5px;
 `;
 
 const TitleContainer = styled(Box)`
@@ -107,6 +107,21 @@ const TotalValueContainer = styled(Box)`
 const Valorestoquexcusto = () => {
     const [rows, setRows] = useState([]);
     const [total, setTotal] = useState(0);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleSortClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleSortClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleSort = (sortBy) => {
+        setRows([...rows].sort(sortBy));
+        handleSortClose();
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -188,6 +203,17 @@ const Valorestoquexcusto = () => {
         useSortBy
     );
 
+    const sortByOptions = [
+        { label: 'Código, do menor ao maior', sortBy: (a, b) => a['Código'] - b['Código'] },
+        { label: 'Código, do maior ao menor', sortBy: (a, b) => b['Código'] - a['Código'] },
+        { label: 'Produto, de A a Z', sortBy: (a, b) => a['Produto'].localeCompare(b['Produto']) },
+        { label: 'Produto, de Z a A', sortBy: (a, b) => b['Produto'].localeCompare(a['Produto']) },
+        { label: 'Valor unitário, do menor para o maior', sortBy: (a, b) => a['Custo'] - b['Custo'] },
+        { label: 'Valor unitário, do maior ao menor', sortBy: (a, b) => b['Custo'] - a['Custo'] },
+        { label: 'Valor total, do menor para o maior', sortBy: (a, b) => (a['Quantidade'] * a['Custo']) - (b['Quantidade'] * b['Custo']) },
+        { label: 'Valor total, do maior ao menor', sortBy: (a, b) => (b['Quantidade'] * b['Custo']) - (a['Quantidade'] * a['Custo']) },
+    ];
+
     return (
         <MainContainer>
             <TitleContainer>
@@ -201,6 +227,28 @@ const Valorestoquexcusto = () => {
                     <Typography variant="h6">Total em Estoque: {formatCurrency(total)}</Typography>
                 </TotalValueContainer>
             </TitleContainer>
+            <Button
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                variant="contained"
+                color="primary"
+                onClick={handleSortClick}
+            >
+                Ordenar tabela
+            </Button>
+            <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={open}
+                onClose={handleSortClose}
+            >
+                {sortByOptions.map(option => (
+                    <MenuItem key={option.label} onClick={() => handleSort(option.sortBy)}>
+                        {option.label}
+                    </MenuItem>
+                ))}
+            </Menu>
             <TableContainerStyled>
                 <StyledTable {...getTableProps()}>
                     <thead>
@@ -214,10 +262,19 @@ const Valorestoquexcusto = () => {
                                                 ? column.isSortedDesc
                                                     ? <ArrowDownwardIcon fontSize="small" />
                                                     : <ArrowUpwardIcon fontSize="small" />
-                                                : <ArrowUpwardIcon fontSize="small" />}
+                                                : ''}
                                         </span>
                                         <div>{column.canFilter ? column.render('Filter') : null}</div>
                                     </StyledTh>
+                                ))}
+                            </tr>
+                        ))}
+                        {headerGroups.map(headerGroup => (
+                            <tr {...headerGroup.getHeaderGroupProps()}>
+                                {headerGroup.headers.map(column => (
+                                    <td {...column.getHeaderProps()}>
+                                        {column.canFilter ? column.render('Filter') : null}
+                                    </td>
                                 ))}
                             </tr>
                         ))}
