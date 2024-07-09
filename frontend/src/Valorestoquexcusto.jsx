@@ -10,6 +10,8 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const formatCurrency = (value) => {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
