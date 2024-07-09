@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Typography, Menu, MenuItem } from '@mui/material';
+import { Box, Button, Typography, Menu, MenuItem, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import CalculateIcon from '@mui/icons-material/Calculate';
@@ -10,6 +10,8 @@ import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import StorageIcon from '@mui/icons-material/Storage';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import SettingsIcon from '@mui/icons-material/Settings';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import logo from './assets/logo.png'; // Importando a imagem do logo
 
 // Container principal estilizado
@@ -30,6 +32,15 @@ const ButtonContainer = styled(Box)`
   left: 10px;
   display: flex;
   gap: 20px;
+`;
+
+const SectionContainer = styled(Box)`
+  margin-top: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 2rem;
+  width: 80%;
 `;
 
 const LogoContainer = styled(Box)`
@@ -230,10 +241,20 @@ const Inicio = () => {
             </Menu>
             <LogoContainer>
                 <img src={logo} alt="Logo Santa Clara" style={{ maxWidth: '100%', height: 'auto' }} />
-                <Typography variant="h3" gutterBottom>
-                    Bem-vindo à Tela Inicial
-                </Typography>
             </LogoContainer>
+            <SectionContainer>
+                <Typography variant="h4" gutterBottom align="center" style={{ fontFamily: 'Segoe UI', color: '#0078d4' }}>
+                    Área de Vendas
+                </Typography>
+                <List>
+                    <ListItem button component={Link} to="/importar-venda">
+                        <ListItemIcon>
+                            <FileUploadIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Importar Venda" />
+                    </ListItem>
+                </List>
+            </SectionContainer>
         </MainContainer>
     );
 };

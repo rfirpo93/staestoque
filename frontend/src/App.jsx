@@ -15,6 +15,7 @@ import CalcularDiasEstoque from './CalcularDiasEstoque';
 import AnaliseDiasEstoque from './AnaliseDiasEstoque';
 import Valorestoquexcusto from './Valorestoquexcusto';
 import Valorestoquexvenda from './Valorestoquexvenda';
+import ImportarVenda from './ImportarVenda'; // Importando o componente de Importar Venda
 
 // Container principal estilizado
 const MainContainer = styled(Box)`
@@ -146,6 +147,7 @@ const App = () => {
                 <Route path="/analise-dias-estoque" element={<AnaliseDiasEstoque />} />
                 <Route path="/estoquexcusto" element={<Valorestoquexcusto />} />
                 <Route path="/valorestoquexvenda" element={<Valorestoquexvenda />} />
+                <Route path="/importar-venda" element={<ImportarVenda />} /> {/* Adicionando a rota de Importar Venda */}
             </Routes>
         </Router>
     );
