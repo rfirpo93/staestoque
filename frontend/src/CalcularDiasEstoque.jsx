@@ -16,9 +16,11 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
+import StoreIcon from '@mui/icons-material/Store';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import StoreIcon from '@mui/icons-material/Store';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -95,10 +97,6 @@ const Field = styled(TextField)`
     cursor: pointer;
   }
 `;
-
-const formatNumber = (number) => {
-    return number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-};
 
 const CalcularDiasEstoque = () => {
     const [data, setData] = useState([]);
@@ -219,7 +217,7 @@ const CalcularDiasEstoque = () => {
             const precoMedioVendaCalc = (valorTotalVendasCalc / vendaTotalCalc).toFixed(2);
             setPrecoMedioVenda(precoMedioVendaCalc);
 
-            const margemBrutaCalc = (((valorUltimaCompraCalc - precoMedioVendaCalc) / valorUltimaCompraCalc) * 100 * -1).toFixed(2);
+            const margemBrutaCalc = (((valorUltimaCompraCalc - precoMedioVendaCalc) / valorUltimaCompraCalc) * -100).toFixed(2);
             setMargemBruta(margemBrutaCalc);
 
             const monthlyData = {};
@@ -283,14 +281,31 @@ const CalcularDiasEstoque = () => {
         setOpen(false);
     };
 
+    const formatNumber = (number) => {
+        return number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    const generatePDF = async () => {
+        const doc = new jsPDF();
+        const element = document.getElementById('report-content');
+
+        const canvas = await html2canvas(element);
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = 190;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+        doc.save('analise_estoque_venda.pdf');
+    };
+
     return (
         <MainContainer>
             <BackButton variant="contained" component={Link} to="/inicio" startIcon={<ArrowBackIosIcon />}>
                 Voltar para o Início
             </BackButton>
-            <Typography variant="h4" gutterBottom align="center" style={{ fontWeight: 'bold', color: '#0d6efd', textShadow: '2px 2px #e0e0e0' }}>
-                <StoreIcon style={{ fontSize: '1.5em', verticalAlign: 'middle', marginRight: '0.5em' }} />
-                Dados de Estoque
+            <Typography variant="h4" gutterBottom align="center">
+                <StoreIcon fontSize="large" style={{ marginRight: '10px' }} />
+                Análise de Estoque e Vendas
             </Typography>
             <input
                 type="file"
@@ -299,7 +314,7 @@ const CalcularDiasEstoque = () => {
                 style={{ marginTop: '20px', marginBottom: '20px' }}
             />
             {showHeader && (
-                <HeaderContainer>
+                <HeaderContainer id="report-content">
                     <HeaderFields>
                         <Field
                             label="Produto"
@@ -316,7 +331,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Estoque Atual"
-                            value={formatNumber(parseFloat(estoqueAtual))}
+                            value={estoqueAtual}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -433,7 +448,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Valor Unitário Última Compra"
-                            value={`R$ ${formatNumber(valorUltimaCompra)}`}
+                            value={formatNumber(valorUltimaCompra)}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -447,7 +462,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Valor Total de Vendas no Período (R$)"
-                            value={`R$ ${formatNumber(valorTotalVendas)}`}
+                            value={formatNumber(valorTotalVendas)}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -461,7 +476,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Preço Médio de Venda"
-                            value={`R$ ${formatNumber(precoMedioVenda)}`}
+                            value={formatNumber(precoMedioVenda)}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -475,7 +490,7 @@ const CalcularDiasEstoque = () => {
                         />
                         <Field
                             label="Margem Bruta Realizada (%)"
-                            value={`${formatNumber(margemBruta)}`}
+                            value={formatNumber(margemBruta)}
                             variant="outlined"
                             size="small"
                             InputProps={{
@@ -575,6 +590,14 @@ const CalcularDiasEstoque = () => {
                         >
                             Análise por Cliente
                         </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<BarChartIcon />}
+                            onClick={generatePDF}
+                        >
+                            Gerar PDF
+                        </Button>
                     </Box>
                 </HeaderContainer>
             )}
@@ -652,14 +675,14 @@ const CalcularDiasEstoque = () => {
                             <TableHead>
                                 <TableRow>
                                     <StyledTableCell>Cliente</StyledTableCell>
-                                    <StyledTableCell>Total Comprado</StyledTableCell>
+                                    <StyledTableCell>Total Comprado (Unidades)</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {clientData.map((row, index) => (
+                                {clientData.slice(0, 10).map((row, index) => (
                                     <StyledTableRow key={index}>
                                         <TableCell align="center">{row.client}</TableCell>
-                                        <TableCell align="center">{`R$ ${formatNumber(row.total)}`}</TableCell>
+                                        <TableCell align="center">{formatNumber(row.total)}</TableCell>
                                     </StyledTableRow>
                                 ))}
                             </TableBody>
