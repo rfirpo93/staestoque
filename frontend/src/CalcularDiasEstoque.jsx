@@ -3,7 +3,7 @@ import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
-import Estoque from './Estoque'; // Import the Estoque component
+import Estoque from './Estoque';
 import InfoIcon from '@mui/icons-material/Info';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import BarChartIcon from '@mui/icons-material/BarChart';
