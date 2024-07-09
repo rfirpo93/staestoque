@@ -111,7 +111,7 @@ const CalcularDiasEstoque = () => {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        if (dataInicio && dataFim) {
+        if (dataInicio && dataFim && vendaTotal && estoqueAtual) {
             const diffTime = Math.abs(new Date(dataFim) - new Date(dataInicio));
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including both start and end dates
             setTotalDias(diffDays);
