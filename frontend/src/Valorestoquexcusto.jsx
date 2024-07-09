@@ -1,12 +1,10 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Box, Typography, Paper, TextField, Button, Menu, MenuItem } from '@mui/material';
-import { useTable, useSortBy, useFilters } from 'react-table';
+import { useTable, useFilters } from 'react-table';
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
 import SearchIcon from '@mui/icons-material/Search';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import SortIcon from '@mui/icons-material/Sort';
 import CodeIcon from '@mui/icons-material/Code';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -78,7 +76,7 @@ const TitleContainer = styled(Box)`
   width: 90%;
 `;
 
-const TitleIcon = styled(InventoryIcon)`
+const TitleIcon = styled(ReceiptIcon)`
   font-size: 2.5rem;
   color: #0078d4;
   animation: rotate 2s infinite linear;
@@ -199,19 +197,18 @@ const Valorestoquexcusto = () => {
             columns,
             data,
         },
-        useFilters,
-        useSortBy
+        useFilters
     );
 
     const sortByOptions = [
-        { label: 'Código, do menor ao maior', sortBy: (a, b) => a['Código'] - b['Código'] },
-        { label: 'Código, do maior ao menor', sortBy: (a, b) => b['Código'] - a['Código'] },
-        { label: 'Produto, de A a Z', sortBy: (a, b) => a['Produto'].localeCompare(b['Produto']) },
-        { label: 'Produto, de Z a A', sortBy: (a, b) => b['Produto'].localeCompare(a['Produto']) },
-        { label: 'Valor unitário, do menor para o maior', sortBy: (a, b) => a['Custo'] - b['Custo'] },
-        { label: 'Valor unitário, do maior ao menor', sortBy: (a, b) => b['Custo'] - a['Custo'] },
-        { label: 'Valor total, do menor para o maior', sortBy: (a, b) => (a['Quantidade'] * a['Custo']) - (b['Quantidade'] * b['Custo']) },
-        { label: 'Valor total, do maior ao menor', sortBy: (a, b) => (b['Quantidade'] * b['Custo']) - (a['Quantidade'] * a['Custo']) },
+        { label: 'Código, do menor ao maior', sortBy: (a, b) => a['Código'] - b['Código'], icon: <ArrowUpwardIcon /> },
+        { label: 'Código, do maior ao menor', sortBy: (a, b) => b['Código'] - a['Código'], icon: <ArrowDownwardIcon /> },
+        { label: 'Produto, de A a Z', sortBy: (a, b) => a['Produto'].localeCompare(b['Produto']), icon: <ArrowUpwardIcon /> },
+        { label: 'Produto, de Z a A', sortBy: (a, b) => b['Produto'].localeCompare(a['Produto']), icon: <ArrowDownwardIcon /> },
+        { label: 'Valor unitário, do menor para o maior', sortBy: (a, b) => a['Custo'] - b['Custo'], icon: <ArrowUpwardIcon /> },
+        { label: 'Valor unitário, do maior ao menor', sortBy: (a, b) => b['Custo'] - a['Custo'], icon: <ArrowDownwardIcon /> },
+        { label: 'Valor total, do menor para o maior', sortBy: (a, b) => (a['Quantidade'] * a['Custo']) - (b['Quantidade'] * b['Custo']), icon: <ArrowUpwardIcon /> },
+        { label: 'Valor total, do maior ao menor', sortBy: (a, b) => (b['Quantidade'] * b['Custo']) - (a['Quantidade'] * a['Custo']), icon: <ArrowDownwardIcon /> },
     ];
 
     return (
@@ -233,6 +230,7 @@ const Valorestoquexcusto = () => {
                 variant="contained"
                 color="primary"
                 onClick={handleSortClick}
+                startIcon={<SortIcon />}
             >
                 Ordenar tabela
             </Button>
@@ -245,7 +243,7 @@ const Valorestoquexcusto = () => {
             >
                 {sortByOptions.map(option => (
                     <MenuItem key={option.label} onClick={() => handleSort(option.sortBy)}>
-                        {option.label}
+                        {option.icon} {option.label}
                     </MenuItem>
                 ))}
             </Menu>
@@ -255,26 +253,10 @@ const Valorestoquexcusto = () => {
                         {headerGroups.map(headerGroup => (
                             <tr {...headerGroup.getHeaderGroupProps()}>
                                 {headerGroup.headers.map(column => (
-                                    <StyledTh {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                    <StyledTh {...column.getHeaderProps()}>
                                         {column.icon} {column.render('Header')}
-                                        <span>
-                                            {column.isSorted
-                                                ? column.isSortedDesc
-                                                    ? <ArrowDownwardIcon fontSize="small" />
-                                                    : <ArrowUpwardIcon fontSize="small" />
-                                                : ''}
-                                        </span>
                                         <div>{column.canFilter ? column.render('Filter') : null}</div>
                                     </StyledTh>
-                                ))}
-                            </tr>
-                        ))}
-                        {headerGroups.map(headerGroup => (
-                            <tr {...headerGroup.getHeaderGroupProps()}>
-                                {headerGroup.headers.map(column => (
-                                    <td {...column.getHeaderProps()}>
-                                        {column.canFilter ? column.render('Filter') : null}
-                                    </td>
                                 ))}
                             </tr>
                         ))}
