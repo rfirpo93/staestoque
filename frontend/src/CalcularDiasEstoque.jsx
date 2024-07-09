@@ -166,17 +166,27 @@ const CalcularDiasEstoque = () => {
                 setDataInicio(firstDate);
                 setDataFim(lastDate);
 
-                // Calculate total days
-                const startDate = new Date(firstDate);
-                const endDate = new Date(lastDate);
+                // Attempt to parse dates in a consistent format
+                const parseDate = (dateStr) => {
+                    const [day, month, year] = dateStr.split('/').map(Number);
+                    return new Date(year, month - 1, day);
+                };
+
+                const startDate = parseDate(firstDate);
+                const endDate = parseDate(lastDate);
                 console.log('Parsed first date:', startDate);
                 console.log('Parsed last date:', endDate);
 
-                const diffTime = Math.abs(endDate - startDate);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including both start and end dates
-                console.log('Difference in time (ms):', diffTime);
-                console.log('Total days calculated:', diffDays);
-                setTotalDias(diffDays);
+                if (!isNaN(startDate) && !isNaN(endDate)) {
+                    const diffTime = Math.abs(endDate - startDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including both start and end dates
+                    console.log('Difference in time (ms):', diffTime);
+                    console.log('Total days calculated:', diffDays);
+                    setTotalDias(diffDays);
+                } else {
+                    console.error('Invalid date parsing:', startDate, endDate);
+                    setTotalDias('Erro ao calcular');
+                }
             }
 
             // Calculate totals and averages
