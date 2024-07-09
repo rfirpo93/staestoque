@@ -1,7 +1,11 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableFooter, Paper } from '@mui/material';
+import { Box, Typography, Paper, TextField } from '@mui/material';
+import { useTable, useSortBy, useFilters } from 'react-table';
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
+import SearchIcon from '@mui/icons-material/Search';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const MainContainer = styled(Box)`
   display: flex;
@@ -13,11 +17,42 @@ const MainContainer = styled(Box)`
   background: linear-gradient(145deg, #e0e0e0, #ffffff);
 `;
 
-const TableContainerStyled = styled(TableContainer)`
+const TableContainerStyled = styled(Paper)`
   margin-top: 2rem;
   border-radius: 15px;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
+  width: 90%;
+`;
+
+const StyledTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+`;
+
+const StyledTh = styled.th`
+  background-color: #0d6efd;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  position: relative;
+`;
+
+const StyledTd = styled.td`
+  text-align: center;
+  padding: 10px;
+  &:nth-of-type(odd) {
+    background-color: #f2f2f2;
+  }
+  &:hover {
+    background-color: #e0f7fa;
+  }
+`;
+
+const FilterInput = styled(TextField)`
+  width: 100%;
+  margin-top: 5px;
 `;
 
 const Valorestoquexcusto = () => {
@@ -45,43 +80,127 @@ const Valorestoquexcusto = () => {
         fetchData().catch(console.error);
     }, []);
 
+    const columns = React.useMemo(
+        () => [
+            {
+                Header: 'Código',
+                accessor: 'Código',
+                Filter: ColumnFilter,
+                filter: 'text',
+            },
+            {
+                Header: 'Produto',
+                accessor: 'Produto',
+                Filter: ColumnFilter,
+                filter: 'text',
+            },
+            {
+                Header: 'Quantidade',
+                accessor: 'Quantidade',
+                Filter: ColumnFilter,
+                filter: 'text',
+            },
+            {
+                Header: 'Custo',
+                accessor: 'Custo',
+                Filter: ColumnFilter,
+                filter: 'text',
+            },
+            {
+                Header: 'Valor Total',
+                accessor: row => (row['Quantidade'] * row['Custo']).toFixed(2),
+                id: 'ValorTotal',
+                Filter: ColumnFilter,
+                filter: 'text',
+            },
+        ],
+        []
+    );
+
+    const data = React.useMemo(() => rows, [rows]);
+
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        rows: tableRows,
+        prepareRow,
+    } = useTable(
+        {
+            columns,
+            data,
+        },
+        useFilters,
+        useSortBy
+    );
+
     return (
         <MainContainer>
             <Typography variant="h4" gutterBottom align="center">
                 Análise de Valor em Estoque por Custo
             </Typography>
-            <TableContainerStyled component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="center">Código</TableCell>
-                            <TableCell align="center">Produto</TableCell>
-                            <TableCell align="center">Quantidade</TableCell>
-                            <TableCell align="center">Custo</TableCell>
-                            <TableCell align="center">Valor Total</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row, index) => (
-                            <TableRow key={index}>
-                                <TableCell align="center">{row['Código']}</TableCell>
-                                <TableCell align="center">{row['Produto']}</TableCell>
-                                <TableCell align="center">{row['Quantidade']}</TableCell>
-                                <TableCell align="center">{row['Custo']}</TableCell>
-                                <TableCell align="center">{(row['Quantidade'] * row['Custo']).toFixed(2)}</TableCell>
-                            </TableRow>
+            <TableContainerStyled>
+                <StyledTable {...getTableProps()}>
+                    <thead>
+                        {headerGroups.map(headerGroup => (
+                            <tr {...headerGroup.getHeaderGroupProps()}>
+                                {headerGroup.headers.map(column => (
+                                    <StyledTh {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                        {column.render('Header')}
+                                        <span>
+                                            {column.isSorted
+                                                ? column.isSortedDesc
+                                                    ? <ArrowDownwardIcon fontSize="small" />
+                                                    : <ArrowUpwardIcon fontSize="small" />
+                                                : ''}
+                                        </span>
+                                        <div>{column.canFilter ? column.render('Filter') : null}</div>
+                                    </StyledTh>
+                                ))}
+                            </tr>
                         ))}
-                    </TableBody>
-                    <TableFooter>
-                        <TableRow>
-                            <TableCell colSpan={4} align="right">Total em Estoque:</TableCell>
-                            <TableCell align="center">{total.toFixed(2)}</TableCell>
-                        </TableRow>
-                    </TableFooter>
-                </Table>
+                    </thead>
+                    <tbody {...getTableBodyProps()}>
+                        {tableRows.map(row => {
+                            prepareRow(row);
+                            return (
+                                <tr {...row.getRowProps()}>
+                                    {row.cells.map(cell => (
+                                        <StyledTd {...cell.getCellProps()}>{cell.render('Cell')}</StyledTd>
+                                    ))}
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan={4} align="right" style={{ padding: '10px', fontWeight: 'bold' }}>Total em Estoque:</td>
+                            <td align="center" style={{ padding: '10px', fontWeight: 'bold' }}>{total.toFixed(2)}</td>
+                        </tr>
+                    </tfoot>
+                </StyledTable>
             </TableContainerStyled>
         </MainContainer>
     );
 };
+
+function ColumnFilter({
+    column: { filterValue, setFilter },
+}) {
+    return (
+        <FilterInput
+            value={filterValue || ''}
+            onChange={e => setFilter(e.target.value || undefined)}
+            placeholder="Pesquisar..."
+            InputProps={{
+                startAdornment: (
+                    <SearchIcon position="start" />
+                ),
+            }}
+            variant="outlined"
+            size="small"
+        />
+    );
+}
 
 export default Valorestoquexcusto;
