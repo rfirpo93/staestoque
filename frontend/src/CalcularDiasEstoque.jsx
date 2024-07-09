@@ -182,7 +182,7 @@ const CalcularDiasEstoque = () => {
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including both start and end dates
                     console.log('Diferença em tempo (ms):', diffTime);
                     console.log('Total de dias calculados:', diffDays);
-                    setTotalDias(diffDays.toString()); // Convert to string
+                    setTotalDias(diffDays.toString()); // Ensure totalDias is set as a string
                 } else {
                     console.error('Análise de data inválida:', startDate, endDate);
                     setTotalDias('Erro ao calcular');
@@ -217,6 +217,25 @@ const CalcularDiasEstoque = () => {
 
         reader.readAsBinaryString(file);
     };
+
+    // Ensure that the useEffect hook is correctly updating the totalDias state
+    useEffect(() => {
+        console.log('Valores atualizados:', { dataInicio, dataFim, totalDias });
+        if (dataInicio && dataFim) {
+            const startDate = new Date(dataInicio);
+            const endDate = new Date(dataFim);
+            const diffTime = Math.abs(endDate - startDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including both start and end dates
+            setTotalDias(diffDays.toString()); // Ensure totalDias is set as a string
+
+            const vendaDiariaCalc = vendaTotal / diffDays;
+            setVendaDiaria(vendaDiariaCalc);
+            setVendaMediaMensal(vendaDiariaCalc * 30);
+            setVendaMediaTrimestral(vendaDiariaCalc * 90);
+            setVendaMediaAnual(vendaDiariaCalc * 365);
+            setDiasEstoque(estoqueAtual / vendaDiariaCalc);
+        }
+    }, [dataInicio, dataFim, vendaTotal, estoqueAtual]);
 
 
     const handleSelectProduto = () => {
