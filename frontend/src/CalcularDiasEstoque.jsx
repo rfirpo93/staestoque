@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, InputAdornment, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
@@ -124,6 +124,7 @@ const CalcularDiasEstoque = () => {
     const [graphData, setGraphData] = useState([]);
     const [clientData, setClientData] = useState([]);
     const [products, setProducts] = useState([]);
+    const chartRef = useRef(null);
 
     useEffect(() => {
         if (dataInicio && dataFim) {
@@ -287,7 +288,6 @@ const CalcularDiasEstoque = () => {
 
     const generatePDF = async () => {
         const doc = new jsPDF();
-        const element = document.getElementById('report-content');
 
         // Adicione o título
         doc.setFontSize(18);
@@ -320,35 +320,11 @@ const CalcularDiasEstoque = () => {
         });
 
         // Adicione o gráfico
-        const chartCanvas = document.createElement('canvas');
-        chartCanvas.width = 800;
-        chartCanvas.height = 400;
-        const ctx = chartCanvas.getContext('2d');
-
-        new ChartJS(ctx, {
-            type: 'line',
-            data: {
-                labels: graphData.map(item => item.name),
-                datasets: [
-                    {
-                        label: 'Valor de Vendas',
-                        data: graphData.map(item => item.value),
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'top' },
-                    title: { display: true, text: 'Análise de Vendas por Mês' },
-                },
-            },
-        });
-
-        const chartImgData = chartCanvas.toDataURL('image/png');
-        doc.addImage(chartImgData, 'PNG', 10, 200, 190, 90);
+        const chartCanvas = chartRef.current;
+        if (chartCanvas) {
+            const chartImgData = chartCanvas.toDataURL('image/png');
+            doc.addImage(chartImgData, 'PNG', 10, 200, 190, 90);
+        }
 
         // Adicione a tabela de clientes
         doc.text('Top 10 Compradores', 20, 310);
@@ -701,31 +677,34 @@ const CalcularDiasEstoque = () => {
             <Dialog open={openGraph} onClose={() => setOpenGraph(false)} maxWidth="md" fullWidth>
                 <DialogTitle>Análise de Vendas</DialogTitle>
                 <DialogContent>
-                    <Line
-                        data={{
-                            labels: graphData.map(item => item.name),
-                            datasets: [
-                                {
-                                    label: 'Valor de Vendas',
-                                    data: graphData.map(item => item.value),
-                                    borderColor: 'rgba(75, 192, 192, 1)',
-                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    <div>
+                        <Line
+                            ref={chartRef}
+                            data={{
+                                labels: graphData.map(item => item.name),
+                                datasets: [
+                                    {
+                                        label: 'Valor de Vendas',
+                                        data: graphData.map(item => item.value),
+                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    },
+                                ],
+                            }}
+                            options={{
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Análise de Vendas por Mês',
+                                    },
                                 },
-                            ],
-                        }}
-                        options={{
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'top',
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Análise de Vendas por Mês',
-                                },
-                            },
-                        }}
-                    />
+                            }}
+                        />
+                    </div>
                 </DialogContent>
             </Dialog>
             <Dialog open={openClientAnalysis} onClose={() => setOpenClientAnalysis(false)} maxWidth="md" fullWidth>
