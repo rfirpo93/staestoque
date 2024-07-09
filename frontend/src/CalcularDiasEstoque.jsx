@@ -289,12 +289,73 @@ const CalcularDiasEstoque = () => {
         const doc = new jsPDF();
         const element = document.getElementById('report-content');
 
-        const canvas = await html2canvas(element);
-        const imgData = canvas.toDataURL('image/png');
-        const imgWidth = 190;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        // Adicione o título
+        doc.setFontSize(18);
+        doc.text('Análise de Estoque e Vendas', 20, 20);
+        doc.setFontSize(12);
 
-        doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+        // Adicione os campos do cabeçalho
+        const headerData = [
+            { label: 'Produto', value: produto },
+            { label: 'Estoque Atual', value: formatNumber(estoqueAtual) },
+            { label: 'Data Início', value: dataInicio },
+            { label: 'Data Fim', value: dataFim },
+            { label: 'Total de Dias no Intervalo', value: totalDias },
+            { label: 'Venda Total no Período', value: formatNumber(vendaTotal) },
+            { label: 'Compra Total no Período', value: formatNumber(compraTotal) },
+            { label: 'QTD Última Compra', value: formatNumber(qtdUltimaCompra) },
+            { label: 'Valor Unitário Última Compra', value: formatNumber(valorUltimaCompra) },
+            { label: 'Valor Total de Vendas no Período (R$)', value: formatNumber(valorTotalVendas) },
+            { label: 'Preço Médio de Venda', value: formatNumber(precoMedioVenda) },
+            { label: 'Margem Bruta Realizada (%)', value: formatNumber(margemBruta) },
+            { label: 'Venda Diária', value: formatNumber(vendaDiaria) },
+            { label: 'Venda Média Mensal', value: formatNumber(vendaMediaMensal) },
+            { label: 'Venda Média Trimestral', value: formatNumber(vendaMediaTrimestral) },
+            { label: 'Venda Média Anual', value: formatNumber(vendaMediaAnual) },
+            { label: 'Dias de Estoque', value: formatNumber(diasEstoque) },
+        ];
+
+        headerData.forEach((item, index) => {
+            doc.text(`${item.label}: ${item.value}`, 20, 40 + (index * 10));
+        });
+
+        // Adicione o gráfico
+        const chartCanvas = document.createElement('canvas');
+        chartCanvas.width = 800;
+        chartCanvas.height = 400;
+        const ctx = chartCanvas.getContext('2d');
+
+        new ChartJS(ctx, {
+            type: 'line',
+            data: {
+                labels: graphData.map(item => item.name),
+                datasets: [
+                    {
+                        label: 'Valor de Vendas',
+                        data: graphData.map(item => item.value),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Análise de Vendas por Mês' },
+                },
+            },
+        });
+
+        const chartImgData = chartCanvas.toDataURL('image/png');
+        doc.addImage(chartImgData, 'PNG', 10, 200, 190, 90);
+
+        // Adicione a tabela de clientes
+        doc.text('Top 10 Compradores', 20, 310);
+        clientData.slice(0, 10).forEach((row, index) => {
+            doc.text(`${index + 1}. ${row.client}: ${formatNumber(row.total)} unidades`, 20, 320 + (index * 10));
+        });
+
         doc.save('analise_estoque_venda.pdf');
     };
 
