@@ -1,5 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Box, Typography, Paper, TextField, Button, Menu, MenuItem } from '@mui/material';
+import { useTable, useSortBy, useFilters } from 'react-table';
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
 import SearchIcon from '@mui/icons-material/Search';
@@ -259,15 +260,6 @@ const Valorestoquexvenda = () => {
                                         {column.icon} {column.render('Header')}
                                         <div>{column.canFilter ? column.render('Filter') : null}</div>
                                     </StyledTh>
-                                ))}
-                            </tr>
-                        ))}
-                        {headerGroups.map(headerGroup => (
-                            <tr {...headerGroup.getHeaderGroupProps()}>
-                                {headerGroup.headers.map(column => (
-                                    <td {...column.getHeaderProps()}>
-                                        {column.canFilter ? column.render('Filter') : null}
-                                    </td>
                                 ))}
                             </tr>
                         ))}
