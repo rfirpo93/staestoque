@@ -155,7 +155,7 @@ const Inicio = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
             >
-                <MenuItem component={Link} to="/calculo" onClick={handleMenuClose}>
+                <MenuItem component={Link} to="/calculo" onClick={handleMenuClose} startIcon={<CalculateIcon />}>
                     Cálculo Manual de Vencimento x Venda x Margem
                 </MenuItem>
             </Menu>
@@ -196,7 +196,7 @@ const Inicio = () => {
                 open={Boolean(stockAnchorEl)}
                 onClose={handleMenuClose}
             >
-                <MenuItem component={Link} to="/calcular-dias-estoque" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                <MenuItem component={Link} to="/calcular-dias-estoque" onClick={handleMenuClose} startIcon={<StorageIcon />}>
                     Calcular Dias de Estoque com Base no Cardex
                 </MenuItem>
             </Menu>
@@ -215,13 +215,13 @@ const Inicio = () => {
                 open={Boolean(gerenciadorAnchorEl)}
                 onClose={handleMenuClose}
             >
-                <MenuItem component={Link} to="/analise-dias-estoque" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                <MenuItem component={Link} to="/analise-dias-estoque" onClick={handleMenuClose} startIcon={<AssessmentIcon />}>
                     Análise de Dias de Estoque com Base na Venda Informada
                 </MenuItem>
-                <MenuItem component={Link} to="/estoquexcusto" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                <MenuItem component={Link} to="/estoquexcusto" onClick={handleMenuClose} startIcon={<PriceCheckIcon />}>
                     Análise de Valor em Estoque por Custo
                 </MenuItem>
-                <MenuItem component={Link} to="/valorestoquexvenda" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                <MenuItem component={Link} to="/valorestoquexvenda" onClick={handleMenuClose} startIcon={<ShoppingCartIcon />}>
                     Análise de Valor em Estoque por Preço de Venda
                 </MenuItem>
             </Menu>
@@ -240,7 +240,7 @@ const Inicio = () => {
                 open={Boolean(configurarAnchorEl)}
                 onClose={handleMenuClose}
             >
-                <MenuItem component={Link} to="/vincular-codigos" onClick={handleMenuClose} startIcon={<InventoryIcon />}>
+                <MenuItem component={Link} to="/vincular-codigos" onClick={handleMenuClose} startIcon={<SettingsIcon />}>
                     Vincular Códigos a Produto
                 </MenuItem>
             </Menu>
