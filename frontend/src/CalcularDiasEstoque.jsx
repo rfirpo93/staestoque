@@ -3,7 +3,7 @@ import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
-import Estoque from './Estoque';
+import Estoque from './Estoque'; // Import the Estoque component
 import InfoIcon from '@mui/icons-material/Info';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -16,7 +16,10 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const MainContainer = styled(Box)`
   display: flex;
@@ -527,21 +530,31 @@ const CalcularDiasEstoque = () => {
             <Dialog open={openGraph} onClose={() => setOpenGraph(false)} maxWidth="md" fullWidth>
                 <DialogTitle>Análise de Vendas</DialogTitle>
                 <DialogContent>
-                    <ResponsiveContainer width="100%" height={400}>
-                        <LineChart
-                            data={graphData}
-                            margin={{
-                                top: 10, right: 30, left: 0, bottom: 0,
-                            }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
-                        </LineChart>
-                    </ResponsiveContainer>
+                    <Line
+                        data={{
+                            labels: graphData.map(item => item.name),
+                            datasets: [
+                                {
+                                    label: 'Valor de Vendas',
+                                    data: graphData.map(item => item.value),
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                },
+                            ],
+                        }}
+                        options={{
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Análise de Vendas por Mês',
+                                },
+                            },
+                        }}
+                    />
                 </DialogContent>
             </Dialog>
         </MainContainer>
