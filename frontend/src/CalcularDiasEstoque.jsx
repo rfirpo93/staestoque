@@ -118,10 +118,6 @@ const CalcularDiasEstoque = () => {
     const [precoMedioVenda, setPrecoMedioVenda] = useState(0);
     const [margemBruta, setMargemBruta] = useState(0);
     const [showHeader, setShowHeader] = useState(false);
-    const [open, setOpen] = useState(false);
-    const [openGraph, setOpenGraph] = useState(false);
-    const [openClientAnalysis, setOpenClientAnalysis] = useState(false);
-    const [openPreview, setOpenPreview] = useState(false);
     const [graphData, setGraphData] = useState([]);
     const [clientData, setClientData] = useState([]);
     const [products, setProducts] = useState([]);
@@ -257,6 +253,8 @@ const CalcularDiasEstoque = () => {
             setClientData(clientDataArray);
 
             setShowHeader(true);
+
+            setTimeout(() => generatePDF(), 1000);  // Gera o PDF automaticamente após 1 segundo
         };
 
         reader.readAsBinaryString(file);
@@ -286,10 +284,6 @@ const CalcularDiasEstoque = () => {
 
     const formatNumber = (number) => {
         return number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    };
-
-    const handleGeneratePDF = () => {
-        setOpenPreview(true);
     };
 
     const generatePDF = async () => {
@@ -333,7 +327,7 @@ const CalcularDiasEstoque = () => {
                 style={{ marginTop: '20px', marginBottom: '20px' }}
             />
             {showHeader && (
-                <HeaderContainer id="report-content">
+                <HeaderContainer id="report-content" ref={previewRef}>
                     <HeaderFields>
                         <Field
                             label="Produto"
@@ -592,35 +586,64 @@ const CalcularDiasEstoque = () => {
                             }}
                         />
                     </HeaderFields>
-                    <Box display="flex" gap="1rem">
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            startIcon={<ShowChartIcon />}
-                            onClick={() => setOpenGraph(true)}
-                        >
-                            Análise de Vendas
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            startIcon={<InfoIcon />}
-                            onClick={() => setOpenClientAnalysis(true)}
-                        >
-                            Análise por Cliente
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            startIcon={<BarChartIcon />}
-                            onClick={handleGeneratePDF}
-                        >
-                            Gerar PDF
-                        </Button>
+                    <Box display="flex" justifyContent="space-between">
+                        <Box width="50%">
+                            <Typography variant="h6" align="center" gutterBottom>
+                                Análise mensal de Vendas
+                            </Typography>
+                            <Line
+                                data={{
+                                    labels: graphData.map(item => item.name),
+                                    datasets: [
+                                        {
+                                            label: 'Valor de Vendas',
+                                            data: graphData.map(item => item.value),
+                                            borderColor: 'rgba(75, 192, 192, 1)',
+                                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                        },
+                                    ],
+                                }}
+                                options={{
+                                    responsive: true,
+                                    plugins: {
+                                        legend: {
+                                            position: 'top',
+                                        },
+                                        title: {
+                                            display: true,
+                                            text: 'Análise de Vendas por Mês',
+                                        },
+                                    },
+                                }}
+                            />
+                        </Box>
+                        <Box width="45%">
+                            <Typography variant="h6" align="center" gutterBottom>
+                                Top 10 compradores
+                            </Typography>
+                            <TableContainer component={Paper}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <StyledTableCell>Cliente</StyledTableCell>
+                                            <StyledTableCell>Total Comprado (Unidades)</StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {clientData.slice(0, 10).map((row, index) => (
+                                            <StyledTableRow key={index}>
+                                                <TableCell align="center">{row.client}</TableCell>
+                                                <TableCell align="center">{formatNumber(row.total)}</TableCell>
+                                            </StyledTableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Box>
                     </Box>
                 </HeaderContainer>
             )}
-            {data.length > 0 ? (
+            {data.length > 0 && (
                 <TableContainerStyled component={Paper}>
                     <Table>
                         <TableHead>
@@ -645,385 +668,7 @@ const CalcularDiasEstoque = () => {
                         </TableBody>
                     </Table>
                 </TableContainerStyled>
-            ) : (
-                <Typography variant="h6" align="center">
-                    Carregando dados...
-                </Typography>
             )}
-            <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
-                <DialogTitle>Selecione um Produto</DialogTitle>
-                <DialogContent>
-                    <Estoque onSelectProduct={handleProductSelect} />
-                </DialogContent>
-            </Dialog>
-            <Dialog open={openGraph} onClose={() => setOpenGraph(false)} maxWidth="md" fullWidth>
-                <DialogTitle>Análise de Vendas</DialogTitle>
-                <DialogContent>
-                    <div>
-                        <Line
-                            ref={chartRef}
-                            data={{
-                                labels: graphData.map(item => item.name),
-                                datasets: [
-                                    {
-                                        label: 'Valor de Vendas',
-                                        data: graphData.map(item => item.value),
-                                        borderColor: 'rgba(75, 192, 192, 1)',
-                                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                    },
-                                ],
-                            }}
-                            options={{
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'top',
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Análise de Vendas por Mês',
-                                    },
-                                },
-                            }}
-                        />
-                    </div>
-                </DialogContent>
-            </Dialog>
-            <Dialog open={openClientAnalysis} onClose={() => setOpenClientAnalysis(false)} maxWidth="md" fullWidth>
-                <DialogTitle>Análise por Cliente</DialogTitle>
-                <DialogContent>
-                    <TableContainer component={Paper}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell>Cliente</StyledTableCell>
-                                    <StyledTableCell>Total Comprado (Unidades)</StyledTableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {clientData.slice(0, 10).map((row, index) => (
-                                    <StyledTableRow key={index}>
-                                        <TableCell align="center">{row.client}</TableCell>
-                                        <TableCell align="center">{formatNumber(row.total)}</TableCell>
-                                    </StyledTableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </DialogContent>
-            </Dialog>
-            <Dialog open={openPreview} onClose={() => setOpenPreview(false)} maxWidth="lg" fullWidth>
-                <DialogTitle>Pré-visualização do PDF</DialogTitle>
-                <DialogContent ref={previewRef}>
-                    <HeaderContainer>
-                        <Typography variant="h4" align="center" gutterBottom>
-                            Análise de compra, venda e estoque
-                        </Typography>
-                        <HeaderFields>
-                            <Field
-                                label="Produto"
-                                value={produto}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <SearchOffIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                variant="outlined"
-                                size="small"
-                            />
-                            <Field
-                                label="Estoque Atual"
-                                value={estoqueAtual}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <ShoppingCartIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Data Início"
-                                value={dataInicio}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <CalendarTodayIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Data Fim"
-                                value={dataFim}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <CalendarTodayIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Total de Dias no Intervalo"
-                                value={totalDias}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <CalendarTodayIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Venda Total no Período"
-                                value={formatNumber(vendaTotal)}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <InventoryIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Compra Total no Período"
-                                value={formatNumber(compraTotal)}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <InventoryIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="QTD Última Compra"
-                                value={formatNumber(qtdUltimaCompra)}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <BarChartIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Valor Unitário Última Compra"
-                                value={formatNumber(valorUltimaCompra)}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <MonetizationOnIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Valor Total de Vendas no Período (R$)"
-                                value={formatNumber(valorTotalVendas)}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <MonetizationOnIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Preço Médio de Venda"
-                                value={formatNumber(precoMedioVenda)}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <TrendingUpIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Margem Bruta Realizada (%)"
-                                value={formatNumber(margemBruta)}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <TrendingUpIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Venda Diária"
-                                value={formatNumber(vendaDiaria)}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <TrendingUpIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Venda Média Mensal"
-                                value={formatNumber(vendaMediaMensal)}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <TrendingUpIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Venda Média Trimestral"
-                                value={formatNumber(vendaMediaTrimestral)}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <TrendingUpIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Venda Média Anual"
-                                value={formatNumber(vendaMediaAnual)}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <TrendingUpIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <Field
-                                label="Dias de Estoque"
-                                value={formatNumber(diasEstoque)}
-                                variant="outlined"
-                                size="small"
-                                InputProps={{
-                                    readOnly: true,
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <TrendingUpIcon />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                        </HeaderFields>
-                        <Box display="flex" justifyContent="space-between">
-                            <Box width="50%">
-                                <Typography variant="h6" align="center" gutterBottom>
-                                    Análise mensal de Vendas
-                                </Typography>
-                                <Line
-                                    data={{
-                                        labels: graphData.map(item => item.name),
-                                        datasets: [
-                                            {
-                                                label: 'Valor de Vendas',
-                                                data: graphData.map(item => item.value),
-                                                borderColor: 'rgba(75, 192, 192, 1)',
-                                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                            },
-                                        ],
-                                    }}
-                                    options={{
-                                        responsive: true,
-                                        plugins: {
-                                            legend: {
-                                                position: 'top',
-                                            },
-                                            title: {
-                                                display: true,
-                                                text: 'Análise de Vendas por Mês',
-                                            },
-                                        },
-                                    }}
-                                />
-                            </Box>
-                            <Box width="45%">
-                                <Typography variant="h6" align="center" gutterBottom>
-                                    Top 10 compradores
-                                </Typography>
-                                <TableContainer component={Paper}>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <StyledTableCell>Cliente</StyledTableCell>
-                                                <StyledTableCell>Total Comprado (Unidades)</StyledTableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {clientData.slice(0, 10).map((row, index) => (
-                                                <StyledTableRow key={index}>
-                                                    <TableCell align="center">{row.client}</TableCell>
-                                                    <TableCell align="center">{formatNumber(row.total)}</TableCell>
-                                                </StyledTableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </Box>
-                        </Box>
-                    </HeaderContainer>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={generatePDF}
-                        style={{ marginTop: '20px' }}
-                    >
-                        Confirmar e Gerar PDF
-                    </Button>
-                </DialogContent>
-            </Dialog>
         </MainContainer>
     );
 };
