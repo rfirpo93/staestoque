@@ -98,11 +98,6 @@ const Field = styled(TextField)`
   }
 `;
 
-const ScrollableDialogContent = styled(DialogContent)`
-  max-height: calc(100vh - 100px); /* Adjust this value as needed */
-  overflow-y: auto;
-`;
-
 const CalcularDiasEstoque = () => {
     const [data, setData] = useState([]);
     const [produto, setProduto] = useState('');
@@ -134,7 +129,6 @@ const CalcularDiasEstoque = () => {
     const previewRef = useRef(null);
 
     useEffect(() => {
-        console.log('Calculando dados de vendas e estoque...');
         if (dataInicio && dataFim) {
             const startDate = new Date(dataInicio.split('/').reverse().join('-'));
             const endDate = new Date(dataFim.split('/').reverse().join('-'));
@@ -640,13 +634,13 @@ const CalcularDiasEstoque = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {data.map((row, index) => (
+                            {data.map((item, index) => (
                                 <StyledTableRow key={index}>
-                                    <TableCell align="center">{row[0]}</TableCell>
-                                    <TableCell align="center">{row[1]}</TableCell>
-                                    <TableCell align="center">{row[2]}</TableCell>
-                                    <TableCell align="center">{formatNumber(row[3])}</TableCell>
-                                    <TableCell align="center">{`R$ ${formatNumber(row[4])}`}</TableCell>
+                                    <TableCell align="center">{item[0]}</TableCell>
+                                    <TableCell align="center">{item[1]}</TableCell>
+                                    <TableCell align="center">{item[2]}</TableCell>
+                                    <TableCell align="center">{formatNumber(item[3])}</TableCell>
+                                    <TableCell align="center">{`R$ ${formatNumber(item[4])}`}</TableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>
@@ -674,7 +668,7 @@ const CalcularDiasEstoque = () => {
                                 datasets: [
                                     {
                                         label: 'Valor de Vendas',
-                                        data: graphData.map(item.value),
+                                        data: graphData.map(item => item.value),
                                         borderColor: 'rgba(75, 192, 192, 1)',
                                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                                     },
@@ -721,7 +715,7 @@ const CalcularDiasEstoque = () => {
             </Dialog>
             <Dialog open={openPreview} onClose={() => setOpenPreview(false)} maxWidth="lg" fullWidth>
                 <DialogTitle>Pré-visualização do PDF</DialogTitle>
-                <ScrollableDialogContent ref={previewRef}>
+                <DialogContent ref={previewRef}>
                     <HeaderContainer>
                         <Typography variant="h4" align="center" gutterBottom>
                             Análise de compra, venda e estoque
@@ -976,7 +970,7 @@ const CalcularDiasEstoque = () => {
                                         datasets: [
                                             {
                                                 label: 'Valor de Vendas',
-                                                data: graphData.map(item.value),
+                                                data: graphData.map(item => item.value),
                                                 borderColor: 'rgba(75, 192, 192, 1)',
                                                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                                             },
@@ -1029,7 +1023,7 @@ const CalcularDiasEstoque = () => {
                     >
                         Confirmar e Gerar PDF
                     </Button>
-                </ScrollableDialogContent>
+                </DialogContent>
             </Dialog>
         </MainContainer>
     );
