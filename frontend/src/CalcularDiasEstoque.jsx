@@ -593,7 +593,6 @@ const CalcularDiasEstoque = () => {
                                 ),
                             }}
                         />
-
                     </HeaderFields>
                     <Box display="flex" gap="1rem">
                         <Button
@@ -611,6 +610,14 @@ const CalcularDiasEstoque = () => {
                             onClick={() => setOpenClientAnalysis(true)}
                         >
                             Análise por Cliente
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<BarChartIcon />}
+                            onClick={handleGeneratePDF}
+                        >
+                            Gerar PDF
                         </Button>
                     </Box>
                 </HeaderContainer>
