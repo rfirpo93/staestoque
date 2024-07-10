@@ -296,6 +296,12 @@ const CalcularDiasEstoque = () => {
     const generatePDF = async () => {
         const previewElement = previewRef.current;
 
+        // Excluir a área do botão da captura
+        const buttonElement = previewElement.querySelector('button');
+        if (buttonElement) {
+            buttonElement.style.display = 'none';
+        }
+
         html2canvas(previewElement).then((canvas) => {
             const imgData = canvas.toDataURL('image/png');
             const pdf = new jsPDF();
@@ -305,6 +311,11 @@ const CalcularDiasEstoque = () => {
 
             pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
             pdf.save('analise_estoque_venda.pdf');
+
+            // Restaurar a exibição do botão
+            if (buttonElement) {
+                buttonElement.style.display = '';
+            }
         });
     };
 
