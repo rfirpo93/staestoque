@@ -3,7 +3,7 @@ import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead
 import * as XLSX from 'xlsx';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
-import Estoque from './Estoque'; // Import the Estoque component
+import Estoque from './Estoque'; // Importar o componente Estoque
 import InfoIcon from '@mui/icons-material/Info';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -124,11 +124,11 @@ const CalcularDiasEstoque = () => {
     const [graphData, setGraphData] = useState([]);
     const [clientData, setClientData] = useState([]);
     const [products, setProducts] = useState([]);
-    const [openPreview, setOpenPreview] = useState(false);
-    const [previewSrc, setPreviewSrc] = useState('');
     const chartRef = useRef(null);
 
+    // Função de efeito para calcular dados de vendas e estoque
     useEffect(() => {
+        console.log('Calculando dados de vendas e estoque...');
         if (dataInicio && dataFim) {
             const startDate = new Date(dataInicio.split('/').reverse().join('-'));
             const endDate = new Date(dataFim.split('/').reverse().join('-'));
@@ -145,6 +145,7 @@ const CalcularDiasEstoque = () => {
         }
     }, [dataInicio, dataFim, vendaTotal, estoqueAtual]);
 
+    // Função para manipular o upload de arquivo
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
@@ -262,6 +263,7 @@ const CalcularDiasEstoque = () => {
         reader.readAsBinaryString(file);
     };
 
+    // Função para selecionar produto
     const handleSelectProduto = () => {
         const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/estoque.xlsx';
 
@@ -275,30 +277,23 @@ const CalcularDiasEstoque = () => {
                 setProducts(json);
                 setOpen(true);
             })
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => console.error('Erro ao buscar dados:', error));
     };
 
+    // Função para selecionar um produto específico
     const handleProductSelect = (product) => {
         setProduto(product.produto);
         setEstoqueAtual(product.quantidade);
         setOpen(false);
     };
 
+    // Função para formatar número
     const formatNumber = (number) => {
         return number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
 
-    const handlePreviewPDF = async () => {
-        console.log('Gerando visualização do PDF...');
-        const element = document.getElementById('report-content');
-        const canvas = await html2canvas(element);
-        const imgData = canvas.toDataURL('image/png');
-        setPreviewSrc(imgData);
-        setOpenPreview(true);
-        console.log('Visualização do PDF gerada.');
-    };
-
-    const handleDownloadPDF = () => {
+    // Função para gerar PDF
+    const generatePDF = async () => {
         const doc = new jsPDF();
 
         console.log('Iniciando geração do PDF...');
@@ -313,7 +308,24 @@ const CalcularDiasEstoque = () => {
         // Carregar o logotipo
         console.log('Carregando o logotipo...');
         const logoPath = 'C:\\Users\\raulf\\OneDrive\\Área de Trabalho\\Raul\\Compras e estoque\\frontend\\src\\assets\\logo.png';
-        const logo = previewSrc;
+        const logo = await fetch(logoPath)
+            .then(response => {
+                console.log('Logotipo carregado com sucesso.');
+                return response.blob();
+            })
+            .then(blob => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    console.log('Logotipo convertido para base64.');
+                    resolve(reader.result);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            }))
+            .catch(err => {
+                console.error('Erro ao carregar o logotipo:', err);
+                return null;
+            });
 
         if (logo) {
             console.log('Adicionando logotipo ao PDF...');
@@ -691,9 +703,9 @@ const CalcularDiasEstoque = () => {
                             variant="contained"
                             color="primary"
                             startIcon={<BarChartIcon />}
-                            onClick={handlePreviewPDF}
+                            onClick={generatePDF}
                         >
-                            Visualizar PDF
+                            Gerar PDF
                         </Button>
                     </Box>
                 </HeaderContainer>
@@ -745,7 +757,7 @@ const CalcularDiasEstoque = () => {
                                 datasets: [
                                     {
                                         label: 'Valor de Vendas',
-                                        data: graphData.map(item.value),
+                                        data: graphData.map(item => item.value),
                                         borderColor: 'rgba(75, 192, 192, 1)',
                                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                                     },
@@ -788,20 +800,6 @@ const CalcularDiasEstoque = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </DialogContent>
-            </Dialog>
-            <Dialog open={openPreview} onClose={() => setOpenPreview(false)} maxWidth="lg" fullWidth>
-                <DialogTitle>Visualização do PDF</DialogTitle>
-                <DialogContent>
-                    <img src={previewSrc} alt="PDF Preview" style={{ width: '100%' }} />
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleDownloadPDF}
-                        style={{ marginTop: '20px' }}
-                    >
-                        Baixar PDF
-                    </Button>
                 </DialogContent>
             </Dialog>
         </MainContainer>
