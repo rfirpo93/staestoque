@@ -335,7 +335,7 @@ const CalcularDiasEstoque = () => {
                 style={{ marginTop: '20px', marginBottom: '20px' }}
             />
             {showHeader && (
-                <HeaderContainer id="report-content" ref={previewRef}>
+                <HeaderContainer id="report-content">
                     <HeaderFields>
                         <Field
                             label="Produto"
@@ -716,7 +716,7 @@ const CalcularDiasEstoque = () => {
             </Dialog>
             <Dialog open={openPreview} onClose={() => setOpenPreview(false)} maxWidth="lg" fullWidth>
                 <DialogTitle>Pré-visualização do PDF</DialogTitle>
-                <DialogContent>
+                <DialogContent ref={previewRef}>
                     <HeaderContainer>
                         <Typography variant="h4" align="center" gutterBottom>
                             Análise de compra, venda e estoque
