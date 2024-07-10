@@ -295,15 +295,15 @@ const CalcularDiasEstoque = () => {
     const generatePDF = async () => {
         const previewElement = previewRef.current;
 
-        // Excluir a área do botão da captura
-        const buttonElement = previewElement.querySelector('button');
-        if (buttonElement) {
-            buttonElement.style.display = 'none';
-        }
+        // Temporarily adjust styles for capturing full content
+        const originalWidth = previewElement.style.width;
+        const originalOverflow = document.body.style.overflow;
+        previewElement.style.width = '100%';
+        document.body.style.overflow = 'hidden';
 
-        html2canvas(previewElement).then((canvas) => {
+        html2canvas(previewElement, { scale: 2 }).then((canvas) => {
             const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF();
+            const pdf = new jsPDF('p', 'mm', 'a4');
             const imgProps = pdf.getImageProperties(imgData);
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
@@ -311,10 +311,9 @@ const CalcularDiasEstoque = () => {
             pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
             pdf.save('analise_estoque_venda.pdf');
 
-            // Restaurar a exibição do botão
-            if (buttonElement) {
-                buttonElement.style.display = '';
-            }
+            // Restore original styles
+            previewElement.style.width = originalWidth;
+            document.body.style.overflow = originalOverflow;
         });
     };
 
