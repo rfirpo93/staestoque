@@ -289,43 +289,53 @@ const CalcularDiasEstoque = () => {
     const generatePDF = async () => {
         const doc = new jsPDF();
 
+        // Adicione um fundo moderno
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        doc.setFillColor(240, 240, 240); // cor do fundo
+        doc.rect(0, 0, pageWidth, pageHeight, 'F');
+
+        // Adicione o logotipo
+        const logo = 'C:\\Users\\raulf\\OneDrive\\Área de Trabalho\\Raul\\Compras e estoque\\frontend\\src\\assets\\logo.png';
+        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Ajuste a posição conforme necessário
+
         // Adicione o título
         doc.setFontSize(18);
         doc.setTextColor(40, 116, 240);
-        doc.text('Análise de Estoque e Vendas', 20, 20);
+        doc.text('Análise de Estoque e Vendas', 70, 30);
         doc.setFontSize(12);
         doc.setTextColor(0, 0, 0);
 
         // Adicione os campos do cabeçalho
         const headerData = [
-            { label: 'Produto', value: produto, icon: '🛒' },
-            { label: 'Estoque Atual', value: formatNumber(estoqueAtual), icon: '📦' },
-            { label: 'Data Início', value: dataInicio, icon: '📅' },
-            { label: 'Data Fim', value: dataFim, icon: '📅' },
-            { label: 'Total de Dias no Intervalo', value: totalDias, icon: '⏳' },
-            { label: 'Venda Total no Período', value: formatNumber(vendaTotal), icon: '💰' },
-            { label: 'Compra Total no Período', value: formatNumber(compraTotal), icon: '💳' },
-            { label: 'QTD Última Compra', value: formatNumber(qtdUltimaCompra), icon: '🔢' },
-            { label: 'Valor Unitário Última Compra', value: formatNumber(valorUltimaCompra), icon: '💵' },
-            { label: 'Valor Total de Vendas no Período (R$)', value: formatNumber(valorTotalVendas), icon: '📈' },
-            { label: 'Preço Médio de Venda', value: formatNumber(precoMedioVenda), icon: '🏷️' },
-            { label: 'Margem Bruta Realizada (%)', value: formatNumber(margemBruta), icon: '📉' },
-            { label: 'Venda Diária', value: formatNumber(vendaDiaria), icon: '📊' },
-            { label: 'Venda Média Mensal', value: formatNumber(vendaMediaMensal), icon: '📅' },
-            { label: 'Venda Média Trimestral', value: formatNumber(vendaMediaTrimestral), icon: '📅' },
-            { label: 'Venda Média Anual', value: formatNumber(vendaMediaAnual), icon: '📅' },
-            { label: 'Dias de Estoque', value: formatNumber(diasEstoque), icon: '📦' },
+            { label: 'Produto', value: produto },
+            { label: 'Estoque Atual', value: formatNumber(estoqueAtual) },
+            { label: 'Data Início', value: dataInicio },
+            { label: 'Data Fim', value: dataFim },
+            { label: 'Total de Dias no Intervalo', value: totalDias },
+            { label: 'Venda Total no Período', value: formatNumber(vendaTotal) },
+            { label: 'Compra Total no Período', value: formatNumber(compraTotal) },
+            { label: 'QTD Última Compra', value: formatNumber(qtdUltimaCompra) },
+            { label: 'Valor Unitário Última Compra', value: formatNumber(valorUltimaCompra) },
+            { label: 'Valor Total de Vendas no Período (R$)', value: formatNumber(valorTotalVendas) },
+            { label: 'Preço Médio de Venda', value: formatNumber(precoMedioVenda) },
+            { label: 'Margem Bruta Realizada (%)', value: formatNumber(margemBruta) },
+            { label: 'Venda Diária', value: formatNumber(vendaDiaria) },
+            { label: 'Venda Média Mensal', value: formatNumber(vendaMediaMensal) },
+            { label: 'Venda Média Trimestral', value: formatNumber(vendaMediaTrimestral) },
+            { label: 'Venda Média Anual', value: formatNumber(vendaMediaAnual) },
+            { label: 'Dias de Estoque', value: formatNumber(diasEstoque) },
         ];
 
         const columnWidth = 90; // Largura de cada coluna
         const rowHeight = 15; // Altura de cada linha (aumentada em 30%)
         const startX = 20; // Posição inicial X
-        const startY = 40; // Posição inicial Y
+        const startY = 50; // Posição inicial Y
 
         headerData.forEach((item, index) => {
             const x = startX + (index % 2) * columnWidth; // Posição X para a coluna (2 colunas por linha)
             const y = startY + Math.floor(index / 2) * rowHeight; // Posição Y para a linha
-            doc.text(`${item.icon} ${item.label}: ${item.value}`, x, y);
+            doc.text(`${item.label}: ${item.value}`, x, y);
         });
 
         // Adicione o gráfico
@@ -349,6 +359,7 @@ const CalcularDiasEstoque = () => {
 
         doc.save('analise_estoque_venda.pdf');
     };
+
 
 
     return (
