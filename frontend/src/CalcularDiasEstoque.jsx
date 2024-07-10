@@ -289,17 +289,46 @@ const CalcularDiasEstoque = () => {
     const generatePDF = async () => {
         const doc = new jsPDF();
 
+        console.log('Iniciando geração do PDF...');
+
         // Adicione um fundo moderno
+        console.log('Adicionando fundo moderno...');
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
         doc.setFillColor(240, 240, 240); // cor do fundo
         doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-        // Adicione o logotipo
-        const logo = 'C:\\Users\\raulf\\OneDrive\\Área de Trabalho\\Raul\\Compras e estoque\\frontend\\src\\assets\\logo.png';
-        doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Ajuste a posição conforme necessário
+        // Carregar o logotipo
+        console.log('Carregando o logotipo...');
+        const logoPath = 'C:\\Users\\raulf\\OneDrive\\Área de Trabalho\\Raul\\Compras e estoque\\frontend\\src\\assets\\logo.png';
+        const logo = await fetch(logoPath)
+            .then(response => {
+                console.log('Logotipo carregado com sucesso.');
+                return response.blob();
+            })
+            .then(blob => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    console.log('Logotipo convertido para base64.');
+                    resolve(reader.result);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            }))
+            .catch(err => {
+                console.error('Erro ao carregar o logotipo:', err);
+                return null;
+            });
+
+        if (logo) {
+            console.log('Adicionando logotipo ao PDF...');
+            doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Ajuste a posição conforme necessário
+        } else {
+            console.warn('Logotipo não encontrado ou não pôde ser carregado.');
+        }
 
         // Adicione o título
+        console.log('Adicionando título...');
         doc.setFontSize(18);
         doc.setTextColor(40, 116, 240);
         doc.text('Análise de Estoque e Vendas', 70, 30);
@@ -307,6 +336,7 @@ const CalcularDiasEstoque = () => {
         doc.setTextColor(0, 0, 0);
 
         // Adicione os campos do cabeçalho
+        console.log('Adicionando campos do cabeçalho...');
         const headerData = [
             { label: 'Produto', value: produto },
             { label: 'Estoque Atual', value: formatNumber(estoqueAtual) },
@@ -335,17 +365,23 @@ const CalcularDiasEstoque = () => {
         headerData.forEach((item, index) => {
             const x = startX + (index % 2) * columnWidth; // Posição X para a coluna (2 colunas por linha)
             const y = startY + Math.floor(index / 2) * rowHeight; // Posição Y para a linha
+            console.log(`Adicionando campo ${item.label}: ${item.value} na posição (${x}, ${y})`);
             doc.text(`${item.label}: ${item.value}`, x, y);
         });
 
         // Adicione o gráfico
+        console.log('Verificando se o gráfico está disponível...');
         const chartCanvas = chartRef.current;
         if (chartCanvas) {
+            console.log('Adicionando gráfico ao PDF...');
             const chartImgData = chartCanvas.toDataURL('image/png');
             doc.addImage(chartImgData, 'PNG', 10, 160, 190, 90); // Ajuste a posição conforme necessário
+        } else {
+            console.warn('O gráfico não está disponível.');
         }
 
         // Adicione a tabela de clientes na segunda página
+        console.log('Adicionando tabela de clientes na segunda página...');
         doc.addPage();
         doc.setFontSize(18);
         doc.setTextColor(40, 116, 240);
@@ -354,13 +390,15 @@ const CalcularDiasEstoque = () => {
         doc.setTextColor(0, 0, 0);
 
         clientData.slice(0, 10).forEach((row, index) => {
-            doc.text(`${index + 1}. ${row.client}: ${formatNumber(row.total)} unidades`, 20, 40 + (index * 10));
+            const y = 40 + (index * 10);
+            console.log(`Adicionando cliente ${index + 1}: ${row.client} - ${formatNumber(row.total)} unidades na posição (20, ${y})`);
+            doc.text(`${index + 1}. ${row.client}: ${formatNumber(row.total)} unidades`, 20, y);
         });
 
+        console.log('Salvando PDF...');
         doc.save('analise_estoque_venda.pdf');
+        console.log('PDF gerado com sucesso.');
     };
-
-
 
     return (
         <MainContainer>
