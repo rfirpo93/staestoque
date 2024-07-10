@@ -98,6 +98,11 @@ const Field = styled(TextField)`
   }
 `;
 
+const ScrollableDialogContent = styled(DialogContent)`
+  max-height: calc(100vh - 100px); /* Adjust this value as needed */
+  overflow-y: auto;
+`;
+
 const CalcularDiasEstoque = () => {
     const [data, setData] = useState([]);
     const [produto, setProduto] = useState('');
@@ -669,7 +674,7 @@ const CalcularDiasEstoque = () => {
                                 datasets: [
                                     {
                                         label: 'Valor de Vendas',
-                                        data: graphData.map(item => item.value),
+                                        data: graphData.map(item.value),
                                         borderColor: 'rgba(75, 192, 192, 1)',
                                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                                     },
@@ -716,7 +721,7 @@ const CalcularDiasEstoque = () => {
             </Dialog>
             <Dialog open={openPreview} onClose={() => setOpenPreview(false)} maxWidth="lg" fullWidth>
                 <DialogTitle>Pré-visualização do PDF</DialogTitle>
-                <DialogContent ref={previewRef}>
+                <ScrollableDialogContent ref={previewRef}>
                     <HeaderContainer>
                         <Typography variant="h4" align="center" gutterBottom>
                             Análise de compra, venda e estoque
@@ -971,7 +976,7 @@ const CalcularDiasEstoque = () => {
                                         datasets: [
                                             {
                                                 label: 'Valor de Vendas',
-                                                data: graphData.map(item => item.value),
+                                                data: graphData.map(item.value),
                                                 borderColor: 'rgba(75, 192, 192, 1)',
                                                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                                             },
@@ -1024,7 +1029,7 @@ const CalcularDiasEstoque = () => {
                     >
                         Confirmar e Gerar PDF
                     </Button>
-                </DialogContent>
+                </ScrollableDialogContent>
             </Dialog>
         </MainContainer>
     );
