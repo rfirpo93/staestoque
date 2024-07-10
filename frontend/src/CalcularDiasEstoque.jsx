@@ -121,12 +121,13 @@ const CalcularDiasEstoque = () => {
     const [open, setOpen] = useState(false);
     const [openGraph, setOpenGraph] = useState(false);
     const [openClientAnalysis, setOpenClientAnalysis] = useState(false);
+    const [openPreview, setOpenPreview] = useState(false);
     const [graphData, setGraphData] = useState([]);
     const [clientData, setClientData] = useState([]);
     const [products, setProducts] = useState([]);
     const chartRef = useRef(null);
+    const previewRef = useRef(null);
 
-    // Função de efeito para calcular dados de vendas e estoque
     useEffect(() => {
         console.log('Calculando dados de vendas e estoque...');
         if (dataInicio && dataFim) {
@@ -145,7 +146,6 @@ const CalcularDiasEstoque = () => {
         }
     }, [dataInicio, dataFim, vendaTotal, estoqueAtual]);
 
-    // Função para manipular o upload de arquivo
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
@@ -263,7 +263,6 @@ const CalcularDiasEstoque = () => {
         reader.readAsBinaryString(file);
     };
 
-    // Função para selecionar produto
     const handleSelectProduto = () => {
         const url = 'https://raw.githubusercontent.com/rfirpo93/staestoque/main/backend/estoque.xlsx';
 
@@ -280,45 +279,36 @@ const CalcularDiasEstoque = () => {
             .catch(error => console.error('Erro ao buscar dados:', error));
     };
 
-    // Função para selecionar um produto específico
     const handleProductSelect = (product) => {
         setProduto(product.produto);
         setEstoqueAtual(product.quantidade);
         setOpen(false);
     };
 
-    // Função para formatar número
     const formatNumber = (number) => {
         return number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
 
-    // Função para gerar PDF
+    const handleGeneratePDF = () => {
+        setOpenPreview(true);
+    };
+
     const generatePDF = async () => {
         const doc = new jsPDF();
 
         console.log('Iniciando geração do PDF...');
 
-        // Adicione um fundo moderno
-        console.log('Adicionando fundo moderno...');
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
-        doc.setFillColor(240, 240, 240); // cor do fundo
+        doc.setFillColor(240, 240, 240);
         doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-        // Carregar o logotipo
-        console.log('Carregando o logotipo...');
         const logoPath = 'C:\\Users\\raulf\\OneDrive\\Área de Trabalho\\Raul\\Compras e estoque\\frontend\\src\\assets\\logo.png';
         const logo = await fetch(logoPath)
-            .then(response => {
-                console.log('Logotipo carregado com sucesso.');
-                return response.blob();
-            })
+            .then(response => response.blob())
             .then(blob => new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = () => {
-                    console.log('Logotipo convertido para base64.');
-                    resolve(reader.result);
-                };
+                reader.onload = () => resolve(reader.result);
                 reader.onerror = reject;
                 reader.readAsDataURL(blob);
             }))
@@ -328,22 +318,15 @@ const CalcularDiasEstoque = () => {
             });
 
         if (logo) {
-            console.log('Adicionando logotipo ao PDF...');
-            doc.addImage(logo, 'PNG', 10, 10, 50, 20); // Ajuste a posição conforme necessário
-        } else {
-            console.warn('Logotipo não encontrado ou não pôde ser carregado.');
+            doc.addImage(logo, 'PNG', 10, 10, 50, 20);
         }
 
-        // Adicione o título
-        console.log('Adicionando título...');
         doc.setFontSize(18);
         doc.setTextColor(40, 116, 240);
         doc.text('Análise de Estoque e Vendas', 70, 30);
         doc.setFontSize(12);
         doc.setTextColor(0, 0, 0);
 
-        // Adicione os campos do cabeçalho
-        console.log('Adicionando campos do cabeçalho...');
         const headerData = [
             { label: 'Produto', value: produto },
             { label: 'Estoque Atual', value: formatNumber(estoqueAtual) },
@@ -364,31 +347,23 @@ const CalcularDiasEstoque = () => {
             { label: 'Dias de Estoque', value: formatNumber(diasEstoque) },
         ];
 
-        const columnWidth = 90; // Largura de cada coluna
-        const rowHeight = 15; // Altura de cada linha (aumentada em 30%)
-        const startX = 20; // Posição inicial X
-        const startY = 50; // Posição inicial Y
+        const columnWidth = 90;
+        const rowHeight = 15;
+        const startX = 20;
+        const startY = 50;
 
         headerData.forEach((item, index) => {
-            const x = startX + (index % 2) * columnWidth; // Posição X para a coluna (2 colunas por linha)
-            const y = startY + Math.floor(index / 2) * rowHeight; // Posição Y para a linha
-            console.log(`Adicionando campo ${item.label}: ${item.value} na posição (${x}, ${y})`);
+            const x = startX + (index % 2) * columnWidth;
+            const y = startY + Math.floor(index / 2) * rowHeight;
             doc.text(`${item.label}: ${item.value}`, x, y);
         });
 
-        // Adicione o gráfico
-        console.log('Verificando se o gráfico está disponível...');
-        const chartCanvas = chartRef.current;
+        const chartCanvas = previewRef.current.querySelector('canvas');
         if (chartCanvas) {
-            console.log('Adicionando gráfico ao PDF...');
             const chartImgData = chartCanvas.toDataURL('image/png');
-            doc.addImage(chartImgData, 'PNG', 10, 160, 190, 90); // Ajuste a posição conforme necessário
-        } else {
-            console.warn('O gráfico não está disponível.');
+            doc.addImage(chartImgData, 'PNG', 10, 160, 190, 90);
         }
 
-        // Adicione a tabela de clientes na segunda página
-        console.log('Adicionando tabela de clientes na segunda página...');
         doc.addPage();
         doc.setFontSize(18);
         doc.setTextColor(40, 116, 240);
@@ -398,13 +373,11 @@ const CalcularDiasEstoque = () => {
 
         clientData.slice(0, 10).forEach((row, index) => {
             const y = 40 + (index * 10);
-            console.log(`Adicionando cliente ${index + 1}: ${row.client} - ${formatNumber(row.total)} unidades na posição (20, ${y})`);
             doc.text(`${index + 1}. ${row.client}: ${formatNumber(row.total)} unidades`, 20, y);
         });
 
-        console.log('Salvando PDF...');
         doc.save('analise_estoque_venda.pdf');
-        console.log('PDF gerado com sucesso.');
+        setOpenPreview(false);
     };
 
     return (
@@ -703,7 +676,7 @@ const CalcularDiasEstoque = () => {
                             variant="contained"
                             color="primary"
                             startIcon={<BarChartIcon />}
-                            onClick={generatePDF}
+                            onClick={handleGeneratePDF}
                         >
                             Gerar PDF
                         </Button>
@@ -800,6 +773,287 @@ const CalcularDiasEstoque = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
+                </DialogContent>
+            </Dialog>
+            <Dialog open={openPreview} onClose={() => setOpenPreview(false)} maxWidth="lg" fullWidth>
+                <DialogTitle>Pré-visualização do PDF</DialogTitle>
+                <DialogContent ref={previewRef}>
+                    <HeaderContainer>
+                        <HeaderFields>
+                            <Field
+                                label="Produto"
+                                value={produto}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <SearchOffIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                variant="outlined"
+                                size="small"
+                            />
+                            <Field
+                                label="Estoque Atual"
+                                value={estoqueAtual}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <ShoppingCartIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Data Início"
+                                value={dataInicio}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <CalendarTodayIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Data Fim"
+                                value={dataFim}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <CalendarTodayIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Total de Dias no Intervalo"
+                                value={totalDias}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <CalendarTodayIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Venda Total no Período"
+                                value={formatNumber(vendaTotal)}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <InventoryIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Compra Total no Período"
+                                value={formatNumber(compraTotal)}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <InventoryIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="QTD Última Compra"
+                                value={formatNumber(qtdUltimaCompra)}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <BarChartIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Valor Unitário Última Compra"
+                                value={formatNumber(valorUltimaCompra)}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <MonetizationOnIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Valor Total de Vendas no Período (R$)"
+                                value={formatNumber(valorTotalVendas)}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <MonetizationOnIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Preço Médio de Venda"
+                                value={formatNumber(precoMedioVenda)}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <TrendingUpIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Margem Bruta Realizada (%)"
+                                value={formatNumber(margemBruta)}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <TrendingUpIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Venda Diária"
+                                value={formatNumber(vendaDiaria)}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <TrendingUpIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Venda Média Mensal"
+                                value={formatNumber(vendaMediaMensal)}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <TrendingUpIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Venda Média Trimestral"
+                                value={formatNumber(vendaMediaTrimestral)}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <TrendingUpIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Venda Média Anual"
+                                value={formatNumber(vendaMediaAnual)}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <TrendingUpIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <Field
+                                label="Dias de Estoque"
+                                value={formatNumber(diasEstoque)}
+                                variant="outlined"
+                                size="small"
+                                InputProps={{
+                                    readOnly: true,
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <TrendingUpIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        </HeaderFields>
+                        <Box display="flex" justifyContent="center">
+                            <Line
+                                data={{
+                                    labels: graphData.map(item => item.name),
+                                    datasets: [
+                                        {
+                                            label: 'Valor de Vendas',
+                                            data: graphData.map(item => item.value),
+                                            borderColor: 'rgba(75, 192, 192, 1)',
+                                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                        },
+                                    ],
+                                }}
+                                options={{
+                                    responsive: true,
+                                    plugins: {
+                                        legend: {
+                                            position: 'top',
+                                        },
+                                        title: {
+                                            display: true,
+                                            text: 'Análise de Vendas por Mês',
+                                        },
+                                    },
+                                }}
+                            />
+                        </Box>
+                    </HeaderContainer>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={generatePDF}
+                        style={{ marginTop: '20px' }}
+                    >
+                        Confirmar e Gerar PDF
+                    </Button>
                 </DialogContent>
             </Dialog>
         </MainContainer>
