@@ -294,90 +294,18 @@ const CalcularDiasEstoque = () => {
     };
 
     const generatePDF = async () => {
-        const doc = new jsPDF();
+        const previewElement = previewRef.current;
 
-        console.log('Iniciando geração do PDF...');
+        html2canvas(previewElement).then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF();
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
-        doc.setFillColor(240, 240, 240);
-        doc.rect(0, 0, pageWidth, pageHeight, 'F');
-
-        const logoPath = 'C:\\Users\\raulf\\OneDrive\\Área de Trabalho\\Raul\\Compras e estoque\\frontend\\src\\assets\\logo.png';
-        const logo = await fetch(logoPath)
-            .then(response => response.blob())
-            .then(blob => new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            }))
-            .catch(err => {
-                console.error('Erro ao carregar o logotipo:', err);
-                return null;
-            });
-
-        if (logo) {
-            doc.addImage(logo, 'PNG', 10, 10, 50, 20);
-        }
-
-        doc.setFontSize(18);
-        doc.setTextColor(40, 116, 240);
-        doc.text('Análise de Estoque e Vendas', 70, 30);
-        doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-
-        const headerData = [
-            { label: 'Produto', value: produto },
-            { label: 'Estoque Atual', value: formatNumber(estoqueAtual) },
-            { label: 'Data Início', value: dataInicio },
-            { label: 'Data Fim', value: dataFim },
-            { label: 'Total de Dias no Intervalo', value: totalDias },
-            { label: 'Venda Total no Período', value: formatNumber(vendaTotal) },
-            { label: 'Compra Total no Período', value: formatNumber(compraTotal) },
-            { label: 'QTD Última Compra', value: formatNumber(qtdUltimaCompra) },
-            { label: 'Valor Unitário Última Compra', value: formatNumber(valorUltimaCompra) },
-            { label: 'Valor Total de Vendas no Período (R$)', value: formatNumber(valorTotalVendas) },
-            { label: 'Preço Médio de Venda', value: formatNumber(precoMedioVenda) },
-            { label: 'Margem Bruta Realizada (%)', value: formatNumber(margemBruta) },
-            { label: 'Venda Diária', value: formatNumber(vendaDiaria) },
-            { label: 'Venda Média Mensal', value: formatNumber(vendaMediaMensal) },
-            { label: 'Venda Média Trimestral', value: formatNumber(vendaMediaTrimestral) },
-            { label: 'Venda Média Anual', value: formatNumber(vendaMediaAnual) },
-            { label: 'Dias de Estoque', value: formatNumber(diasEstoque) },
-        ];
-
-        const columnWidth = 90;
-        const rowHeight = 15;
-        const startX = 20;
-        const startY = 50;
-
-        headerData.forEach((item, index) => {
-            const x = startX + (index % 2) * columnWidth;
-            const y = startY + Math.floor(index / 2) * rowHeight;
-            doc.text(`${item.label}: ${item.value}`, x, y);
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('analise_estoque_venda.pdf');
         });
-
-        const chartCanvas = previewRef.current.querySelector('canvas');
-        if (chartCanvas) {
-            const chartImgData = chartCanvas.toDataURL('image/png');
-            doc.addImage(chartImgData, 'PNG', 10, 160, 190, 90);
-        }
-
-        doc.addPage();
-        doc.setFontSize(18);
-        doc.setTextColor(40, 116, 240);
-        doc.text('Top 10 Compradores', 20, 20);
-        doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-
-        clientData.slice(0, 10).forEach((row, index) => {
-            const y = 40 + (index * 10);
-            doc.text(`${index + 1}. ${row.client}: ${formatNumber(row.total)} unidades`, 20, y);
-        });
-
-        doc.save('analise_estoque_venda.pdf');
-        setOpenPreview(false);
     };
 
     return (
@@ -654,6 +582,7 @@ const CalcularDiasEstoque = () => {
                                 ),
                             }}
                         />
+
                     </HeaderFields>
                     <Box display="flex" gap="1rem">
                         <Button
@@ -779,6 +708,9 @@ const CalcularDiasEstoque = () => {
                 <DialogTitle>Pré-visualização do PDF</DialogTitle>
                 <DialogContent ref={previewRef}>
                     <HeaderContainer>
+                        <Typography variant="h4" align="center" gutterBottom>
+                            Análise de compra, venda e estoque
+                        </Typography>
                         <HeaderFields>
                             <Field
                                 label="Produto"
@@ -1018,32 +950,60 @@ const CalcularDiasEstoque = () => {
                                 }}
                             />
                         </HeaderFields>
-                        <Box display="flex" justifyContent="center">
-                            <Line
-                                data={{
-                                    labels: graphData.map(item => item.name),
-                                    datasets: [
-                                        {
-                                            label: 'Valor de Vendas',
-                                            data: graphData.map(item => item.value),
-                                            borderColor: 'rgba(75, 192, 192, 1)',
-                                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        <Box display="flex" justifyContent="space-between">
+                            <Box width="50%">
+                                <Typography variant="h6" align="center" gutterBottom>
+                                    Análise mensal de Vendas
+                                </Typography>
+                                <Line
+                                    data={{
+                                        labels: graphData.map(item => item.name),
+                                        datasets: [
+                                            {
+                                                label: 'Valor de Vendas',
+                                                data: graphData.map(item => item.value),
+                                                borderColor: 'rgba(75, 192, 192, 1)',
+                                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                            },
+                                        ],
+                                    }}
+                                    options={{
+                                        responsive: true,
+                                        plugins: {
+                                            legend: {
+                                                position: 'top',
+                                            },
+                                            title: {
+                                                display: true,
+                                                text: 'Análise de Vendas por Mês',
+                                            },
                                         },
-                                    ],
-                                }}
-                                options={{
-                                    responsive: true,
-                                    plugins: {
-                                        legend: {
-                                            position: 'top',
-                                        },
-                                        title: {
-                                            display: true,
-                                            text: 'Análise de Vendas por Mês',
-                                        },
-                                    },
-                                }}
-                            />
+                                    }}
+                                />
+                            </Box>
+                            <Box width="45%">
+                                <Typography variant="h6" align="center" gutterBottom>
+                                    Top 10 compradores
+                                </Typography>
+                                <TableContainer component={Paper}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <StyledTableCell>Cliente</StyledTableCell>
+                                                <StyledTableCell>Total Comprado (Unidades)</StyledTableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {clientData.slice(0, 10).map((row, index) => (
+                                                <StyledTableRow key={index}>
+                                                    <TableCell align="center">{row.client}</TableCell>
+                                                    <TableCell align="center">{formatNumber(row.total)}</TableCell>
+                                                </StyledTableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Box>
                         </Box>
                     </HeaderContainer>
                     <Button
